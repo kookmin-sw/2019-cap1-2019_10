@@ -7,8 +7,7 @@
 
 ### 2. 소개 영상
 
-<iframe width="640" height="360" src="https://youtu.be/4S6KBMRbfgc" frameborder="0" gesture="media" allowfullscreen=""></iframe>
-
+[![video](./image/video.png)](https://youtu.be/4S6KBMRbfgc)
 
 ### 3. 팀 소개
 
