@@ -7,7 +7,8 @@
 
 ### 2. 소개 영상
 
-프로젝트 소개하는 영상을 추가하세요
+<iframe width="640" height="360" src="https://youtu.be/4S6KBMRbfgc" frameborder="0" gesture="media" allowfullscreen=""></iframe>
+
 
 ### 3. 팀 소개
 
