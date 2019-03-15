@@ -1,24 +1,9 @@
-# Welcome to GitHub
+﻿# My Mood Music
 
-캡스톤 팀 생성을 축하합니다.
 
-## 팀소개 및 페이지를 꾸며주세요.
+### 1. 프로젝트 소개
 
-- readme.md 수정.
-
-- index.md 예시보고 수정.
-
-- 수정후 팀페이지 확인하여 점검.
-
-**팀페이지 주소** -> https://kookmin-sw.github.io/ `{{자신의 리파지토리 아이디}}`
-
-**예시)** 1조  https://kookmin-sw.github.io/2018-cap-1
-
-## readme파일에 아래와 같은 내용들을 추가하세요.
-
-### 1. 프로잭트 소개
-
-프로젝트
+  본 프로젝트는 이미지(사용자 표정)와 음성 데이터(사용자 음성)를 통해 사용자의 감정을 분석하고 분석 결과를 이용하여 간단한 분석 결과 설명과 함께 적절한 음악을 추천해주는 어플을 개발하는 것을 목표로 한다.
 
 ### 2. 소개 영상
 
@@ -26,9 +11,47 @@
 
 ### 3. 팀 소개
 
-팀을 소개하세요.
 
-팀원정보 및 담당이나 사진 및 SNS를 이용하여 소개하세요.
+<img src="./image/오윤정.jpg" width="200" height="200">
+
+- 오윤정
+  20153194
+  yuj325@kookmin.ac.kr 
+  API서버 개발
+
+
+<img src="./image/원수빈.jpg" width="200" height="200">
+
+- 원수빈
+  20153196 
+  dnjstnqls@kookmin.ac.kr 
+  데이터베이스설계, API서버 개발
+
+
+<img src="./image/강은채.jpg" width="200" height="200">
+
+- 강은채
+  20152872
+  eunchae0280@naver.com
+  음성데이터를 통한 감정분석 모델 생성 및 학습,감정 분석과 음성 정보를 통합한 결과 도출
+
+
+<img src="./image/홍자현.jpg" width="200" height="200">
+
+- 홍자현
+  20163180
+  970619abc@naver.com
+  추천 알고리즘 구현
+
+
+<img src="./image/박정은.jpg" width="200" height="200">
+
+- 박정은
+  20153180
+  xjeunna@naver.com
+  3d 모델링 및 애니메이션 제작, 어플 개발
+
+
 
 ### 4. 사용법
 
@@ -37,32 +60,3 @@
 ### 5. 기타
 
 추가적인 내용은 자유롭게 작성하세요.
-
-
-## Markdown을 사용하여 내용꾸미기
-
-Markdown은 작문을 스타일링하기위한 가볍고 사용하기 쉬운 구문입니다. 여기에는 다음을위한 규칙이 포함됩니다.
-
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-자세한 내용은 [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Support or Contact
-
-readme 파일 생성에 추가적인 도움이 필요하면 [도움말](https://help.github.com/articles/about-readmes/) 이나 [contact support](https://github.com/contact) 을 이용하세요.
