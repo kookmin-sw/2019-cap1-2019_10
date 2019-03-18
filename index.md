@@ -7,7 +7,7 @@
 
 ### 2. 소개 영상
 
-[![video](./image/video.png)](https://youtu.be/4S6KBMRbfgc)
+[![video](./image/video.png)](https://youtu.be/Ltn368usAxg)
 
 ### 3. 팀 소개
 
