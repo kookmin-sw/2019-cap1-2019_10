@@ -28,9 +28,9 @@ router.register(r'groups', views.GroupViewSet)
 '''
 
 from django.contrib import admin
-from django.conf.urls import url
 
 from bookmark.views import BookmarkLV, BookmarkDV
+from my_mood_music import views
 
 urlpatterns = [
 	url(r'^admin/', admin.site.urls),
@@ -47,9 +47,10 @@ urlpatterns = [
 
 	url(r'^', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-   
-
+    
+    # Class-vased views for my_mood_music app
+	
 	
 ]
-
+#url(r'^my_mood_music/$', views.index, name='index'),
  #url(r'^', include('My_Mood_Music.urls')),
