@@ -25,7 +25,7 @@ SECRET_KEY = 'k$z+he_b$)9l$hm6i-=!-#4des_@h!v1vj$7_x*%-u(j$(qml%'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0', '127.0.0.1:8000', '127.0.0.1']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'bookmark.apps.BookmarkConfig',
     'rest_framework',
+    'my_mood_music.apps.MyMoodMusicConfig',
 ]
 
 
