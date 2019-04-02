@@ -12,3 +12,14 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Group
         fields = ('url', 'name')
+
+
+from my_mood_music.models import Emotion, Music
+
+
+class MMMSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Emotion
+        fields = [
+            'emotion',
+        ]
