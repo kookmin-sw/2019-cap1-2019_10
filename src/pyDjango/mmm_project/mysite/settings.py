@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'bookmark.apps.BookmarkConfig',
     'rest_framework',
+    'rest_framework_swagger',
     'my_mood_music.apps.MyMoodMusicConfig',
 ]
 

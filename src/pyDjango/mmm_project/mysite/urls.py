@@ -28,11 +28,16 @@ router.register(r'groups', views.GroupViewSet)
 '''
 
 from django.contrib import admin
+from rest_framework_swagger.views import get_swagger_view
+
+schema_view = get_swagger_view(title='Pastebin API')
 
 from bookmark.views import BookmarkLV, BookmarkDV
-from my_mood_music import views
+from my_mood_music.views import *
 
+#  url(r'^$', schema_view),
 urlpatterns = [
+   
 	url(r'^admin/', admin.site.urls),
 
 	# Class-based views for Bookmark app
@@ -46,11 +51,12 @@ urlpatterns = [
 
 
 	url(r'^', include(router.urls)),
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     
+    url(r'^my_mood_music/', include("my_mood_music.urls"), name = 'my_mood_music')
     # Class-vased views for my_mood_music app
 	
 	
 ]
-#url(r'^my_mood_music/$', views.index, name='index'),
- #url(r'^', include('My_Mood_Music.urls')),
+
+#url(r'^my_mood_music/', include('my_mood_music.urls', namespace ="my_mood_music")),
+#    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
