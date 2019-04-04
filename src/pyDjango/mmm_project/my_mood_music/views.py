@@ -6,7 +6,7 @@ import cognitive_face as CF
 
 # Create your views here.
 
-'''
+
 # MS Face api 사용
 def requestFaceAPI(request):
 
@@ -23,13 +23,13 @@ def requestFaceAPI(request):
 	img_url = 'https://raw.githubusercontent.com/Microsoft/Cognitive-Face-Windows/master/Data/detection1.jpg'
 	faces = CF.face.detect(img_url)
 	print(faces)
-'''
+
 
 
 
 # 실질적으로 Queryset을 컨트롤하고 데이터를 조작해 Serializer을 통해 매핑시켜주는 View를 작성
 # CBV를 이용해 여러개의 뷰를 작성하지 않고, Viewset을 이용해 Model 하나를 컨트롤하는 CRUD를 1개의 View로 구현
-
+'''
 from rest_framework import viewsets
 from .serializers import MMMSerializer
 from rest_framework import permissions
@@ -42,7 +42,7 @@ class MyMoodMusicView(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
-	
+	'''
 
 '''
 

@@ -88,7 +88,6 @@ show databases;
 
 
 
-
 ### 서버에서 작업 확인
 
 이제 mmm_project 폴더로 돌아간다. (manage.py가 있는 폴더)
