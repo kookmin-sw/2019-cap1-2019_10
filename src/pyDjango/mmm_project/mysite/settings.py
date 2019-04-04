@@ -37,7 +37,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'bookmark.apps.BookmarkConfig',
     'rest_framework',
     'my_mood_music.apps.MyMoodMusicConfig',
 ]
@@ -85,7 +84,7 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'OPTIONS': {
+        'OPTIONS' : {
             'read_default_file': '/etc/mysql/my.cnf',
         },
     }

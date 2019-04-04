@@ -38,8 +38,6 @@ urlpatterns = [
 	# Class-based views for Bookmark app
 	# url(regex, view, kwargs=None, name=None, prefex='')
 	
-	url(r'^bookmark/$', BookmarkLV.as_view(), name='index'),
-	url(r'^bookmark/(?P<pk>\d+)/$', BookmarkDV.as_view(), name='detail'),
 	
 	# 우리가 만든 API를 자동으로 라우팅합니다.
 	# 그리고 API 탐색을 위해 로그인 URL을 추가했습니다.
@@ -52,5 +50,3 @@ urlpatterns = [
 	
 	
 ]
-#url(r'^my_mood_music/$', views.index, name='index'),
- #url(r'^', include('My_Mood_Music.urls')),
