@@ -1,28 +1,87 @@
 from django.shortcuts import render
+from django.contrib.auth.models import User
+from rest_framework import viewsets
+from .serializers import UserSerializer, EmotionSerializer
+
 from my_mood_music.models import Emotion, Music
 
 from django.http.response import HttpResponse
 import cognitive_face as CF
 
-# Create your views here.
+# viewSet classes 
+class UserViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+    queryset = User.objects.all().order_by('-date_joined')
+    serializer_class = UserSerializer
+    
+class EmotionViewSet(viewsets.ModelViewSet):
+	queryset = Emotion.objects.all().order_by('id')
+	serializer_class = EmotionSerializer
 
+
+
+
+# function views
+def show_table(request):
+	emotion_list = Emotion.objects.all()
+	result_str = ''
+	for i in emotion_list:
+		result_str += '<p>'+ i.emotion 
+		
+	return HttpResponse(result_str)
 
 # MS Face api 사용
+'''
+import http.client, urllib.request, urllib.parse, urllib.error, base64
+
 def requestFaceAPI(request):
 
-	emotion_list = Emotion.objects.all()
-	return HttpResponse('Hello\n' + emotion_list[0].emotion)
+	headers = {
+		# Request headers
+		'Content-Type': 'application/json',
+		'Ocp-Apim-Subscription-Key': 'd0b59c05aee14136af3d8dc739689e4a',
+	}
 
-	KEY = 'd0b59c05aee14136af3d8dc739689e4a'  # Replace with a valid subscription key (keeping the quotes in place).
+	params = urllib.parse.urlencode({
+		# Request parameters
+		'returnFaceId': 'true',
+		'returnFaceLandmarks': 'false',
+		'returnFaceAttributes': 'age, emotion',
+	}) 
+	
+	body = '{ \
+    "url": "http://example.com/1.jpg" \
+	}'
+
+	try:
+		conn = http.client.HTTPSConnection('westus.api.cognitive.microsoft.com')
+		conn.request("POST", "/face/v1.0/detect?%s" % params, body, headers)
+		response = conn.getresponse()
+		data = response.read()
+#		print(data)
+		conn.close()
+	except Exception as e:
+		print("[Errno {0}] {1}".format(e.errno, e.strerror))
+
+	return HttpResponse(data)		
+'''
+
+def requestFaceAPI(request):
+	
+	KEY = 'fc9f7f1e776d405cbd87fd787dc1cc54'
 	CF.Key.set(KEY)
 
-	BASE_URL = 'https://westus.api.cognitive.microsoft.com/face/v1.0/'  # Replace with your regional Base URL
+	BASE_URL = 'https://koreacentral.api.cognitive.microsoft.com/face/v1.0/detect?returnFaceId=true&returnFaceLandmarks=false&returnFaceAttributes=age,emotion&recognitionModel=recognition_01&returnRecognitionModel=false '# Replace with your regional Base URL
 	CF.BaseUrl.set(BASE_URL)
 
 	# You can use this example JPG or replace the URL below with your own URL to a JPEG image.
-	img_url = 'https://raw.githubusercontent.com/Microsoft/Cognitive-Face-Windows/master/Data/detection1.jpg'
+	img_url = 'https://imagizer.imageshack.com/img924/833/h2VkhM.jpg'
 	faces = CF.face.detect(img_url)
-	print(faces)
+	return HttpResponse(faces)
+
+
 
 
 
