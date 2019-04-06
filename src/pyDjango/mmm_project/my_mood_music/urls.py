@@ -1,8 +1,9 @@
 from django.conf.urls import include, url
-from my_mood_music.views import *
+from . import views
 
 
 from django.urls import path, include
+
 
 '''
 emotion_list = MyMoodMusicView.as_view({
@@ -20,6 +21,8 @@ emotion_detail = MyMoodMusicView.as_view({
 
 
 urlpatterns = [
-    url('auth/', include('rest_framework.urls', namespace='rest_framework')),
-]
+
+	path('', views.show_table, name='show_table'),
+	path('emotion_analysis', views.requestFaceAPI, name ='api_response'),
+]	
 

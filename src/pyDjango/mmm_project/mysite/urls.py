@@ -17,25 +17,23 @@ Including another URLconf
 
 from django.conf.urls import url, include
 from rest_framework import routers
-
-router = routers.DefaultRouter()
-'''
 from my_mood_music import views
 
 router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
-router.register(r'groups', views.GroupViewSet)
-'''
+router.register(r'emotions', views.EmotionViewSet)
+
 
 from django.contrib import admin
-from rest_framework_swagger.views import get_swagger_view
+# from rest_framework_swagger.views import get_swagger_view
 
-schema_view = get_swagger_view(title='Pastebin API')
+# schema_view = get_swagger_view(title='Pastebin API')
+#  url(r'^$', schema_view),
 
 from bookmark.views import BookmarkLV, BookmarkDV
 from my_mood_music.views import *
+import my_mood_music.urls
 
-#  url(r'^$', schema_view),
 urlpatterns = [
    
 	url(r'^admin/', admin.site.urls),
@@ -46,17 +44,17 @@ urlpatterns = [
 	url(r'^bookmark/$', BookmarkLV.as_view(), name='index'),
 	url(r'^bookmark/(?P<pk>\d+)/$', BookmarkDV.as_view(), name='detail'),
 	
-	# 우리가 만든 API를 자동으로 라우팅합니다.
-	# 그리고 API 탐색을 위해 로그인 URL을 추가했습니다.
-
-
-	url(r'^', include(router.urls)),
+	# my_mood_music app
     
-    url(r'^my_mood_music/', include("my_mood_music.urls"), name = 'my_mood_music')
-    # Class-vased views for my_mood_music app
+    url(r'^',include(router.urls)),	
+
+	url(r'^mmm/', include(my_mood_music.urls)),
+	
+	 url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 	
 	
 ]
 
 #url(r'^my_mood_music/', include('my_mood_music.urls', namespace ="my_mood_music")),
 #    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+#  url(r'^my_mood_music/', include("my_mood_music.urls"), name = 'my_mood_music'),
