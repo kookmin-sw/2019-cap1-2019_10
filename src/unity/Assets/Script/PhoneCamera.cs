@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,15 +17,14 @@ public class PhoneCamera : MonoBehaviour
     Vector3 localScale = new Vector3(1f, 1f, 1f);
     Vector3 localOrient = new Vector3(0, 0, 0);
 
-    private void Awake()
-    {
-        WebCamDevice[] devices = WebCamTexture.devices;
-    }
+    private string _SavePath = ".\\MyMoodMusic\\";
+    int _CaptureCounter = 0;
+
 
     private void Start()
     {
-        // permission 체크
-        if(!Application.HasUserAuthorization(UserAuthorization.WebCam))
+        // permission 체크..
+        if (!Application.HasUserAuthorization(UserAuthorization.WebCam))
         {
             Application.HasUserAuthorization(UserAuthorization.WebCam);
         }
@@ -33,10 +33,10 @@ public class PhoneCamera : MonoBehaviour
             cameraPermission = 1;
         }
 
-        while(cameraPermission != 1)
+        while (cameraPermission != 1)
         {
             System.Threading.Thread.Sleep(1000);
-            if(Application.HasUserAuthorization(UserAuthorization.WebCam))
+            if (Application.HasUserAuthorization(UserAuthorization.WebCam))
             {
                 cameraPermission = 1;
             }
@@ -64,7 +64,7 @@ public class PhoneCamera : MonoBehaviour
 
         if(frontCam == null)
         {
-            Debug.Log("Unable to find back camera");
+            Debug.Log("Unable to find front camera");
             return;
         }
 
@@ -96,5 +96,50 @@ public class PhoneCamera : MonoBehaviour
         //background.rectTransform.localEulerAngles = new Vector3(0, 0, orient);
         localOrient.Set(0, 0, orient);
         background.rectTransform.localEulerAngles = localOrient;
+    }
+
+    private void OnGUI()
+    {
+        // 사진 찍을 버튼 생성
+        if (GUI.Button(new Rect(10, 70, 50, 30), "Click"))
+            TakeSnapshot();
+    }
+
+    // 저장경로 찾기..
+    public string pathForDocumentsFile(string filename)
+    {
+        if(Application.platform == RuntimePlatform.IPhonePlayer)
+        {
+            string path = Application.dataPath.Substring(0, Application.dataPath.Length - 5);
+            path = path.Substring(0, path.LastIndexOf('/'));
+            return Path.Combine(Path.Combine(path, "Documents"), filename);
+        }
+        else if(Application.platform == RuntimePlatform.Android)
+        {
+            string path = Application.persistentDataPath;
+            path = path.Substring(0, path.LastIndexOf('/'));
+            return Path.Combine(path, filename);
+        }
+        else
+        {
+            string path = Application.dataPath;
+            path = path.Substring(0, path.LastIndexOf('/'));
+            return Path.Combine(path, filename);
+        }
+    }
+
+    // 사진찍기
+    void TakeSnapshot()
+    {
+        Texture2D snap = new Texture2D(frontCam.width, frontCam.height);
+        snap.SetPixels(frontCam.GetPixels());
+        snap.Apply();
+
+        _SavePath = pathForDocumentsFile("MyMoodMusic");
+        Debug.Log(_SavePath);
+        System.IO.File.WriteAllBytes(_SavePath + _CaptureCounter.ToString() + ".png", snap.EncodeToPNG());
+        
+        ++_CaptureCounter;
+        Debug.Log(_CaptureCounter);
     }
 }
