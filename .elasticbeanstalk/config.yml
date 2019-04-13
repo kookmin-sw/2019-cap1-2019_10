@@ -1,0 +1,5 @@
+branch-defaults:
+  api-server:
+    environment: Mymoodmusic-env
+global:
+  profile: eb-cli

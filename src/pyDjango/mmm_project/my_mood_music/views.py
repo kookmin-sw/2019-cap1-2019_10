@@ -33,41 +33,6 @@ def show_table(request):
 	return HttpResponse(result_str)
 
 # MS Face api 사용
-'''
-import http.client, urllib.request, urllib.parse, urllib.error, base64
-
-def requestFaceAPI(request):
-
-	headers = {
-		# Request headers
-		'Content-Type': 'application/json',
-		'Ocp-Apim-Subscription-Key': 'd0b59c05aee14136af3d8dc739689e4a',
-	}
-
-	params = urllib.parse.urlencode({
-		# Request parameters
-		'returnFaceId': 'true',
-		'returnFaceLandmarks': 'false',
-		'returnFaceAttributes': 'age, emotion',
-	}) 
-	
-	body = '{ \
-    "url": "http://example.com/1.jpg" \
-	}'
-
-	try:
-		conn = http.client.HTTPSConnection('westus.api.cognitive.microsoft.com')
-		conn.request("POST", "/face/v1.0/detect?%s" % params, body, headers)
-		response = conn.getresponse()
-		data = response.read()
-#		print(data)
-		conn.close()
-	except Exception as e:
-		print("[Errno {0}] {1}".format(e.errno, e.strerror))
-
-	return HttpResponse(data)		
-'''
-
 def requestFaceAPI(request):
 	
 	KEY = 'fc9f7f1e776d405cbd87fd787dc1cc54'
@@ -77,8 +42,9 @@ def requestFaceAPI(request):
 	CF.BaseUrl.set(BASE_URL)
 
 	# You can use this example JPG or replace the URL below with your own URL to a JPEG image.
-	img_url = 'https://imagizer.imageshack.com/img924/833/h2VkhM.jpg'
-	faces = CF.face.detect(img_url)
+	data = open('/home/daeng/1553010798453.jpg', 'rb')
+#	img_url = 'https://imagizer.imageshack.com/img924/833/h2VkhM.jpg'
+	faces = CF.face.detect(data)
 	return HttpResponse(faces)
 
 
