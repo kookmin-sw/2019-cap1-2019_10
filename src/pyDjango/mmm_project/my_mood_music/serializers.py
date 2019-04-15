@@ -9,16 +9,16 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
 
 
-from my_mood_music.models import Emotion, Music
+from my_mood_music.models import *
 
 
 class EmotionSerializer(serializers.ModelSerializer):
 
 
     class Meta:
-        model = Emotion
+        model = Emotion_Information
         fields = [
-            'emotion',
+            'emotion_name',
         ]
 
 

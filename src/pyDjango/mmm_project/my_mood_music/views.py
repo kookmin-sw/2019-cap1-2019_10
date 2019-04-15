@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 
 from rest_framework import viewsets
 from .serializers import UserSerializer, EmotionSerializer
-from my_mood_music.models import Emotion, Music
+from my_mood_music.models import *
 from rest_framework import permissions
 '''
 # 함수형 뷰 
@@ -39,7 +39,7 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     
 class EmotionViewSet(viewsets.ModelViewSet):
-	queryset = Emotion.objects.all().order_by('id')
+	queryset = Emotion_Information.objects.all().order_by('id')
 	serializer_class = EmotionSerializer
 	permision_class = (permissions.IsAuthenticated,)
 	lookup_fields = 'pk'
@@ -130,22 +130,22 @@ class EmotionDetail(mixins.RetrieveModelMixin,
 '''
 
 class EmotionList(generics.ListCreateAPIView):
-    queryset = Emotion.objects.all()
+    queryset = Emotion_Information.objects.all()
     serializer_class = EmotionSerializer
 
 
 class EmotionDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Emotion.objects.all()
+    queryset = Emotion_Information.objects.all()
     serializer_class = EmotionSerializer
     
 
 
 # function views
 def show_table(request):
-	emotion_list = Emotion.objects.all()
+	emotion_list = Emotion_Information.objects.all()
 	result_str = ''
 	for i in emotion_list:
-		result_str += '<p>'+ i.emotion 
+		result_str += '<p>'+ i.emotion_name
 		
 	return HttpResponse(result_str)
 
