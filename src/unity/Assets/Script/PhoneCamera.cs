@@ -1,7 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.UI;
 
 public class PhoneCamera : MonoBehaviour
@@ -18,8 +20,9 @@ public class PhoneCamera : MonoBehaviour
     Vector3 localOrient = new Vector3(0, 0, 0);
 
     private string _SavePath = ".\\MyMoodMusic\\";
+    private string path = "";
     int _CaptureCounter = 0;
-
+    public byte[] bytes;
 
     private void Start()
     {
@@ -98,11 +101,16 @@ public class PhoneCamera : MonoBehaviour
         background.rectTransform.localEulerAngles = localOrient;
     }
 
-    private void OnGUI()
+    //private void OnGUI()
+    //{
+    //    // 사진 찍을 버튼 생성
+    //    if (GUI.Button(new Rect(10, 70, 50, 30), "Click"))
+    //        TakeSnapshot();
+    //}
+
+    public void OnClickSaveButton()
     {
-        // 사진 찍을 버튼 생성
-        if (GUI.Button(new Rect(10, 70, 50, 30), "Click"))
-            TakeSnapshot();
+        TakeSnapshot();
     }
 
     // 저장경로 찾기..
@@ -128,6 +136,11 @@ public class PhoneCamera : MonoBehaviour
         }
     }
 
+    public void onClickSendButton()
+    {
+        StartCoroutine(ServerThrows());
+    }
+
     // 사진찍기
     void TakeSnapshot()
     {
@@ -138,8 +151,57 @@ public class PhoneCamera : MonoBehaviour
         _SavePath = pathForDocumentsFile("MyMoodMusic");
         Debug.Log(_SavePath);
         System.IO.File.WriteAllBytes(_SavePath + _CaptureCounter.ToString() + ".png", snap.EncodeToPNG());
-        
+
+        bytes = snap.EncodeToPNG();
+        UnityEngine.Object.Destroy(snap);
+
+        path = _SavePath + _CaptureCounter.ToString() + ".png";
+
         ++_CaptureCounter;
         Debug.Log(_CaptureCounter);
+
+    }
+
+    IEnumerator ServerThrows()
+    {
+        //string imageAsJson = File.ReadAllText(path);
+        //byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(imageAsJson);
+        //UnityWebRequest www = new UnityWebRequest("http://127.0.0.1:8000/", "POST");
+        //www.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyRaw);
+        //www.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
+        //www.chunkedTransfer = false;
+        //www.SetRequestHeader("Content-Type", "application/json");
+
+        //yield return www.SendWebRequest();
+
+        //if (www.isNetworkError || www.isHttpError)
+        //{
+        //    Debug.Log(www.error);
+        //}
+        //else
+        //{
+        //    GetResponse(www);
+        //}
+
+        WWWForm form = new WWWForm();
+        form.AddField("frameCount", Time.frameCount.ToString());
+        form.AddBinaryData("fileUpload", bytes);
+
+        WWW w = new WWW("http://127.0.0.1:8000/", form);
+        yield return w;
+
+        if (w.error != null)
+        {
+            Debug.Log(w.error);
+        }
+        else
+        {
+            Debug.Log("Finished Uploading Screenshot");
+        }
+    }
+
+    private void GetResponse(UnityWebRequest www)
+    {
+        throw new NotImplementedException();
     }
 }
