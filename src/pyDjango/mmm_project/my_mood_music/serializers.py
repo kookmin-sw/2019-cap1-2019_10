@@ -7,18 +7,35 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         model = User
         fields = ('url', 'username', 'email', 'groups')
 
+class CreateUserSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(required=True)
+
+    class Meta:
+        model = User
+        fields = ('id', 'email', 'username', 'password')
+        extra_kwargs = {'password': {'write_only': True}}
+
+    def create(self, validated_data):
+        user = User(
+            email=validated_data['email'],
+            username=validated_data['username']
+        )
+        user.set_password(validated_data['password'])
+        user.save()
+        return user
 
 
-from my_mood_music.models import Emotion, Music
+
+from .models import *
 
 
 class EmotionSerializer(serializers.ModelSerializer):
 
 
     class Meta:
-        model = Emotion
+        model = Emotion_Information
         fields = [
-            'emotion',
+            'emotion_name',
         ]
 
 
