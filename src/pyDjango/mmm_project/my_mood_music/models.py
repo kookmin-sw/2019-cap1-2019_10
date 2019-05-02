@@ -98,7 +98,7 @@ class Sadness(models.Model):
         subclass_s = models.IntegerField
 
         def __str__(self):
-                return '{} {} {} {} {}'.format(self.id_s, self.music_s, self.age_s, self.link_s, self.subclass_s}
+                return '{} {} {} {} {}'.format(self.id_s, self.music_s, self.age_s, self.link_s, self.subclass_s)
                 
 class Subclass_Sad(models.Model):
         id_sc = models.IntegerField
