@@ -16,6 +16,9 @@ using namespace std;
 * switch(정수형변수) 이고, 여기에 1순위 감정 중 하나가 들어가야하므로 : 각 감정을 정수형 변수로 선언하고 정수를 대입함 = enum
   -> 쓴 순서대로 1,2,,정수가 부여됨
 
+??switch에서 각 테이블에 접근하기 쉽게 이것도 enum같이 틀을 만드는게 좋을지? 코드 복잡할땐?
+
+
 enum Emotion { 
 	ANGER,
 	FEAR,
@@ -24,8 +27,6 @@ enum Emotion {
 	SAD,
 	SURPRISE 
 };
-
-??switch에서 각 테이블에 접근하기 쉽게 이것도 enum같이 틀을 만드는게 좋을지? 코드 복잡할땐?
 
 int main(){
 
