@@ -11,7 +11,6 @@ public class PhoneCamera : MonoBehaviour
     private bool camAvailable;
     private WebCamTexture frontCam;
     private Texture defaultBackground;
-    private int cameraPermission = 0;
 
     public RawImage background;
     public AspectRatioFitter fit;
@@ -24,27 +23,13 @@ public class PhoneCamera : MonoBehaviour
     int _CaptureCounter = 0;
     public byte[] bytes;
 
+    public string url = "";
+    public float StayTime = 10f;
+
+    public Text txt;
+
     private void Start()
     {
-        // permission 체크..
-        if (!Application.HasUserAuthorization(UserAuthorization.WebCam))
-        {
-            Application.HasUserAuthorization(UserAuthorization.WebCam);
-        }
-        else
-        {
-            cameraPermission = 1;
-        }
-
-        while (cameraPermission != 1)
-        {
-            System.Threading.Thread.Sleep(1000);
-            if (Application.HasUserAuthorization(UserAuthorization.WebCam))
-            {
-                cameraPermission = 1;
-            }
-        }
-
         defaultBackground = background.texture;
         WebCamDevice[] devices = WebCamTexture.devices;
 
@@ -72,13 +57,14 @@ public class PhoneCamera : MonoBehaviour
         }
 
         // 카메라 사용
-        // 근데 처음에 스타트하고 퍼미션 받고 돌아야하는데 스타트에 들어있어서 퍼미션이 바로 적용이 안됨
         frontCam.Play();
 
         // 이건 그냥 디버깅용으로 안보이니까 카메라 잘 떴는지 확인할려고 UI 텍스쳐로 띄워줌 카메라
-        background.texture = frontCam;
+        //background.texture = frontCam;
 
         camAvailable = true;
+
+        StartCoroutine("TakePicture");
     }
 
     private void Update()
@@ -108,38 +94,38 @@ public class PhoneCamera : MonoBehaviour
     //        TakeSnapshot();
     //}
 
-    public void OnClickSaveButton()
-    {
-        TakeSnapshot();
-    }
+    //public void OnClickSaveButton()
+    //{
+    //    TakeSnapshot();
+    //}
 
-    // 저장경로 찾기..
-    public string pathForDocumentsFile(string filename)
-    {
-        if(Application.platform == RuntimePlatform.IPhonePlayer)
-        {
-            string path = Application.dataPath.Substring(0, Application.dataPath.Length - 5);
-            path = path.Substring(0, path.LastIndexOf('/'));
-            return Path.Combine(Path.Combine(path, "Documents"), filename);
-        }
-        else if(Application.platform == RuntimePlatform.Android)
-        {
-            string path = Application.persistentDataPath;
-            path = path.Substring(0, path.LastIndexOf('/'));
-            return Path.Combine(path, filename);
-        }
-        else
-        {
-            string path = Application.dataPath;
-            path = path.Substring(0, path.LastIndexOf('/'));
-            return Path.Combine(path, filename);
-        }
-    }
+    //// 저장경로 찾기..
+    //public string pathForDocumentsFile(string filename)
+    //{
+    //    if (Application.platform == RuntimePlatform.IPhonePlayer)
+    //    {
+    //        string path = Application.dataPath.Substring(0, Application.dataPath.Length - 5);
+    //        path = path.Substring(0, path.LastIndexOf('/'));
+    //        return Path.Combine(Path.Combine(path, "Documents"), filename);
+    //    }
+    //    else if (Application.platform == RuntimePlatform.Android)
+    //    {
+    //        string path = Application.persistentDataPath;
+    //        path = path.Substring(0, path.LastIndexOf('/'));
+    //        return Path.Combine(path, filename);
+    //    }
+    //    else
+    //    {
+    //        string path = Application.dataPath;
+    //        path = path.Substring(0, path.LastIndexOf('/'));
+    //        return Path.Combine(path, filename);
+    //    }
+    //}
 
-    public void onClickSendButton()
-    {
-        StartCoroutine(ServerThrows());
-    }
+    //public void onClickSendButton()
+    //{
+    //    StartCoroutine(ServerThrows());
+    //}
 
     // 사진찍기
     void TakeSnapshot()
@@ -148,17 +134,32 @@ public class PhoneCamera : MonoBehaviour
         snap.SetPixels(frontCam.GetPixels());
         snap.Apply();
 
-        _SavePath = pathForDocumentsFile("MyMoodMusic");
-        Debug.Log(_SavePath);
-        System.IO.File.WriteAllBytes(_SavePath + _CaptureCounter.ToString() + ".png", snap.EncodeToPNG());
+        //_SavePath = pathForDocumentsFile("MyMoodMusic");
+        //Debug.Log(_SavePath);
+        //System.IO.File.WriteAllBytes(_SavePath + _CaptureCounter.ToString() + ".png", snap.EncodeToPNG());
 
-        bytes = snap.EncodeToPNG();
+        //bytes = snap.EncodeToPNG();
+        bytes = snap.EncodeToJPG();
+
+        txt.text = "찰칵";
+
         UnityEngine.Object.Destroy(snap);
 
-        path = _SavePath + _CaptureCounter.ToString() + ".png";
+        //path = _SavePath + _CaptureCounter.ToString() + ".png";
 
-        ++_CaptureCounter;
-        Debug.Log(_CaptureCounter);
+        //++_CaptureCounter;
+        //Debug.Log(_CaptureCounter);
+
+        StartCoroutine(ServerThrows());
+    }
+
+    IEnumerator TakePicture()
+    {
+        while (true)
+        {
+            yield return new WaitForSecondsRealtime(StayTime);
+            TakeSnapshot();
+        }
 
     }
 
@@ -183,21 +184,40 @@ public class PhoneCamera : MonoBehaviour
         //    GetResponse(www);
         //}
 
-        WWWForm form = new WWWForm();
-        form.AddField("frameCount", Time.frameCount.ToString());
-        form.AddBinaryData("fileUpload", bytes);
+        //WWWForm form = new WWWForm();
+        //form.AddField("frameCount", Time.frameCount.ToString());
+        //form.AddBinaryData("fileUpload", bytes);
 
-        WWW w = new WWW("http://127.0.0.1:8000/", form);
-        yield return w;
+        //WWW w = new WWW("http://127.0.0.1:8000/", form);
+        //yield return w;
 
-        if (w.error != null)
+        //if (w.error != null)
+        //{
+        //    Debug.Log(w.error);
+        //}
+        //else
+        //{
+        //    Debug.Log("Finished Uploading Screenshot");
+        //}
+
+        List<IMultipartFormSection> formData = new List<IMultipartFormSection>();
+        formData.Add(new MultipartFormDataSection(bytes));
+        //formData.Add(new MultipartFormDataSection("field1=foo&field2=bar"));
+        //formData.Add(new MultipartFormFileSection("my file data", "myfile.txt"));
+
+        UnityWebRequest www = UnityWebRequest.Post(url, null, bytes);
+        //UnityWebRequest www = UnityWebRequest.Post(url, formData);
+        yield return www.SendWebRequest();
+
+        if (www.isNetworkError || www.isHttpError)
         {
-            Debug.Log(w.error);
+            Debug.Log(www.error);
         }
         else
         {
-            Debug.Log("Finished Uploading Screenshot");
+            Debug.Log("Form upload complete!" + www.downloadHandler.text);
         }
+        txt.text = "보냄";
     }
 
     private void GetResponse(UnityWebRequest www)
