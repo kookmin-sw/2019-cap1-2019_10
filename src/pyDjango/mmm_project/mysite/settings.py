@@ -25,7 +25,11 @@ SECRET_KEY = 'k$z+he_b$)9l$hm6i-=!-#4des_@h!v1vj$7_x*%-u(j$(qml%'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    'localhost',
+    'MyMoodMusic.ap-northeast-2.elasticbeanstalk.com',
+]
 
 
 # Application definition
@@ -86,9 +90,11 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'OPTIONS': {
-            'read_default_file': '/etc/mysql/my.cnf',
-        },
+        'NAME': 'My_Mood_Music',
+        'USER': 'Fortune_Teller',
+        'PASSWORD': 'qwer1234',
+        'HOST': '127.0.0.1',
+        'PORT': '3306'
     }
 }
 

@@ -1,28 +1,42 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
 
+
+from django import forms
+
 from rest_framework import viewsets
 from .serializers import UserSerializer, EmotionSerializer
-from my_mood_music.models import *
+from .models import *
 from rest_framework import permissions
+from rest_framework.generics import DestroyAPIView, GenericAPIView, ListAPIView, ListCreateAPIView, UpdateAPIView, \
+    CreateAPIView
+from rest_framework.authtoken.models import Token
+from rest_framework.authtoken.serializers import AuthTokenSerializer
+from rest_framework import parsers
+from rest_framework import renderers
+from rest_framework.response import Response
+
+import json
+
 '''
 # 함수형 뷰 
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 '''
-'''
+
 # 클래스 기반 뷰
 from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-'''
+
 '''
 # Use the Mixin
 from rest_framework import mixins
 from rest_framework import generics
 '''
+
 
 from rest_framework import generics
 
@@ -30,23 +44,31 @@ from django.http.response import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import cognitive_face as CF
 
-# viewSet classes 
+
+# viewSet classes
 class UserViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
     """
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
-    
+
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+
+
 class EmotionViewSet(viewsets.ModelViewSet):
-	queryset = Emotion_Information.objects.all().order_by('id')
-	serializer_class = EmotionSerializer
-	permision_class = (permissions.IsAuthenticated,)
-	lookup_fields = 'pk'
-	
-	def perform_create(self, serializer):
-		sereializer.save(user=self.request.user)
-		
+    queryset = Emotion_Information.objects.all().order_by('id')
+    serializer_class = EmotionSerializer
+    permision_class = (permissions.IsAuthenticated,)
+    lookup_fields = 'pk'
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
 '''
 api뷰를 래퍼로 감싸기 
 class EmotionList(APIView):
@@ -129,6 +151,7 @@ class EmotionDetail(mixins.RetrieveModelMixin,
 
 '''
 
+
 class EmotionList(generics.ListCreateAPIView):
     queryset = Emotion_Information.objects.all()
     serializer_class = EmotionSerializer
@@ -137,87 +160,86 @@ class EmotionList(generics.ListCreateAPIView):
 class EmotionDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Emotion_Information.objects.all()
     serializer_class = EmotionSerializer
-    
 
 
 # function views
 def show_table(request):
-	emotion_list = Emotion_Information.objects.all()
-	result_str = ''
-	for i in emotion_list:
-		result_str += '<p>'+ i.emotion_name
-		
-	return HttpResponse(result_str)
+    emotion_list = Emotion_Information.objects.all()
+    result_str = ''
+    for i in emotion_list:
+        result_str += '<p>' + i.emotion_name
+
+    return HttpResponse(result_str)
+
 
 # MS Face api 사용
 def requestFaceAPI(request):
-	
-	KEY = 'fc9f7f1e776d405cbd87fd787dc1cc54'
-	CF.Key.set(KEY)
-
-	BASE_URL = 'https://koreacentral.api.cognitive.microsoft.com/face/v1.0/detect?returnFaceId=true&returnFaceLandmarks=false&returnFaceAttributes=age,emotion&recognitionModel=recognition_01&returnRecognitionModel=false '# Replace with your regional Base URL
-	CF.BaseUrl.set(BASE_URL)
-
-	# You can use this example JPG or replace the URL below with your own URL to a JPEG image.
-	data = open('/home/daeng/1553010798453.jpg', 'rb')
-#	img_url = 'https://imagizer.imageshack.com/img924/833/h2VkhM.jpg'
-	faces = CF.face.detect(data)
-	return HttpResponse(faces)
+    check = "It is not POST"
+    # Unity에서 파일을 받는 코드
+    # if request.method == 'POST':
+    #     if request.body is not None:
+    #         check = request.body # request.POST.get()함수로 바꿔야 함.
+    #         # print(check)
+    #
 
 
+    KEY = 'e006eb023fb544eaab785e41fdd65865'
+    CF.Key.set(KEY)
 
 
+    BASE_URL = 'https://koreacentral.api.cognitive.microsoft.com/face/v1.0/detect?returnFaceId=true&returnFaceLandmarks=false&returnFaceAttributes=age,emotion&recognitionModel=recognition_01&returnRecognitionModel=false '  # Replace with your regional Base URL
+    CF.BaseUrl.set(BASE_URL)
+
+    # You can use this example JPG or replace the URL below with your own URL to a JPEG image.
+    data = open('C:/Users/Oh YJ/Downloads/image_face/2.png', 'rb')
+
+    faces = CF.face.detect(data)
+    # jsonString = str(faces[0])
+    # dict = json.loads(jsonString)  # Unicode Decode Error 처리해야 함.
+    return HttpResponse(faces)
 
 
-# 실질적으로 Queryset을 컨트롤하고 데이터를 조작해 Serializer을 통해 매핑시켜주는 View를 작성
-# CBV를 이용해 여러개의 뷰를 작성하지 않고, Viewset을 이용해 Model 하나를 컨트롤하는 CRUD를 1개의 View로 구현
+    # return HttpResponse(check)
 '''
-from rest_framework import viewsets
-from .serializers import MMMSerializer
-from rest_framework import permissions
+    KEY = 'e006eb023fb544eaab785e41fdd65865'
+    CF.Key.set(KEY)
+
+    BASE_URL = 'https://koreacentral.api.cognitive.microsoft.com/face/v1.0/detect?returnFaceId=true&returnFaceLandmarks=false&returnFaceAttributes=age,emotion&recognitionModel=recognition_01&returnRecognitionModel=false '  # Replace with your regional Base URL
+    CF.BaseUrl.set(BASE_URL)
+
+    # You can use this example JPG or replace the URL below with your own URL to a JPEG image.
+    data = open('C:/Users/Oh YJ/Downloads/image_face/2.png', 'rb')
+    # data = open('./test.jpy', 'rb')
+
+    #	img_url = 'https://imagizer.imageshack.com/img924/833/h2VkhM.jpg'
+    faces = CF.face.detect(data)
+    # faces = CF.face.detect(data)
+
+    # 이 데이터를 슬라이스해서..........슬라이스그냥하지말까.
 
 
-class MyMoodMusicView(viewsets.ModelViewSet):
-    queryset = Emotion.objects.all()
-    serializer_class = MMMSerializer
-    permission_classes = (permissions.IsAuthenticated,)
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
-	'''
-
-'''
-
-import http.client, urllib.request, urllib.parse, urllib.error, base64
-
-	headers = {
-		# Request headers
-		'Content-Type': 'application/json',
-		'Ocp-Apim-Subscription-Key': 'd0b59c05aee14136af3d8dc739689e4a',
-	}
-
-	params = urllib.parse.urlencode({
-		# Request parameters
-		'returnFaceId': 'true',
-		'returnFaceLandmarks': 'false',
-		'returnFaceAttributes': 'age, emotion',
-	})
-
-	try:
-		conn = http.client.HTTPSConnection('westus.api.cognitive.microsoft.com')
-		conn.request("POST", "/face/v1.0/detect?%s" % params, "{body}", headers)
-		response = conn.getresponse()
-		data = response.read()
-		print(data)
-		conn.close()
-	except Exception as e:
-		print("[Errno {0}] {1}".format(e.errno, e.strerror))
+    return HttpResponse(faces)
 '''
 
+# Token 주기
+class GetAuthToken(GenericAPIView):
+    throttle_classes = ()
+    permission_classes = ()
+    parser_classes = (parsers.FormParser, parsers.MultiPartParser, parsers.JSONParser,)
+    renderer_classes = (renderers.JSONRenderer,)
+
+    def post(self, request):
+        serializer = AuthTokenSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        token, created = Token.objects.get_or_create(user=user)
+        return Response({'token': token.key})
 
 
 '''
-API Key
-d0b59c05aee14136af3d8dc739689e4a
-0f45d74f60c14ebeae161adb16fb5bd1
+azure 키 
+
+1. e006eb023fb544eaab785e41fdd65865
+
+2. 06df8da036924acbb5c508e02d7a1226
 '''
