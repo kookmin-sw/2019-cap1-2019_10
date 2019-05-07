@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django import forms
 
 from rest_framework import viewsets
-from .serializers import UserSerializer, EmotionSerializer
+from .serializers import *
 from .models import *
 from rest_framework import permissions
 from rest_framework.generics import DestroyAPIView, GenericAPIView, ListAPIView, ListCreateAPIView, UpdateAPIView, \
@@ -45,28 +45,28 @@ from django.views.decorators.csrf import csrf_exempt
 import cognitive_face as CF
 
 
-# viewSet classes
-class UserViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows users to be viewed or edited.
-    """
-    queryset = User.objects.all().order_by('-date_joined')
-    serializer_class = UserSerializer
-
-
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
-
-
-class EmotionViewSet(viewsets.ModelViewSet):
-    queryset = Emotion_Information.objects.all().order_by('id')
-    serializer_class = EmotionSerializer
-    permision_class = (permissions.IsAuthenticated,)
-    lookup_fields = 'pk'
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+# # viewSet classes
+# class UserViewSet(viewsets.ModelViewSet):
+#     """
+#     API endpoint that allows users to be viewed or edited.
+#     """
+#     queryset = User.objects.all().order_by('-date_joined')
+#     serializer_class = UserSerializer
+#
+#
+#     def get(self, request, *args, **kwargs):
+#         return self.list(request, *args, **kwargs)
+#
+#
+#
+# class EmotionViewSet(viewsets.ModelViewSet):
+#     queryset = Emotion_Information.objects.all().order_by('id')
+#     serializer_class = EmotionSerializer
+#     permision_class = (permissions.IsAuthenticated,)
+#     lookup_fields = 'pk'
+#
+#     def perform_create(self, serializer):
+#         serializer.save(user=self.request.user)
 
 
 '''
@@ -151,6 +151,9 @@ class EmotionDetail(mixins.RetrieveModelMixin,
 
 '''
 
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+from .permissions import IsOwnerOrReadOnly
 
 class EmotionList(generics.ListCreateAPIView):
     queryset = Emotion_Information.objects.all()
@@ -158,6 +161,11 @@ class EmotionList(generics.ListCreateAPIView):
 
 
 class EmotionDetail(generics.RetrieveUpdateDestroyAPIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated, IsOwnerOrReadOnly) #권한 옵션
+    # 기존에는 토큰이 있는 사용자만 조회할 수 있었다.
+    # 거기에 더해 소유자가 아닐 경우 수정은 불가능 하도록!
+
     queryset = Emotion_Information.objects.all()
     serializer_class = EmotionSerializer
 
@@ -234,6 +242,7 @@ class GetAuthToken(GenericAPIView):
         user = serializer.validated_data['user']
         token, created = Token.objects.get_or_create(user=user)
         return Response({'token': token.key})
+
 
 
 '''

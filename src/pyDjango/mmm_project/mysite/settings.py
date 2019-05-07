@@ -35,6 +35,7 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
+    'my_mood_music.apps.MyMoodMusicConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -44,7 +45,8 @@ INSTALLED_APPS = [
     'bookmark.apps.BookmarkConfig',
     'rest_framework',
     'rest_framework_swagger',
-    'my_mood_music.apps.MyMoodMusicConfig',
+    'rest_framework.authtoken',
+
 ]
 
 
@@ -53,10 +55,26 @@ REST_FRAMEWORK = {
     'PAGINATE_BY': 10
 }
 
+SWAGGER_SETTING = {
+    # 사용자가 Authorize 버튼을 클릭해 Token 등의 API키를 입력할 수 있음.
+    'SECURITY_DEFINITIONS': {
+        "api_key": {
+            "type" : "apikey",
+            "name" : "Authorization",
+            "in" : "header"
+        },
+    },
+
+    "LOGIN_URL" : "/admin/login/",
+    "LOGOUT_URL" : "/admin/logout"
+
+}
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
 
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -90,11 +108,15 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'My_Mood_Music',
-        'USER': 'Fortune_Teller',
+        'NAME': 'MyMoodMusic',
+        'USER': 'MyMoodMusic',
         'PASSWORD': 'qwer1234',
-        'HOST': '127.0.0.1',
-        'PORT': '3306'
+        'HOST': 'mymoodmusic.cjcpvsk3fxnl.ap-northeast-2.rds.amazonaws.com',
+        'PORT': '3306',
+        'OPTIONS' : {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+            # 'sql_mode' : 'traditional'
+        },
     }
 }
 
