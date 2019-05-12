@@ -8,10 +8,9 @@ from django.urls import path
 
 urlpatterns = format_suffix_patterns([
 	path('auth/', include('rest_framework.urls', namespace='rest_framework')),
-	path('', requestFaceAPI, name='show_table'),
+	path('', requestFaceAPI.as_view(), name='Microsoft Face API'),
 	# path('emotion_analysis', views.requestFaceAPI, name ='api_response'),
 	path('emotions/', EmotionList.as_view()),
 	path('emotions/<int:pk>/', EmotionDetail.as_view()),
-
 ])
 

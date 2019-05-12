@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
 
-
 from django import forms
 
 from rest_framework import viewsets
@@ -10,20 +9,17 @@ from .models import *
 from rest_framework import permissions
 from rest_framework.generics import DestroyAPIView, GenericAPIView, ListAPIView, ListCreateAPIView, UpdateAPIView, \
     CreateAPIView
-from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from rest_framework import parsers
 from rest_framework import renderers
 from rest_framework.response import Response
 
-import json
 
-'''
 # 함수형 뷰 
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-'''
+
 
 # 클래스 기반 뷰
 from django.http import Http404
@@ -37,13 +33,11 @@ from rest_framework import mixins
 from rest_framework import generics
 '''
 
-
 from rest_framework import generics
 
 from django.http.response import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import cognitive_face as CF
-
 
 # # viewSet classes
 # class UserViewSet(viewsets.ModelViewSet):
@@ -155,6 +149,7 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from .permissions import IsOwnerOrReadOnly
 
+
 class EmotionList(generics.ListCreateAPIView):
     queryset = Emotion_Information.objects.all()
     serializer_class = EmotionSerializer
@@ -162,13 +157,15 @@ class EmotionList(generics.ListCreateAPIView):
 
 class EmotionDetail(generics.RetrieveUpdateDestroyAPIView):
     authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated, IsOwnerOrReadOnly) #권한 옵션
+    permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)  # 권한 옵션
     # 기존에는 토큰이 있는 사용자만 조회할 수 있었다.
     # 거기에 더해 소유자가 아닐 경우 수정은 불가능 하도록!
 
     queryset = Emotion_Information.objects.all()
     serializer_class = EmotionSerializer
 
+import logging
+logger = logging.getLogger(__name__)
 
 # function views
 def show_table(request):
@@ -180,70 +177,122 @@ def show_table(request):
     return HttpResponse(result_str)
 
 
+import operator
+import json
+
+face_api_result = ''
+
+class requestFaceAPI(APIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)  # 권한 옵션
+
+    def post(self, request, format=None):
+        KEY = 'e006eb023fb544eaab785e41fdd65865'
+        CF.Key.set(KEY)
+
+        BASE_URL = 'https://koreacentral.api.cognitive.microsoft.com/face/v1.0/detect?returnFaceId=true&returnFaceLandmarks=false&returnFaceAttributes=age,emotion&recognitionModel=recognition_01&returnRecognitionModel=false '  # Replace with your regional Base URL
+        CF.BaseUrl.set(BASE_URL)
+
+        # You can use this example JPG or replace the URL below with your own URL to a JPEG image.
+        # data = open('C:/Users/Oh YJ/Downloads/image_face/2.png', 'rb')
+
+        data = open('./test.jpg', 'rb')
+        data.write(request.data)
+        print(request.data)
+        data.close()
+
+        faces = CF.face.detect(data)
+        dict_data = json.loads(faces)  # Unicode decode Error
+        emotions = dict_data['faceAttributes']['emotion']
+        sorted_x = sorted(emotions.items(), key=operator.itemgetter(1))
+
+        # 결과값이 크게 나온 emotion 3가지를 구한다
+        result_emotion = sorted_x[-3:]
+
+        # 종합적인 최종 감정 결과를 도출해내기 위해 전역변수에 할당시킴.
+        face_api_result = result_emotion
+
+        # 어플에 result_emotion 3가지를 날린다. 만약 0 이하라면 날리지 않음.
+        # 이 일은 최종 감정 분석 결과를 도출해낸 후에 넣어야 함.
+        # 그런데 어플에 날리는 게 아니라 어플에서 서버로 GET 을 보내서 얻어가야 되는 것 아닌가
+
+        return HttpResponse(faces)  # 이건 그냥 결과 확인하기 위한 용도. 나중에 지울 것임.
+
+    def get(self, request, format=None):
+        return Response("HHH")
+
+'''
 # MS Face api 사용
+@api_view(['GET','POST'])
 def requestFaceAPI(request):
-    check = "It is not POST"
-    # Unity에서 파일을 받는 코드
-    # if request.method == 'POST':
-    #     if request.body is not None:
-    #         check = request.body # request.POST.get()함수로 바꿔야 함.
-    #         # print(check)
+    logger.debug('debug requestFaceAPI for 500 error')
+
+    if request.method == 'POST':
+        KEY = 'e006eb023fb544eaab785e41fdd65865'
+        CF.Key.set(KEY)
+
+        BASE_URL = 'https://koreacentral.api.cognitive.microsoft.com/face/v1.0/detect?returnFaceId=true&returnFaceLandmarks=false&returnFaceAttributes=age,emotion&recognitionModel=recognition_01&returnRecognitionModel=false '  # Replace with your regional Base URL
+        CF.BaseUrl.set(BASE_URL)
+
+        # You can use this example JPG or replace the URL below with your own URL to a JPEG image.
+        #data = open('C:/Users/Oh YJ/Downloads/image_face/2.png', 'rb')
+
+        data = open('./test.jpg', 'rb')
+        data.write(request.raw_post_data)
+        print(request.raw_post_data)
+        data.close()
+
+        faces = CF.face.detect(data)
+        dict_data = json.loads(faces) # Unicode decode Error
+        emotions = dict_data['faceAttributes']['emotion']
+        sorted_x = sorted(emotions.items(), key=operator.itemgetter(1))
+
+        # 결과값이 크게 나온 emotion 3가지를 구한다
+        result_emotion = sorted_x[-3:]
+
+        # 종합적인 최종 감정 결과를 도출해내기 위해 전역변수에 할당시킴.
+        face_api_result = result_emotion
+
+        # 어플에 result_emotion 3가지를 날린다. 만약 0 이하라면 날리지 않음.
+        # 이 일은 최종 감정 분석 결과를 도출해낸 후에 넣어야 함.
+        # 그런데 어플에 날리는 게 아니라 어플에서 서버로 GET 을 보내서 얻어가야 되는 것 아닌가
+
+        return HttpResponse(faces) # 이건 그냥 결과 확인하기 위한 용도. 나중에 지울 것임.
+
+    return HttpResponse("This is not POST message")
+
+    # KEY = 'e006eb023fb544eaab785e41fdd65865'
+    # CF.Key.set(KEY)
     #
-
-
-    KEY = 'e006eb023fb544eaab785e41fdd65865'
-    CF.Key.set(KEY)
-
-
-    BASE_URL = 'https://koreacentral.api.cognitive.microsoft.com/face/v1.0/detect?returnFaceId=true&returnFaceLandmarks=false&returnFaceAttributes=age,emotion&recognitionModel=recognition_01&returnRecognitionModel=false '  # Replace with your regional Base URL
-    CF.BaseUrl.set(BASE_URL)
-
-    # You can use this example JPG or replace the URL below with your own URL to a JPEG image.
-    data = open('C:/Users/Oh YJ/Downloads/image_face/2.png', 'rb')
-
-    faces = CF.face.detect(data)
-    # jsonString = str(faces[0])
-    # dict = json.loads(jsonString)  # Unicode Decode Error 처리해야 함.
-    return HttpResponse(faces)
-
-
-    # return HttpResponse(check)
-'''
-    KEY = 'e006eb023fb544eaab785e41fdd65865'
-    CF.Key.set(KEY)
-
-    BASE_URL = 'https://koreacentral.api.cognitive.microsoft.com/face/v1.0/detect?returnFaceId=true&returnFaceLandmarks=false&returnFaceAttributes=age,emotion&recognitionModel=recognition_01&returnRecognitionModel=false '  # Replace with your regional Base URL
-    CF.BaseUrl.set(BASE_URL)
-
-    # You can use this example JPG or replace the URL below with your own URL to a JPEG image.
-    data = open('C:/Users/Oh YJ/Downloads/image_face/2.png', 'rb')
-    # data = open('./test.jpy', 'rb')
-
-    #	img_url = 'https://imagizer.imageshack.com/img924/833/h2VkhM.jpg'
-    faces = CF.face.detect(data)
+    # BASE_URL = 'https://koreacentral.api.cognitive.microsoft.com/face/v1.0/detect?returnFaceId=true&returnFaceLandmarks=false&returnFaceAttributes=age,emotion&recognitionModel=recognition_01&returnRecognitionModel=false '  # Replace with your regional Base URL
+    # CF.BaseUrl.set(BASE_URL)
+    #
+    # # You can use this example JPG or replace the URL below with your own URL to a JPEG image.
+    # data = open('C:/Users/Oh YJ/Downloads/image_face/2.png', 'rb')
+    #
     # faces = CF.face.detect(data)
+    # # jsonString = str(faces[0])
+    # # dict = json.loads(jsonString)  # Unicode Decode Error 처리해야 함.
+    # return HttpResponse(faces)
+    #
+    # # return HttpResponse(check)
 
-    # 이 데이터를 슬라이스해서..........슬라이스그냥하지말까.
-
-
-    return HttpResponse(faces)
 '''
 
-# Token 주기
-class GetAuthToken(GenericAPIView):
-    throttle_classes = ()
-    permission_classes = ()
-    parser_classes = (parsers.FormParser, parsers.MultiPartParser, parsers.JSONParser,)
-    renderer_classes = (renderers.JSONRenderer,)
-
-    def post(self, request):
-        serializer = AuthTokenSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
-        token, created = Token.objects.get_or_create(user=user)
-        return Response({'token': token.key})
-
-
+# # Token 주기
+# class GetAuthToken(GenericAPIView):
+#     throttle_classes = ()
+#     permission_classes = ()
+#     parser_classes = (parsers.FormParser, parsers.MultiPartParser, parsers.JSONParser,)
+#     renderer_classes = (renderers.JSONRenderer,)
+#
+#     def post(self, request):
+#         serializer = AuthTokenSerializer(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#         user = serializer.validated_data['user']
+#         token, created = Token.objects.get_or_create(user=user)
+#         return Response({'token': token.key})
+#
 
 '''
 azure 키 
