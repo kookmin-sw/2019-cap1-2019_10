@@ -24,12 +24,13 @@ public class PhoneCamera : MonoBehaviour
     public byte[] bytes;
 
     public string url = "";
-    public float StayTime = 10f;
+    public float StayTime = 2f;
 
     public Text txt;
 
     private void Start()
     {
+
         defaultBackground = background.texture;
         WebCamDevice[] devices = WebCamTexture.devices;
 
@@ -60,7 +61,7 @@ public class PhoneCamera : MonoBehaviour
         frontCam.Play();
 
         // 이건 그냥 디버깅용으로 안보이니까 카메라 잘 떴는지 확인할려고 UI 텍스쳐로 띄워줌 카메라
-        //background.texture = frontCam;
+        background.texture = frontCam;
 
         camAvailable = true;
 
@@ -155,12 +156,13 @@ public class PhoneCamera : MonoBehaviour
 
     IEnumerator TakePicture()
     {
-        while (true)
-        {
-            yield return new WaitForSecondsRealtime(StayTime);
-            TakeSnapshot();
-        }
-
+        TakeSnapshot();
+        yield return new WaitForSecondsRealtime(StayTime);
+        TakeSnapshot();
+        
+        frontCam.Stop();
+        camAvailable = false;
+        Scenario.instance.isEnd = false;
     }
 
     IEnumerator ServerThrows()
@@ -201,12 +203,13 @@ public class PhoneCamera : MonoBehaviour
         //}
 
         List<IMultipartFormSection> formData = new List<IMultipartFormSection>();
-        formData.Add(new MultipartFormDataSection(bytes));
+        formData.Add(new MultipartFormDataSection("photo",bytes, "byte[]"));
         //formData.Add(new MultipartFormDataSection("field1=foo&field2=bar"));
         //formData.Add(new MultipartFormFileSection("my file data", "myfile.txt"));
 
-        UnityWebRequest www = UnityWebRequest.Post(url, null, bytes);
-        //UnityWebRequest www = UnityWebRequest.Post(url, formData);
+        //UnityWebRequest www = UnityWebRequest.Post(url, null, bytes);
+        UnityWebRequest www = UnityWebRequest.Post(url, formData);
+        www.chunkedTransfer = false;
         yield return www.SendWebRequest();
 
         if (www.isNetworkError || www.isHttpError)
