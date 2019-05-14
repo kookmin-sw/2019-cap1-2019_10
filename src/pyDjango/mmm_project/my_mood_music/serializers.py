@@ -7,6 +7,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         model = User
         fields = ('url', 'username', 'email', 'groups')
 
+
 class CreateUserSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(required=True)
 
@@ -25,17 +26,10 @@ class CreateUserSerializer(serializers.ModelSerializer):
         return user
 
 
-
 from .models import *
 
 
 class EmotionSerializer(serializers.ModelSerializer):
-
-
     class Meta:
         model = Emotion_Information
-        fields = [
-            'emotion_name',
-        ]
-
-
+        fields = '__all__'

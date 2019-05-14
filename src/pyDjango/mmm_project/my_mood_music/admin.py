@@ -8,7 +8,7 @@ from .models import Emotion_Information, User_Information, Analysis_Result, Comm
 
 # Emotion 클래스가 Admin사이트에서 어떤 모습으로 보여줄지를 정의
 class EmotionAdmin(admin.ModelAdmin):
-    list_display = ('id_e','emotion_name')
+    list_display = ('id_e', 'emotion_name')
 
 
 class UserAdmin(admin.ModelAdmin):

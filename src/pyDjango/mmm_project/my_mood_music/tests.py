@@ -10,12 +10,14 @@ jsonString ='{"faceId": "c8a2f7ff-316b-4440-a051-f1bdebe7bebf", "faceRectangle":
 dict = json.loads(jsonString)
 
 print(dict['faceAttributes']['emotion'])
+print(type(dict['faceAttributes']['age'])) # float
 
 emotions = dict['faceAttributes']['emotion']
 sorted_x = sorted(emotions.items(), key=operator.itemgetter(1)) # dictionary를 value값으로 sorting
 
-print(sorted_x[-1])
+print(sorted_x[-1]) #tuple
 
+print(sorted_x[-3:])
 
 
 # anger = emotions['anger']
@@ -28,4 +30,3 @@ print(sorted_x[-1])
 # surprise = emotions['surprise']
 #
 # print(contempt)
-

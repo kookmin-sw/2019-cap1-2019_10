@@ -180,11 +180,14 @@ def show_table(request):
 import operator
 import json
 
-face_api_result = ''
+face_api_result_emotion = ''
+face_api_result_age = 0.0
+def get_final_emotion(face_api_result , speech_to_emotion_result):
+    return HttpResponse("TODO : 최종결과도출")
 
 class requestFaceAPI(APIView):
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)  # 권한 옵션
+    # authentication_classes = (TokenAuthentication,)
+    # permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)  # 권한 옵션
 
     def post(self, request, format=None):
         KEY = 'e006eb023fb544eaab785e41fdd65865'
@@ -196,13 +199,39 @@ class requestFaceAPI(APIView):
         # You can use this example JPG or replace the URL below with your own URL to a JPEG image.
         # data = open('C:/Users/Oh YJ/Downloads/image_face/2.png', 'rb')
 
-        data = open('./test.jpg', 'rb')
-        data.write(request.data)
-        print(request.data)
-        data.close()
+        print('get the data')
+
+        # 디버깅 용
+        # print('request.POST: ', request.POST)
+        # print('request.body: ', request.body)
+        # print('request.content-type: ', request.content_type)
+        # print('request.content-params: ', request.content_params)
+        # print('request.FILES: ', request.FILES)
+        print('request.headers: ', request.headers)
+
+        data_test = request.POST.get('photo', '')  # str
+        print('type of data_test is : ', type(data_test))
+        print('finish to get ')
+        # data_test = data_test.decode('utf-8').encode('euc_kr','replace')
+
+        # f = open('./test.jpg', 'w', encoding='UTF-8')
+        f = open('./test.jpg', 'wb')
+        f.write(data_test.encode())
+        f.close()
+
+        data = open('./test.jpg', 'rb').read()
+        # data_in = data.read()
+        # data.close()
+
+        # q = request.data.dict() # QueryDict to dict
+        #
+        # str = json.dumps(q)
+        # data = ' '.join(format(ord(letter), 'b') for letter in str)  # dict to binary
 
         faces = CF.face.detect(data)
-        dict_data = json.loads(faces)  # Unicode decode Error
+
+        jsonString = str(faces)
+        dict_data = json.loads(jsonString)  # Unicode decode Error
         emotions = dict_data['faceAttributes']['emotion']
         sorted_x = sorted(emotions.items(), key=operator.itemgetter(1))
 
@@ -210,16 +239,29 @@ class requestFaceAPI(APIView):
         result_emotion = sorted_x[-3:]
 
         # 종합적인 최종 감정 결과를 도출해내기 위해 전역변수에 할당시킴.
-        face_api_result = result_emotion
+        face_api_result_emotion = result_emotion
+
+        # 추천 알고리즘에 적용할 age 추출
+        result_age = dict_data['faceAttributes']['age']
+        face_api_result_age = result_age
 
         # 어플에 result_emotion 3가지를 날린다. 만약 0 이하라면 날리지 않음.
         # 이 일은 최종 감정 분석 결과를 도출해낸 후에 넣어야 함.
-        # 그런데 어플에 날리는 게 아니라 어플에서 서버로 GET 을 보내서 얻어가야 되는 것 아닌가
 
-        return HttpResponse(faces)  # 이건 그냥 결과 확인하기 위한 용도. 나중에 지울 것임.
+        return HttpResponse("post")  # 이건 그냥 결과 확인하기 위한 용도. 나중에 지울 것임.
 
     def get(self, request, format=None):
-        return Response("HHH")
+        KEY = 'e006eb023fb544eaab785e41fdd65865'
+        CF.Key.set(KEY)
+
+        BASE_URL = 'https://koreacentral.api.cognitive.microsoft.com/face/v1.0/detect?returnFaceId=true&returnFaceLandmarks=false&returnFaceAttributes=age,emotion&recognitionModel=recognition_01&returnRecognitionModel=false '  # Replace with your regional Base URL
+        CF.BaseUrl.set(BASE_URL)
+
+        # You can use this example JPG or replace the URL below with your own URL to a JPEG image.
+        data = open('C:/Users/Oh YJ/Downloads/image_face/2.png', 'rb')
+        faces = CF.face.detect(data)
+
+        return HttpResponse(faces)
 
 '''
 # MS Face api 사용
@@ -237,7 +279,7 @@ def requestFaceAPI(request):
         # You can use this example JPG or replace the URL below with your own URL to a JPEG image.
         #data = open('C:/Users/Oh YJ/Downloads/image_face/2.png', 'rb')
 
-        data = open('./test.jpg', 'rb')
+        data = open('./test.jpg', 'wb')
         data.write(request.raw_post_data)
         print(request.raw_post_data)
         data.close()
@@ -255,7 +297,6 @@ def requestFaceAPI(request):
 
         # 어플에 result_emotion 3가지를 날린다. 만약 0 이하라면 날리지 않음.
         # 이 일은 최종 감정 분석 결과를 도출해낸 후에 넣어야 함.
-        # 그런데 어플에 날리는 게 아니라 어플에서 서버로 GET 을 보내서 얻어가야 되는 것 아닌가
 
         return HttpResponse(faces) # 이건 그냥 결과 확인하기 위한 용도. 나중에 지울 것임.
 
