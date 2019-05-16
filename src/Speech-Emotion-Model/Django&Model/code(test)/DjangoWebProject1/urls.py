@@ -10,7 +10,7 @@ import DjangoApp.views
 # admin.autodiscover()
 
 urlpatterns = [
-    url(r'^$', DjangoApp.views.call, name='call'),
+    url(r'^$', DjangoApp.views.call.as_view(), name='call'),
 ]
     # Examples:
     # url(r'^$', DjangoWebProject1.views.home, name='home'),

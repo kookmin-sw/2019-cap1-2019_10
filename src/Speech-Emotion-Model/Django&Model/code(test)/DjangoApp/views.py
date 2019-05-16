@@ -9,12 +9,17 @@ import glob
 import tensorflow as tf
 from keras.models import model_from_json
 
+from rest_framework.views import APIView
 
-def index(request):
-    return HttpResponse("hello django")
 
-def call(request):
-    return HttpResponse(labelfrommodel('input.wav'))
+class call(APIView):
+
+    def post(self, request, format=None):
+        file = request.POST.get('my file data')
+        return HttpResponse(labelfrommodel(file))
+
+    def get(self, request, format=None):
+        return HttpResponse("HHH")
     
 lb = LabelEncoder()
 label = [
