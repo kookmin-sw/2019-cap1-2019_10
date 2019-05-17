@@ -221,6 +221,7 @@ public class PhoneCamera : MonoBehaviour
             Debug.Log("Form upload complete!" + www.downloadHandler.text);
         }
         txt.text = "보냄";
+        www.Dispose();
     }
 
     private void GetResponse(UnityWebRequest www)
