@@ -4,6 +4,12 @@
 ### 1. 프로젝트 소개
 
   본 프로젝트는 이미지(사용자 표정)와 음성 데이터(사용자 음성)를 통해 사용자의 감정을 분석하고 분석 결과를 이용하여 간단한 분석 결과 설명과 함께 적절한 음악을 추천해주는 어플을 개발하는 것을 목표로 한다.
+  <br/>
+  The problem of depression in modern times is getting worse and worse. Modern people who live in an overly competitive society cannot care for their feelings to survive in a desperate society.
+  This lack of self-awareness makes modern people not only poor at expressing emotions, but also extremely awkward. Before the problems of depression, communication difficulties, etc. can get worse, there should be a chance to express one's feelings.
+  However, it is not easy to suddenly look back on yourself and become aware of your feelings.
+  Therefore, the project aims to create an application that informs users of their emotional analysis results and recommends songs based on them.
+  Emotional analysis results are derived by combining the results of emotional analysis through facial recognition and the analysis of intonation through voice recognition.
 
 ### 2. 소개 영상
 
