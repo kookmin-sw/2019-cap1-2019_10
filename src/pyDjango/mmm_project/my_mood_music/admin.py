@@ -1,5 +1,5 @@
 from django.contrib import admin
-from my_mood_music.models import Emotion_Information, User_Information, Analysis_Result, Comments_List, Happiness, Anger, Fear, Surprise, Disgust, Sadness, Subclass_Sad    
+from my_mood_music.models import Emotion_Information, User_Information, Analysis_Result, Comments_List, Happiness, Anger, Fear, Surprise, Disgust, Sadness, Subclass_Sad, Lie   
 
 # Register your models here.
 
@@ -36,7 +36,10 @@ class SadnessAdmin(admin.ModelAdmin):
 	list_display = ('id_s','music_s','age_s', 'link_s','subclass_s')
 
 class SubclassAdmin(admin.ModelAdmin):
-	list_display = ('id_sc','subclass')	
+	list_display = ('id_sc','subclass')
+
+class LieAdmin(admin.ModelAdmin):
+	list_display = ('id_lie','music_lie', 'link_lie')		
 	
 	
 admin.site.register(Emotion_Information,EmotionAdmin)
@@ -50,4 +53,4 @@ admin.site.register(Surprise,SurpriseAdmin)
 admin.site.register(Disgust,DisgustAdmin)
 admin.site.register(Sadness,SadnessAdmin)
 admin.site.register(Subclass_Sad,SubclassAdmin)
-
+admin.site.register(Lie, LieAdmin)

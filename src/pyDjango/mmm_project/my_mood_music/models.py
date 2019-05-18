@@ -11,7 +11,6 @@ class Emotion_Information(models.Model):
 	def __str__(self):
 		return '{} {}'.format(self.emotion_name, self.id_e)
 		
-
 class User_Information(models.Model):
         id_u = models.IntegerField
         nickname = models.CharField(max_length=200)
@@ -25,6 +24,20 @@ class User_Information(models.Model):
         def __str__(self):
                 return '{} {} {} {}'.format(self.id_u, self.nickname, self.password, self.research)
 
+
+''' onetoonefield 
+
+
+class User_Table(models.Model):
+        user_information = models.OneToOneField(
+                User_Information,
+                on_delete = models.CASCADE,
+                primary_key = True,
+        )
+        def __str__(self):
+                return '{}'.format(self.user_information)
+                
+''' 
         
 class Analysis_Result(models.Model):
         id_r = models.IntegerField
@@ -106,3 +119,11 @@ class Subclass_Sad(models.Model):
 
         def __str__(self):
                 return '{} {}'.format(self.id_sc, self.subclass)
+
+class Lie(models.Model):
+        id_lie = models.IntegerField
+        music_lie = models.CharField(max_length=500)
+        link_lie = models.URLField()
+
+        def __str__(self):
+                return '{} {} {}'.format(self.id_lie, self.music_lie, self.link_lie)

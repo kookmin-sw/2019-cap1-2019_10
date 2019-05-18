@@ -25,7 +25,11 @@ SECRET_KEY = 'k$z+he_b$)9l$hm6i-=!-#4des_@h!v1vj$7_x*%-u(j$(qml%'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    'localhost',
+    'MyMoodMusic.ap-northeast-2.elasticbeanstalk.com',
+]
 
 
 # Application definition
@@ -37,9 +41,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',
-    'my_mood_music.apps.MyMoodMusicConfig',
     'bookmark.apps.BookmarkConfig',
+    'rest_framework',
+    'rest_framework_swagger',
+    'my_mood_music.apps.MyMoodMusicConfig',
 ]
 
 
@@ -52,12 +57,12 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
+#    'django.middleware.csrf.CsrfViewMiddleware',
 ROOT_URLCONF = 'mysite.urls'
 
 TEMPLATES = [
@@ -85,11 +90,15 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME' : 'My_Mood_Music',
-        'USER' : 'subin',
-        'PASSWORD' : 'qwer1234',
-        'HOST' : '127.0.0.1', 
-        'PORT' : '3306',
+        'NAME': 'MyMoodMusic',
+        'USER': 'MyMoodMusic',
+        'PASSWORD': 'qwer1234',
+        'HOST': 'mymoodmusic.cjcpvsk3fxnl.ap-northeast-2.rds.amazonaws.com',
+        'PORT': '3306',
+        'OPTIONS' : {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+            # 'sql_mode' : 'traditional'
+        },
     }
 }
 
