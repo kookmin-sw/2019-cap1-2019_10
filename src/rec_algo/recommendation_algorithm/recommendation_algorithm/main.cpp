@@ -33,7 +33,7 @@ int main() {
 	JSONCPP_STRING errs;
 	bool ok = parseFromStream(builder, json_dir, &root, &errs);
 
-	multimap<double, string, greater <int>> emotion_res; //greater<int>면 key가 내림차순으로 정렬된다. 
+	multimap<double, string, greater<double>> emotion_res; //greater<int>면 key가 내림차순으로 정렬된다. 
 	
 	if (ok == true) {
 		//json파일에서 각 감정에 해당하는 비율을 가져와 double형의 변수에 넣는다. 
@@ -52,7 +52,7 @@ int main() {
 		emotion_res.insert(make_pair(sad, "SAD"));
 		emotion_res.insert(make_pair(surprise,"SURPRISE"));
 
-		//디버깅-출력 
+		//디버깅-내림차순 출력
 		for (auto &it : emotion_res) {
 			cout << it.first << " " << it.second << endl;
 		}
