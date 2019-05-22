@@ -22,11 +22,13 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public partial class BackendManager {
     public delegate void LoginFailed(string errorMsg);
@@ -61,7 +63,25 @@ public partial class BackendManager {
 
     // the authentication token will be set when a user has logged in
     private string authenticationToken = "";
-    
+
+    IEnumerator ImageTest(byte[] bytes)
+    {
+        WWWForm form = new WWWForm();
+        form.AddBinaryData("photo", bytes, "mymoodmusic.png", "image/png");
+
+        UnityWebRequest www = UnityWebRequest.Post(Url, form);
+        www.chunkedTransfer = false;
+        yield return www.SendWebRequest();
+        if(www.error != null)
+        {
+            Debug.Log(www.error);
+        }
+        else
+        {
+            Debug.Log("finisehd");
+        }
+    }
+
     /// <summary>
     /// Does a POST request to the backend, trying to get an authentication token. On succes, it will save the auth token for further use. On success, the OnLoggedIn
     /// delegate will be called. On fail, the OnLoginFailed delegate will be called.

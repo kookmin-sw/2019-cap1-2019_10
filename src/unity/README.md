@@ -1,6 +1,3 @@
-어플만 실행해보고 싶다! 
->  .apk 다운로드 후 핸드폰에서 실행
-<br/>
 
 유니티로 실행 : 
 ```
@@ -16,22 +13,21 @@
 2. File > Build Settings 에서 Android Build로
 <br/>
 
-안되면 Build Settings에서 Player Settings에
+빌드가 안되면 Build Settings에서 Player Settings에
 Other Settings에서 Package Name을 다른 거로 바꿔준다
 <br/>
 <br/>
 <br/>
 
-+
 서버 주소 바꾸는 방법
 음성 : Canvas > Button의 inspector에 url에 주소 넣어주면 알아서 그 주소로 변경됨    
 사진 : Manager에 phonecamera script에 url 주소 변경    
 <br/>
 public으로 선언해 놓은 변수값은 inspector창에서 실시간으로 볼 수 있음     
 <br/>
-음성은 버튼을 누르고 있으면 녹음이 되고 떼면 녹음이 멈춤
-녹음이 멈추면 .wav파일로 저장을 하고 파일 형태로 서버로 보내고 파일을 삭제함
+음성은 버튼을 누르면 녹음이 되고 한 번 더 누르면 녹음이 멈춤
+녹음이 멈추면 .wav파일로 저장을 하고 byte[] 형식으로 서버로 보내고 파일을 삭제함
 <br/>
-사진은 저장하지 않고 byte[]로 서버로 보냄
+사진은 저장하지 않고 byte[]로 서버로 보냄 총 두번 보냄
 manager > phonecamera script inspector에서 time을 수정하면 보내는 시간 변경가능
 <br/>

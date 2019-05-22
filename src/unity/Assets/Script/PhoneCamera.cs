@@ -139,8 +139,8 @@ public class PhoneCamera : MonoBehaviour
         //Debug.Log(_SavePath);
         //System.IO.File.WriteAllBytes(_SavePath + _CaptureCounter.ToString() + ".png", snap.EncodeToPNG());
 
-        //bytes = snap.EncodeToPNG();
-        bytes = snap.EncodeToJPG();
+        bytes = snap.EncodeToPNG();
+        //bytes = snap.EncodeToJPG();
 
         txt.text = "찰칵";
 
@@ -186,12 +186,13 @@ public class PhoneCamera : MonoBehaviour
         //    GetResponse(www);
         //}
 
-        //WWWForm form = new WWWForm();
-        //form.AddField("frameCount", Time.frameCount.ToString());
-        //form.AddBinaryData("fileUpload", bytes);
+        WWWForm form = new WWWForm();
+        form.AddField("frameCount", Time.frameCount.ToString());
+        form.AddBinaryData("test", bytes, "mymoodmusic.png", "image/png");
 
+        //backendManager.ImageTest(bytes);
         //WWW w = new WWW("http://127.0.0.1:8000/", form);
-        //yield return w;
+        yield return null;
 
         //if (w.error != null)
         //{
@@ -202,13 +203,13 @@ public class PhoneCamera : MonoBehaviour
         //    Debug.Log("Finished Uploading Screenshot");
         //}
 
-        List<IMultipartFormSection> formData = new List<IMultipartFormSection>();
-        formData.Add(new MultipartFormDataSection("photo",bytes, "byte[]"));
+        //List<IMultipartFormSection> formData = new List<IMultipartFormSection>();
+        //formData.Add(new MultipartFormDataSection("photo",bytes, "byte[]"));
         //formData.Add(new MultipartFormDataSection("field1=foo&field2=bar"));
         //formData.Add(new MultipartFormFileSection("my file data", "myfile.txt"));
 
         //UnityWebRequest www = UnityWebRequest.Post(url, null, bytes);
-        UnityWebRequest www = UnityWebRequest.Post(url, formData);
+        UnityWebRequest www = UnityWebRequest.Post(url, form);
         www.chunkedTransfer = false;
         yield return www.SendWebRequest();
 
@@ -220,8 +221,8 @@ public class PhoneCamera : MonoBehaviour
         {
             Debug.Log("Form upload complete!" + www.downloadHandler.text);
         }
-        txt.text = "보냄";
-        www.Dispose();
+        //txt.text = "보냄";
+        //www.Dispose();
     }
 
     private void GetResponse(UnityWebRequest www)
