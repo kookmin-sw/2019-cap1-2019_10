@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Android;
 
-public class RequestPermissionScript : MonoBehaviour
+public class RequestPermission : MonoBehaviour
 {
     void Start()
     {
@@ -15,7 +15,6 @@ public class RequestPermissionScript : MonoBehaviour
         {
             // We do not have permission to use the microphone.
             // Ask for permission or proceed without the functionality enabled.
-            Debug.Log("퍼미션 줘");
             Permission.RequestUserPermission(Permission.Microphone);
             Permission.RequestUserPermission(Permission.Camera);
         }

@@ -85,7 +85,9 @@ public class LoginMenu : BaseMenu {
             RemoveCredentials();
         }
 
-        if (HasLoggedIn != null) {
+        // 안들어가는데 이거 왜 있는거지
+        if (HasLoggedIn != null)
+        {
             HasLoggedIn();
         }
     }
@@ -101,6 +103,7 @@ public class LoginMenu : BaseMenu {
     }
 
     private void ShowWindow(int id) {
+
         GUILayout.BeginVertical();
         GUILayout.Label("Please enter your username and password");
         bool filledIn = (username != "" && password != "");
@@ -133,10 +136,12 @@ public class LoginMenu : BaseMenu {
         if (GUILayout.Button("Login")) {
             DoLogin();
         }
+
         if (GUILayout.Button("Signup")) {
             enabled = false;
             signupMenu.enabled = true;
         }
+        
         GUILayout.EndHorizontal();
 
         GUI.enabled = true;

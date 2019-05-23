@@ -1,4 +1,27 @@
-﻿#define UNITY_4_PLUS
+﻿// Copyright (c) 2015 Eamon Woortman
+//
+// Permission is hereby granted, free of charge, to any person
+// obtaining a copy of this software and associated documentation
+// files (the "Software"), to deal in the Software without
+// restriction, including without limitation the rights to use,
+// copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following
+// conditions:
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+// OTHER DEALINGS IN THE SOFTWARE.
+
+#define UNITY_4_PLUS
 #define UNITY_5_PLUS
 
 #if UNITY_4_0 || UNITY_4_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_4 || UNITY_4_5 || UNITY_4_6 || UNITY_4_7 || UNITY_4_8 || UNITY_4_9
@@ -40,11 +63,25 @@ public enum ResponseType {
     Success,
 }
 
-
+/// <summary>
+/// The type of the request(sets the HTTP method)
+/// </summary>
 public enum RequestType {
+    /// <summary>
+    /// GET
+    /// </summary>
     Get,
+    /// <summary>
+    /// POST
+    /// </summary>
     Post,
+    /// <summary>
+    /// PUT
+    /// </summary>
     Put,
+    /// <summary>
+    /// DELETE
+    /// </summary>
     Delete
 }
 
@@ -62,13 +99,15 @@ public partial class BackendManager : MonoBehaviour {
     //---- Public Properties ----//
     public string BackendUrl {
         get {
-            return Url;
+            return UseProduction ? ProductionUrl : DevelopmentUrl;
         }
     }
 
     //---- URLS ----//
+    public bool UseProduction = false;
     public bool Secure;
-    public string Url = "http://localhost:8000/api/";
+    public string ProductionUrl = "http://foobar:8000/api/";
+    public string DevelopmentUrl = "http://localhost:8000/api/";
 
     //---- Private Methods ----//
 
@@ -78,8 +117,7 @@ public partial class BackendManager : MonoBehaviour {
     /// <param name="wwwForm">A WWWForm to send with the request</param>
     /// <param name="onResponse">A callback which will be called when we retrieve the response</param>
     /// <param name="authToken">An optional authToken which, when set will be put in the Authorization header</param>
-    public void Send(RequestType type, string command, WWWForm wwwForm, RequestResponseDelegate onResponse = null, string authToken = "")
-    {
+    public void Send(RequestType type, string command, WWWForm wwwForm, RequestResponseDelegate onResponse = null, string authToken = "") {
         WWW request;
 #if UNITY_5_PLUS
         Dictionary<string, string> headers;
@@ -89,23 +127,19 @@ public partial class BackendManager : MonoBehaviour {
         byte[] postData;
         string url = BackendUrl + command;
 
-        if (Secure)
-        {
+        if (Secure) {
             url = url.Replace("http", "https");
         }
 
-        if (wwwForm == null)
-        {
+        if (wwwForm == null) {
             wwwForm = new WWWForm();
             postData = new byte[] { 1 };
-        }
-        else
-        {
+        } else {
             postData = wwwForm.data;
         }
 
         headers = wwwForm.headers;
-
+        
         //make sure we get a json response
         headers.Add("Accept", "application/json");
 
@@ -113,8 +147,7 @@ public partial class BackendManager : MonoBehaviour {
         headers.Add("X-UNITY-METHOD", type.ToString().ToUpper());
 
         //also, add the authentication token, if we have one
-        if (authToken != "")
-        {
+        if (authToken != "") {
             //for more information about token authentication, see: http://www.django-rest-framework.org/api-guide/authentication/#tokenauthentication
             headers.Add("Authorization", "Token " + authToken);
         }
@@ -125,31 +158,55 @@ public partial class BackendManager : MonoBehaviour {
         StartCoroutine(HandleRequest(request, onResponse, callee));
     }
 
-    private IEnumerator HandleRequest(WWW request, RequestResponseDelegate onResponse, string callee)
+    public void SendFile(string command, string dataType, byte[] postData, string fileName, string contentType)
     {
-        //Wait till request is done
-        while (true)
+        string url = BackendUrl + command;
+
+        if (Secure)
         {
-            if (request.isDone)
-            {
+            url = url.Replace("http", "https");
+        }
+
+        WWWForm form = new WWWForm();
+        form.AddBinaryData(dataType, postData, fileName, contentType);
+
+        StartCoroutine(ServerThrows(url, form));
+    }
+
+    private IEnumerator ServerThrows(string url, WWWForm form)
+    {
+        UnityWebRequest www = UnityWebRequest.Post(url, form);
+        yield return www.SendWebRequest();
+
+        if (www.isNetworkError || www.isHttpError)
+        {
+            Debug.Log(www.error);
+        }
+        else
+        {
+            Debug.Log("Form upload complete!");
+        }
+    }
+    
+    private IEnumerator HandleRequest(WWW request, RequestResponseDelegate onResponse, string callee) {
+        //Wait till request is done
+        while (true) {
+            if (request.isDone) {
                 break;
             }
             yield return new WaitForEndOfFrame();
         }
 
         //catch proper client errors(eg. can't reach the server)
-        if (!String.IsNullOrEmpty(request.error))
-        {
-            if (onResponse != null)
-            {
+        if (!String.IsNullOrEmpty(request.error)) {
+            if (onResponse != null) {
                 onResponse(ResponseType.ClientError, null, callee);
             }
             yield break;
         }
         int statusCode = 200;
-
-        if (request.responseHeaders.ContainsKey("REAL_STATUS"))
-        {
+        
+        if (request.responseHeaders.ContainsKey("REAL_STATUS")) {
             string status = request.responseHeaders["REAL_STATUS"];
             statusCode = int.Parse(status.Split(' ')[0]);
         }
@@ -157,44 +214,28 @@ public partial class BackendManager : MonoBehaviour {
         bool responseSuccessful = (statusCode >= 200 && statusCode <= 206);
         JToken responseObj = null;
 
-        try
-        {
-            if (request.text.StartsWith("["))
-            {
-                responseObj = JArray.Parse(request.text);
+        try {
+            if (request.text.StartsWith("[")) { 
+                responseObj = JArray.Parse(request.text); 
+            } else { 
+                responseObj = JObject.Parse(request.text); 
             }
-            else
-            {
-                responseObj = JObject.Parse(request.text);
-            }
-        }
-        catch (Exception ex)
-        {
-            if (onResponse != null)
-            {
-                if (!responseSuccessful)
-                {
-                    if (statusCode == 404)
-                    {
+        } catch (Exception ex) {
+            if (onResponse != null) {
+                if (!responseSuccessful) {
+                    if (statusCode == 404) {
                         //404's should not be treated as unparsable
                         Debug.LogWarning("Page not found: " + request.url);
                         onResponse(ResponseType.PageNotFound, null, callee);
-                    }
-                    else
-                    {
+                    } else {
                         Debug.Log("Could not parse the response, request.text=" + request.text);
                         Debug.Log("Exception=" + ex.ToString());
                         onResponse(ResponseType.ParseError, null, callee);
                     }
-                }
-                else
-                {
-                    if (request.text == "")
-                    {
+                } else {
+                    if (request.text == "") {
                         onResponse(ResponseType.Success, null, callee);
-                    }
-                    else
-                    {
+                    } else {
                         Debug.Log("Could not parse the response, request.text=" + request.text);
                         Debug.Log("Exception=" + ex.ToString());
                         onResponse(ResponseType.ParseError, null, callee);
@@ -204,18 +245,15 @@ public partial class BackendManager : MonoBehaviour {
             yield break;
         }
 
-        if (!responseSuccessful)
-        {
-            if (onResponse != null)
-            {
+        if (!responseSuccessful) {
+            if (onResponse != null) {
                 onResponse(ResponseType.RequestError, responseObj, callee);
             }
             yield break;
         }
-
+         
         //deal with successful responses
-        if (onResponse != null)
-        {
+        if (onResponse != null) {
             onResponse(ResponseType.Success, responseObj, callee);
         }
     }

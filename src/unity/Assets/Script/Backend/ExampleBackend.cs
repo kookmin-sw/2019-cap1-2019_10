@@ -22,13 +22,11 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
-using UnityEngine.Networking;
 
 public partial class BackendManager {
     public delegate void LoginFailed(string errorMsg);
@@ -40,16 +38,6 @@ public partial class BackendManager {
     public delegate void SignupSuccess();
     public SignupSuccess OnSignupSuccess;
     public SignupFailed OnSignupFailed;
-
-    public delegate void SaveGameSuccess();
-    public delegate void SaveGameFailed(string errorMsg);
-    public SaveGameSuccess OnSaveGameSucces;
-    public SaveGameFailed OnSaveGameFailed;
-
-    public delegate void DeleteSavegameSuccess();
-    public delegate void DeleteSavegameFailed(string errorMsg);
-    public DeleteSavegameSuccess OnDeleteSavegameSucces;
-    public DeleteSavegameFailed OnDeleteSavegameFailed;
 
     public delegate void ScoresLoaded(List<Score> scores);
     public delegate void ScoreLoadedFailed(string errorMsg);
@@ -63,24 +51,6 @@ public partial class BackendManager {
 
     // the authentication token will be set when a user has logged in
     private string authenticationToken = "";
-
-    IEnumerator ImageTest(byte[] bytes)
-    {
-        WWWForm form = new WWWForm();
-        form.AddBinaryData("photo", bytes, "mymoodmusic.png", "image/png");
-
-        UnityWebRequest www = UnityWebRequest.Post(Url, form);
-        www.chunkedTransfer = false;
-        yield return www.SendWebRequest();
-        if(www.error != null)
-        {
-            Debug.Log(www.error);
-        }
-        else
-        {
-            Debug.Log("finisehd");
-        }
-    }
 
     /// <summary>
     /// Does a POST request to the backend, trying to get an authentication token. On succes, it will save the auth token for further use. On success, the OnLoggedIn
@@ -165,6 +135,67 @@ public partial class BackendManager {
         }
     }
 
+
+    /// <summary>
+    /// Does a POST or PUT request to the server, depending on if the SaveGame you provide has an id or not. If the id is present, the savegame will be updated by of PUT request. Else
+    /// a new savegame will be POST'ed to the server. On success, the OnSaveGameSuccess delegate will be called. On fail, the OnSaveGameFailed delegate will be called.
+    /// </summary>
+    /// <param name="savegame"></param>
+    //public void SaveGame(Savegame savegame) {
+    //    WWWForm form = new WWWForm();
+    //    form.AddField("name", savegame.Name);
+    //    form.AddField("type", savegame.Type);
+    //    form.AddBinaryData("file", System.Text.Encoding.UTF8.GetBytes(savegame.File));
+    //    if (savegame.Id == -1) {
+    //        Send(RequestType.Post, "savegame", form, OnSaveGameResponse, authenticationToken);
+    //    } else {
+    //        Send(RequestType.Put, "savegame/" + savegame.Id + "/", form, OnSaveGameResponse, authenticationToken);
+    //    }
+        
+    //}
+
+    //private void OnSaveGameResponse(ResponseType responseType, JToken responseData, string callee) {
+    //    if (responseType == ResponseType.Success) {
+    //        if (OnSaveGameSucces != null) {
+    //            OnSaveGameSucces();
+    //        }
+    //    } else if (responseType == ResponseType.ClientError) {
+    //        if (OnSaveGameFailed != null) {
+    //            OnSaveGameFailed("Could not reach the server. Please try again later.");
+    //        }
+    //    } else {
+    //        string[] errors;
+    //        if (!ContainsSubfield(responseData, "name", out errors) && OnSaveGameFailed != null) {
+    //            OnSaveGameFailed("Request failed: " + responseData + " - Name was not provided");
+    //        } else if(OnSaveGameFailed != null){
+    //            OnSaveGameFailed("Request failed: " + responseType + " - " + responseData["detail"]);
+    //        }
+    //    }
+    //}
+
+    /// <summary>
+    /// Does a GET request at the server, getting you all the savegames of the giving samegame type. On success, the OnGamesLoaded delegate will be called. On fail, the OnGamesLoadedFailed will be called.
+    /// </summary>
+    /// <param name="savegameTypeName">The name of the savegame type you wish to get. Example: JeuDeBouleData</param>
+    //public void LoadGames(string savegameTypeName) {
+    //    WWWForm form = new WWWForm();
+    //    form.AddField("SavegameType", savegameTypeName);
+    //    Send(RequestType.Get, "savegames/", form, OnLoadGamesResponse, authenticationToken);
+    //}
+
+    //private void OnLoadGamesResponse(ResponseType responseType, JToken responseData, string callee)
+    //{
+    //    if (responseType == ResponseType.Success) {
+    //        if (OnGamesLoaded != null) {
+    //            OnGamesLoaded(JsonConvert.DeserializeObject<List<Savegame>>(responseData.ToString()));
+    //        }
+    //    } else {
+    //        if (OnGamesLoadedFailed != null) {
+    //            OnGamesLoadedFailed("Could not reach the server. Please try again later.");
+    //        }
+    //    }
+    //}
+
     /// <summary>
     /// Does a GET request at the backend, getting you all scores. When succesfull, the OnScoresLoaded delegate will be called. When failing, the OnScoresLoadedFailed delegate will be called.
     /// </summary>
@@ -209,6 +240,31 @@ public partial class BackendManager {
             }
         }
     }
+
+    /// <summary>
+    /// Does a DELETE request to the backend, trying to delete the savegame with the id you provided. On success, the OnDeleteSavegameSucces will be called.
+    /// On fail, the OnDeleteSavegameFailed will be called.
+    /// </summary>
+    /// <param name="index"></param>
+    //public void DeleteSavegame(int index) {
+    //    Send(RequestType.Delete, "savegame/" + index + "/", null, OnDeleteSavegameResponse, authenticationToken);
+    //}
+
+    //private void OnDeleteSavegameResponse(ResponseType responseType, JToken responseData, string callee) {
+    //    if (responseType == ResponseType.Success) {
+    //        if (OnDeleteSavegameSucces != null) {
+    //            OnDeleteSavegameSucces();
+    //        }
+    //    } else if (responseType == ResponseType.ClientError) {
+    //        if (OnDeleteSavegameFailed != null) {
+    //            OnDeleteSavegameFailed("Could not reach the server. Please try again later.");
+    //        }
+    //    } else {
+    //        if (OnDeleteSavegameFailed != null) {
+    //            OnDeleteSavegameFailed("Request failed: " + responseType + " - " + responseData["detail"]);
+    //        }
+    //    }
+    //}
 
     /// <summary>
     /// Helper method which will check and fill the given string[] array, if the given JToken has the given key
