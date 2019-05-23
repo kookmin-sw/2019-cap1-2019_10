@@ -1,18 +1,22 @@
 #pragma comment(lib, "lib_json.lib")
 #pragma warning(disable:4996)
 
+#include "json/json.h"
+
 #include <iostream>
 #include <fstream>
+#include <cstdlib>
 #include <cstring>
 #include <map>
+#include <ctime>
 #include <functional>
 #include <memory>
-#include "json/json.h"
 
 using namespace std;
 using namespace Json;
 
 int main() {
+
 	ifstream json_dir("JSON_DATA.json");
 	CharReaderBuilder builder;
 	builder["collectComments"] = false;
@@ -44,7 +48,7 @@ int main() {
 	4 : 감정 테이블중 FEAR
 	5 : 감정 테이블중 ANGER
 	6 : 감정 테이블중 SURPRISE
-	7 : 동요 테이블 (감정이 필요없음)
+	* 동요테이블은 연령만 필요하므로, 파이썬 서버에서 맨 먼저 연령을 검사하고 영유아 연령이면 추천알고리즘이 필요없다. 
 	*/
 
 	if (ok == true) {
@@ -70,21 +74,30 @@ int main() {
 
 		//tmp_res 에는 비율-감정 pair로 담겨있다. ( 0.6, 'FEAR' 등) 
 
-		//전처리와 예외처리를 하면서 6개의 감정으로 바꾸고, 이를 emotion_res에 저장한다.
+		//전처리(예외처리, 스무딩)을 하면서 6개의 감정으로 바꾸고, 이를 emotion_res에 저장한다.
 		map<double, string, greater<double> > emotion_res;
 
 		//전처리
 		for (auto & it : tmp_res) {
 			cout << it.first << " " << it.second << endl; //디버깅
+			
+			//예외처리 (1) 거짓말 판별 : 슬픔과 기쁨이 같이 나옴 - face와 음성 API 결과가 모순적이면 예외처리
 			if ( (it.second == "HAPPINESS" && it.first >= 0.2 && tone == 0 ) /*행복얼굴로 슬픈목소리*/
 				|| (it.second == "SAD" && it.first >= 0.2 && tone == 1) /*슬픈얼굴로 행복목소리*/ ) { 
 				//Q. 행복이 얼마나 나와야 모순적인 결과로 처리할까
 				table = 0;
 				cout << "거짓말 테이블로 정보를 전달합니다" << endl;
 			}
+			
+			//에외처리 (2) neutral 중립이 크게 나왔을때(기준 0.8)는 랜덤 노래 3개 추출 
+			else if (it.second == "NEUTRAL" && it.first >= 0.8) {
+				srand((size_t)time(NULL)); 
+				for (int num = 0; num < 3; num++) {
+					cout << "랜덤 테이블은 : " << (rand() % 6) + 1 << endl;
+				}
+			}
 		}
-		return 0; //지금은 디버깅 때문에 밖으로 뺌 -> 83번 라인 밑으로 추가
-
+		return 0; //지금은 디버깅 때문에 밖으로 뺌
 	}
 	else cout << "parse failed" << endl; 
 	return 0;
