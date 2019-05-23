@@ -1,13 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
-
-class UserSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = User
-        fields = ('url', 'username', 'email', 'groups')
-
-
 class CreateUserSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(required=True)
 
@@ -28,8 +21,13 @@ class CreateUserSerializer(serializers.ModelSerializer):
 
 from .models import *
 
-
 class EmotionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Emotion_Information
         fields = '__all__'
+
+class HappinessSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Happiness
+        fields = '__all__'
+

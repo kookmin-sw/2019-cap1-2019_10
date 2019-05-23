@@ -22,14 +22,46 @@ from keras.models import model_from_json
 import operator
 import json
 
-face_api_result_emotion = ''
-face_api_result_age = 0.0
+
+Sadness = []
+Happiness = []
+Surprise = []
+Fear = []
+Anger = []
+Disgust = []
+
+'''
+어플 시나리오 
+1. 베이맥스가 인사한다.
+2. 사진을 찍는다 -> 서버에 보냄
+3. 음성을 녹음한다 -> 서버에 보냄
+4. 서버에서 제일 큰 감정 3개를 받는다.
+5. 서버에서 youtube url을 받는다. 
+'''
+
+
 def get_final_emotion(face_api_result , speech_to_emotion_result):
     return HttpResponse("TODO : 최종결과도출")
+
 
 class requestFaceAPI(APIView):
     # authentication_classes = (TokenAuthentication,)
     # permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)  # 권한 옵션
+
+    def get_data_from_faces(self, faces):
+        json_string = str(faces)
+        dict_data = json.loads(json_string)  # Unicode decode Error
+        emotions = dict_data['faceAttributes']['emotion']
+        sorted_x = sorted(emotions.items(), key=operator.itemgetter(1))
+
+        # 결과값이 크게 나온 emotion 3가지를 구한다
+        result_emotion = sorted_x[-3:]
+        self.result_emotion = result_emotion
+
+        # 추천 알고리즘에 적용할 age 추출
+        result_age = dict_data['faceAttributes']['age']
+        self.result_age = result_age
+
 
     def post(self, request, format=None):
         KEY = '86ad6a50a2af46189c45fc51819f4d9b'
@@ -38,15 +70,12 @@ class requestFaceAPI(APIView):
         BASE_URL = 'https://koreacentral.api.cognitive.microsoft.com/face/v1.0/detect?returnFaceId=true&returnFaceLandmarks=false&returnFaceAttributes=age,emotion&recognitionModel=recognition_01&returnRecognitionModel=false '  # Replace with your regional Base URL
         CF.BaseUrl.set(BASE_URL)
 
-        # You can use this example JPG or replace the URL below with your own URL to a JPEG image.
-        # data = open('C:/Users/Oh YJ/Downloads/image_face/2.png', 'rb')
-
         print('get the data')
 
         # 디버깅 용
-        print('request.POST: ', request.POST)
-        print('request.FILES: ', request.FILES)
-        print('request.headers: ', request.headers)
+        # print('request.POST: ', request.POST)
+        # print('request.FILES: ', request.FILES)
+        # print('request.headers: ', request.headers)
 
         data_test = request.FILES.get('photo', '')
 
@@ -56,34 +85,19 @@ class requestFaceAPI(APIView):
         print('finish to get ')
 
         # 사진 2개 찍어서 보낼 때 처리!!
-        # 태그 처리해주기
 
         faces = CF.face.detect(data_test)
-        print(faces)
+        # print(faces)
 
-        #
-        # jsonString = str(faces)
-        # dict_data = json.loads(jsonString)  # Unicode decode Error
-        # emotions = dict_data['faceAttributes']['emotion']
-        # sorted_x = sorted(emotions.items(), key=operator.itemgetter(1))
-        #
-        # # 결과값이 크게 나온 emotion 3가지를 구한다
-        # result_emotion = sorted_x[-3:]
-        #
-        # # 종합적인 최종 감정 결과를 도출해내기 위해 전역변수에 할당시킴.
-        # face_api_result_emotion = result_emotion
-        #
-        # # 추천 알고리즘에 적용할 age 추출
-        # result_age = dict_data['faceAttributes']['age']
-        # face_api_result_age = result_age
-        #
-        # # 어플에 result_emotion 3가지를 날린다. 만약 0 이하라면 날리지 않음.
-        # # 이 일은 최종 감정 분석 결과를 도출해낸 후에 넣어야 함.
+        self.get_data_from_faces(faces)
 
-        return HttpResponse("post !")  # 이건 그냥 결과 확인하기 위한 용도. 나중에 지울 것임.
+        # 어플에 result_emotion 3가지를 날린다. 만약 0 이하라면 날리지 않음.
+        # 이 일은 최종 감정 분석 결과를 도출해낸 후에 넣어야 함.
+
+        return Response(self.result_emotion)
 
     def get(self, request, format=None):
-        KEY = 'e006eb023fb544eaab785e41fdd65865'
+        KEY = '86ad6a50a2af46189c45fc51819f4d9b'
         CF.Key.set(KEY)
 
         BASE_URL = 'https://koreacentral.api.cognitive.microsoft.com/face/v1.0/detect?returnFaceId=true&returnFaceLandmarks=false&returnFaceAttributes=age,emotion&recognitionModel=recognition_01&returnRecognitionModel=false '  # Replace with your regional Base URL
@@ -99,9 +113,9 @@ class requestFaceAPI(APIView):
 class call(APIView):
 
     def post(self, request, format=None):
-        file = request.POST.get('my file data')
+        audio_file = request.FILES.get('audio', '')
         print(request.headers)
-        return HttpResponse(labelfrommodel(file))
+        return HttpResponse(labelfrommodel(audio_file))
 
     def get(self, request, format=None):
         return HttpResponse("HHH")
