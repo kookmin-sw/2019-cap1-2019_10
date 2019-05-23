@@ -75,29 +75,55 @@ int main() {
 		//tmp_res 에는 비율-감정 pair로 담겨있다. ( 0.6, 'FEAR' 등) 
 
 		//전처리(예외처리, 스무딩)을 하면서 6개의 감정으로 바꾸고, 이를 emotion_res에 저장한다.
-		map<double, string, greater<double> > emotion_res;
+		multimap<double, string, greater<double> > emotion_res;
 
 		//전처리
+		double tmp_contempt_disgust = 0.0; //emotion_res에 넣을 새로운 감정 contempt_disgust 의 감정 비율의 합
 		for (auto & it : tmp_res) {
-			cout << it.first << " " << it.second << endl; //디버깅
-			
+			//cout << it.first << " " << it.second << endl; //디버깅
+
+			//전처리 - 0.05미만은 0.0으로 스무딩 + 6개의 감정으로 만들어 emotion_res에 저장한다. 
+			if (it.second != "NEUTRAL") { //중립은 감정테이블에 없으므로 emotion_res에 넣으면 안된다. 
+				if (it.second == "CONTEMPT" || it.second == "DISGUST") {
+					tmp_contempt_disgust += it.first; //for문 끝나고 emotion_res에 넣는다.  
+				}
+				else {
+					if (it.first < 0.05)
+						emotion_res.insert(make_pair(0.0, it.second));
+					else
+						emotion_res.insert(make_pair(it.first, it.second));
+				}
+			}
+
 			//예외처리 (1) 거짓말 판별 : 슬픔과 기쁨이 같이 나옴 - face와 음성 API 결과가 모순적이면 예외처리
 			if ( (it.second == "HAPPINESS" && it.first >= 0.2 && tone == 0 ) /*행복얼굴로 슬픈목소리*/
 				|| (it.second == "SAD" && it.first >= 0.2 && tone == 1) /*슬픈얼굴로 행복목소리*/ ) { 
 				//Q. 행복이 얼마나 나와야 모순적인 결과로 처리할까
 				table = 0;
 				cout << "거짓말 테이블로 정보를 전달합니다" << endl;
+				//return 0;
 			}
 			
 			//에외처리 (2) neutral 중립이 크게 나왔을때(기준 0.8)는 랜덤 노래 3개 추출 
 			else if (it.second == "NEUTRAL" && it.first >= 0.8) {
 				srand((size_t)time(NULL)); 
 				for (int num = 0; num < 3; num++) {
-					cout << "랜덤 테이블은 : " << (rand() % 6) + 1 << endl;
+					cout << "랜덤 테이블은 : " << (rand() % 6) + 1 << endl; //뽑은 3개를 서버로 전달
 				}
+				//return 0;
 			}
 		}
-		return 0; //지금은 디버깅 때문에 밖으로 뺌
+		//for문 나와서야 tmp_contempt_disgust도 emotion_res에 넣음(역시 전처리[스무딩] 적용)
+		if (tmp_contempt_disgust< 0.05) 
+			emotion_res.insert(make_pair(0.0, "CONTEMPT_DISGUST"));
+		else 
+			emotion_res.insert(make_pair(tmp_contempt_disgust, "CONTEMPT_DISGUST"));
+
+		//디버깅
+		cout << endl;
+		for (auto &iter : emotion_res) {
+			cout << iter.first << " " << iter.second << endl;
+		}
 	}
 	else cout << "parse failed" << endl; 
 	return 0;
