@@ -1,8 +1,10 @@
 {
   "ANGER": 0.3,
   "FEAR": 0.6,
-  "CONTEMPT_DISGUST": 0.0,
-  "HAPPINESS": 0.1,
+  "NEUTRAL" : 0.06,
+  "CONTEMPT": 0.0,
+  "DISGUST" : 0.0,
+  "HAPPINESS": 0.04,
   "SAD": 0.0,
   "SURPRISE" : 0.0
 }
