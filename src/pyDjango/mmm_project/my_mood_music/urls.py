@@ -11,6 +11,6 @@ urlpatterns = format_suffix_patterns([
     path('speech/', call.as_view(), name='speech_to_emotion'),
     path('api/user', UserAPI.as_view()),
     path('api/getauthtoken', GetAuthToken.as_view()),
-    path('emotions/', EmotionList.as_view()),
-    path('emotions/<int:pk>/', EmotionDetail.as_view()),
+    # path('emotions/', EmotionList.as_view()),
+    # path('emotions/<int:pk>/', EmotionDetail.as_view()),
 ])

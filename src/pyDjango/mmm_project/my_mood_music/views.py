@@ -31,31 +31,25 @@ from rest_framework.permissions import IsAuthenticated
 from .permissions import IsOwnerOrReadOnly
 
 
-class EmotionList(generics.ListCreateAPIView):
-    queryset = Emotion_Information.objects.all()
-    serializer_class = EmotionSerializer
-
-
-class EmotionDetail(generics.RetrieveUpdateDestroyAPIView):
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)  # 권한 옵션
-    # 기존에는 토큰이 있는 사용자만 조회할 수 있었다.
-    # 거기에 더해 소유자가 아닐 경우 수정은 불가능 하도록!
-
-    queryset = Emotion_Information.objects.all()
-    serializer_class = EmotionSerializer
+# class EmotionList(generics.ListCreateAPIView):
+#     queryset = Emotion_Information.objects.all()
+#     serializer_class = EmotionSerializer
+#
+#
+# class EmotionDetail(generics.RetrieveUpdateDestroyAPIView):
+#     authentication_classes = (TokenAuthentication,)
+#     permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)  # 권한 옵션
+#     # 기존에는 토큰이 있는 사용자만 조회할 수 있었다.
+#     # 거기에 더해 소유자가 아닐 경우 수정은 불가능 하도록!
+#
+#     queryset = Emotion_Information.objects.all()
+#     serializer_class = EmotionSerializer
 
 import logging
 logger = logging.getLogger(__name__)
 
-# function views
-def show_table(request):
-    emotion_list = Emotion_Information.objects.all()
-    result_str = ''
-    for i in emotion_list:
-        result_str += '<p>' + i.emotion_name
 
-    return HttpResponse(result_str)
+
 
 class UserAPI(DestroyAPIView, CreateAPIView):
     queryset = User.objects.all()

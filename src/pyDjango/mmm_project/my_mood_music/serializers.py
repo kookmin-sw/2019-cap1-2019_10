@@ -21,13 +21,64 @@ class CreateUserSerializer(serializers.ModelSerializer):
 
 from .models import *
 
-class EmotionSerializer(serializers.ModelSerializer):
+# class EmotionSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Emotion_Information
+#         fields = '__all__'
+
+class AngerSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Emotion_Information
+        model = Anger
+        fields = '__all__'
+
+class FearSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Fear
         fields = '__all__'
 
 class HappinessSerializer(serializers.ModelSerializer):
     class Meta:
         model = Happiness
+        fields = '__all__'
+
+
+class SurpriseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Surprise
+        fields = '__all__'
+
+class DisgustSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Disgust
+        fields = '__all__'
+
+class SadnessSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Sadness
+        fields = '__all__'
+
+class Subclass_SadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Subclass_Sad
+        fields = '__all__'
+
+class LieSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Lie
+        fields = '__all__'
+
+class ChildSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Child
+        fields = '__all__'
+
+class Analysis_ResultSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Analysis_Result
+        fields = '__all__'
+
+class User_InformationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User_Information
         fields = '__all__'
 
