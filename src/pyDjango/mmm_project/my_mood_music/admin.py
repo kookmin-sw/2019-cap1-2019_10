@@ -1,51 +1,46 @@
 from django.contrib import admin
-from my_mood_music.models import Emotion_Information, User_Information, Analysis_Result, Comments_List, Happiness, Anger, Fear, Surprise, Disgust, Sadness, Subclass_Sad, Lie   
+from my_mood_music.models import User_Information, Analysis_Result, Happiness, Anger, Fear, Surprise, Disgust, Sadness, Subclass_Sad, Lie, Child   
 
 # Register your models here.
 
 
 #Emotion 클래스가 Admin사이트에서 어떤 모습으로 보여줄지를 정의
-class EmotionAdmin(admin.ModelAdmin):
-    list_display = ('id_e','emotion_name')
-
 class UserAdmin(admin.ModelAdmin):
-	list_display = ('id_u','nickname','password', 'research')
+	list_display = ('id_u','email','password', 'research')
 
 class ResultAdmin(admin.ModelAdmin):
-	list_display = ('id_r','nickname','music_r1', 'music_r2', 'music_r3', 'comments_r')
+	list_display = ('id_r', 'email','music_r1', 'music_r2', 'music_r3')
 	
-class CommentsAdmin(admin.ModelAdmin):
-	list_display = ('id_cm','comments','emotion_r1', 'emotion_r2')
-
 class HappinessAdmin(admin.ModelAdmin):
-	list_display = ('id_h','music_h','age_h', 'link_h')
+	list_display = ('id_h','music_h','age_h', 'link_h', 'tag_h1', 'tag_h2')
 
 class AngerAdmin(admin.ModelAdmin):
-	list_display = ('id_a','music_a','age_a', 'link_a')
+	list_display = ('id_a','music_a','age_a', 'link_a', 'tag_a1', 'tag_a2')
 
 class FearAdmin(admin.ModelAdmin):
-	list_display = ('id_f','music_f','age_f', 'link_f')
+	list_display = ('id_f','music_f','age_f', 'link_f', 'tag_f1', 'tag_f2')
 
 class SurpriseAdmin(admin.ModelAdmin):
-	list_display = ('id_su','music_su','age_su', 'link_su')
+	list_display = ('id_su','music_su','age_su', 'link_su', 'tag_su1', 'tag_su2')
 
 class DisgustAdmin(admin.ModelAdmin):
-	list_display = ('id_d','music_d','age_d', 'link_d')
+	list_display = ('id_d','music_d','age_d', 'link_d', 'tag_d1', 'tag_d2')
 
 class SadnessAdmin(admin.ModelAdmin):
-	list_display = ('id_s','music_s','age_s', 'link_s','subclass_s')
+	list_display = ('id_s','music_s','age_s', 'link_s','subclass_s', 'tag_s1', 'tag_s2')
 
 class SubclassAdmin(admin.ModelAdmin):
 	list_display = ('id_sc','subclass')
 
 class LieAdmin(admin.ModelAdmin):
-	list_display = ('id_lie','music_lie', 'link_lie')		
+	list_display = ('id_l','music_l', 'link_l')
+
+class ChildAdmin(admin.ModelAdmin):
+	list_display = ('id_c','music_c', 'link_c')   
 	
 	
-admin.site.register(Emotion_Information,EmotionAdmin)
 admin.site.register(User_Information,UserAdmin)
 admin.site.register(Analysis_Result,ResultAdmin)
-admin.site.register(Comments_List,CommentsAdmin)
 admin.site.register(Happiness,HappinessAdmin)
 admin.site.register(Anger,AngerAdmin)
 admin.site.register(Fear,FearAdmin)
@@ -54,3 +49,4 @@ admin.site.register(Disgust,DisgustAdmin)
 admin.site.register(Sadness,SadnessAdmin)
 admin.site.register(Subclass_Sad,SubclassAdmin)
 admin.site.register(Lie, LieAdmin)
+admin.site.register(Child, ChildAdmin)
