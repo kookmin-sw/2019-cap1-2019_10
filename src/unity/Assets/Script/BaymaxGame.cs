@@ -2,31 +2,24 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine;
 using UnityEngine.UI;
 
 public class BaymaxGame : BaseGame
-{ 
+{
     [SerializeField]
     private LayerMask groundLayer;
 
     [SerializeField]
     private HighscoreMenu highscoreMenu;
 
-    public GameObject Dialogue;
-    public GameObject NoticeToggle;
-    public GameObject RecorderToggle;
-    public GameObject LoginToggle;    
+    [SerializeField]
+    private Dialogue dialogue;
 
-    public GameObject ResetButton;
-    public GameObject LoadingImage;
-    public GameObject NoticeImage;
-    public GameObject ResultImage;
+    public GameObject recorderToggle;
 
-    public int stageCount;
-    public Text DialogueText;
-
-    public bool check = false;
+    public GameObject resetButton;
+    public GameObject loadingImage;
+    public GameObject resultImage;
 
     //[SerializeField]
     //private GUIText turnText;
@@ -36,29 +29,44 @@ public class BaymaxGame : BaseGame
 
     private float Score;
 
+    public static BaymaxGame instance;
+    public bool photoCheck = false;
+    public bool recodeCheck = false;
+
+    protected override void Awake()
+    {
+        base.Awake();
+
+        instance = this;
+    }
+
     protected override void Start()
     {
         base.Start();
 
+        photoCheck = false;
+        recodeCheck = false;
+
         highscoreMenu.enabled = false;
 
-        stageCount = 0;
+        recorderToggle.SetActive(false);
 
-        Dialogue.SetActive(false);
-        NoticeToggle.SetActive(false);
-        RecorderToggle.SetActive(false);
-        LoginToggle.SetActive(false);
-
-        ResetButton.SetActive(false);
-        LoadingImage.SetActive(false);
-        NoticeImage.SetActive(false);
-        ResultImage.SetActive(false);
+        resetButton.SetActive(false);
+        loadingImage.SetActive(false);
+        resultImage.SetActive(false);
 
         // Setup a delegate which will trigger when we succesfully posted a new highscore to the server.
         backendManager.OnPostScoreSucces += OnPostScoreSuccess;
 
         // Setup a delegate for when we close the highscore screen. This will reset the game and set it up for a new round of play
         //highscoreMenu.OnClose += ResetGame;
+
+        dialogue.TakePhoto += TakePhoto;
+        dialogue.OnRecorde += OnRecorde;
+        dialogue.OffRecorde += OffRecorde;
+        dialogue.ShowResult += ShowResult;
+        dialogue.HideResult += HideResult;
+        dialogue.Reset += OnReset;
     }
 
     private void OnPostScoreSuccess()
@@ -67,27 +75,47 @@ public class BaymaxGame : BaseGame
         backendManager.GetAllScores();
     }
 
-    public void OnDialogue()
+    private void OnPostResultSuccess()
     {
-        Dialogue.SetActive(true);
-        ChangeDialogue(stageCount);
+
     }
 
-    public void ChangeDialogue(int stageCount)
+    public void ResetGame()
     {
-        DialogueText.text = Scenario.instance.ChangeContent(stageCount);
+        //ShowSaveMenu();
+        highscoreMenu.enabled = false;
     }
 
-    //public void ResetGame()
-    //{
-    //    //ShowSaveMenu();
-    //    highscoreMenu.enabled = false;
-    //}
+    public void OnReset()
+    {
+        resetButton.SetActive(false);
+        HideResult();
+    }
 
     public void TakePhoto()
     {
         phoneCamera.OnCamera();
-        //Dialogue.GetComponent<UnityEngine.EventSystems.PhysicsRaycaster>().enabled = true;
+    }
+
+    public void OnRecorde()
+    {
+        recorderToggle.SetActive(true);
+    }
+
+    public void OffRecorde()
+    {
+        recorderToggle.SetActive(false);
+    }
+
+    public void ShowResult()
+    {
+        resultImage.SetActive(true);
+        resetButton.SetActive(true);
+    }
+
+    public void HideResult()
+    {
+        resultImage.SetActive(false);
     }
 
     protected override bool IsMouseOverMenu()
@@ -108,7 +136,7 @@ public class BaymaxGame : BaseGame
 
         // Every 0.5 second, check if velocity of balls is below the BALL_VELOCITY_THRESHOLD, if so, then post scores. 
         //while (balls.Where(ball => ball.GetComponent<Rigidbody>().velocity.sqrMagnitude > BALL_VELOCITY_THRESHOLD).ToArray().Length != 0)
-            yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(2f);
 
         highscoreMenu.enabled = true;
         highscoreMenu.CurrentScore = Score;

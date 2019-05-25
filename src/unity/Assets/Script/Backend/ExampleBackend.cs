@@ -62,7 +62,7 @@ public partial class BackendManager {
         WWWForm form = new WWWForm();
         form.AddField("username", username);
         form.AddField("password", password);
-        Send(RequestType.Post, "getauthtoken", form, OnLoginResponse);
+        Send(RequestType.Post, "getauthtoken/", form, OnLoginResponse);
     }
 
     private void OnLoginResponse(ResponseType responseType, JToken responseData, string callee) {
@@ -107,7 +107,7 @@ public partial class BackendManager {
         form.AddField("username", username);
         form.AddField("email", email);
         form.AddField("password", password);
-        Send(RequestType.Post, "user", form, OnSignupResponse);
+        Send(RequestType.Post, "user/", form, OnSignupResponse);
     }
 
     private void OnSignupResponse(ResponseType responseType, JToken responseData, string callee) {

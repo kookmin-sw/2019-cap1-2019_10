@@ -26,18 +26,21 @@ using System.Collections;
 using Newtonsoft.Json;
 using UnityEngine;
 
-public abstract class BaseGame : MonoBehaviour {
-
+public abstract class BaseGame : MonoBehaviour
+{
     protected BackendManager backendManager;
     protected bool isLoggedIn { get; private set; }
-    protected bool isPhotoEnd { get; private set; }
+    protected bool isStarted { get; set; }
 
     //private SavegameMenu saveMenu;
     private LoginMenu loginMenu;
 
     protected AudioRecorder audioRecorder;
     protected PhoneCamera phoneCamera;
+
     public GameObject startButton;
+    public GameObject SideMenu;
+    public GameObject noticeImage;
 
     protected virtual void Awake() {
         if (loginMenu == null) {
@@ -46,10 +49,6 @@ public abstract class BaseGame : MonoBehaviour {
         if(audioRecorder == null)
         {
             audioRecorder = gameObject.GetOrCreateComponent<AudioRecorder>();
-        }
-        if (startButton == null)
-        {
-            startButton = GameObject.Find("StartButton");
         }
         if (phoneCamera == null)
         {
@@ -62,8 +61,9 @@ public abstract class BaseGame : MonoBehaviour {
 
     protected virtual void Start() {
         isLoggedIn = false;
-        isPhotoEnd = false;
-        //startButton.SetActive(false);
+        isStarted = false;
+        startButton.SetActive(false);
+
         //saveMenu.enabled = false;
         //audioRecorder.enabled = false;
 
@@ -83,15 +83,12 @@ public abstract class BaseGame : MonoBehaviour {
 
     protected virtual void DisableLoginMenu() {
         loginMenu.enabled = false;
+        startButton.SetActive(true);
+        SideMenu.SetActive(true);
+        noticeImage.SetActive(true);
         audioRecorder.enabled = true;
         phoneCamera.enabled = true;
-        startButton.SetActive(true);
         isLoggedIn = true;
-    }
-
-    protected virtual void EndPhotoStage()
-    {
-        isPhotoEnd = true;
     }
 
     protected virtual bool IsMouseOverMenu() {
@@ -100,10 +97,5 @@ public abstract class BaseGame : MonoBehaviour {
 
     private void OnLoggedIn() {
         Invoke("DisableLoginMenu", 1.0f);
-    }
-
-    private void OnPhotoEnded()
-    {
-        Invoke("EndPhotoStage", 1.0f);
     }
 }

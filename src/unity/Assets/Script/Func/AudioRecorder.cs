@@ -60,9 +60,10 @@ public class AudioRecorder : BaseMenu
 
             filepath = SavWav.Save("myfile", audioSource.clip);
             audioData = File.ReadAllBytes(filepath);
-            Debug.Log(backendManager);
-            backendManager.SendFile("speech", "audio", audioData, "myfile.wav", "audio/wav");
+            backendManager.SendFile("speech/", "audio", audioData, "myfile.wav", "audio/wav");
+            BaymaxGame.instance.recodeCheck = true;
 
+            audioData = null;
             File.Delete(filepath);
         }
     }

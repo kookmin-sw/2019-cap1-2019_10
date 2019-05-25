@@ -74,10 +74,10 @@ public class PhoneCamera : BaseMenu
         snap.Apply();
 
         //잘 찍히는지 사진으로 저장해보는 코드
-        _SavePath = pathForDocumentsFile("MyMoodMusic");
-        Debug.Log(_SavePath);
-        System.IO.File.WriteAllBytes(_SavePath + _CaptureCounter.ToString() + ".png", snap.EncodeToPNG());
-        path = _SavePath + _CaptureCounter.ToString() + ".png";
+        //_SavePath = pathForDocumentsFile("MyMoodMusic");
+        //Debug.Log(_SavePath);
+        //System.IO.File.WriteAllBytes(_SavePath + _CaptureCounter.ToString() + ".png", snap.EncodeToPNG());
+        //path = _SavePath + _CaptureCounter.ToString() + ".png";
         //++_CaptureCounter;
         //Debug.Log(_CaptureCounter);
 
@@ -85,7 +85,9 @@ public class PhoneCamera : BaseMenu
 
         UnityEngine.Object.Destroy(snap);
 
-        backendManager.SendFile("speech", "audio", imageData, "photo.png", "image/png");
+        backendManager.SendFile("face/", "photo", imageData, "photo.png", "image/png");
+
+        BaymaxGame.instance.photoCheck = true;
     }
 
     private IEnumerator TakePicture()
@@ -99,31 +101,32 @@ public class PhoneCamera : BaseMenu
     public bool OnCamera()
     {
         StartCoroutine("TakePicture");
+
         return true;
     }
 
     // 저장경로 찾기
-    public string pathForDocumentsFile(string filename)
-    {
-        if (Application.platform == RuntimePlatform.IPhonePlayer)
-        {
-            string path = Application.dataPath.Substring(0, Application.dataPath.Length - 5);
-            path = path.Substring(0, path.LastIndexOf('/'));
-            return Path.Combine(Path.Combine(path, "Documents"), filename);
-        }
-        else if (Application.platform == RuntimePlatform.Android)
-        {
-            string path = Application.persistentDataPath;
-            path = path.Substring(0, path.LastIndexOf('/'));
-            return Path.Combine(path, filename);
-        }
-        else
-        {
-            string path = Application.dataPath;
-            path = path.Substring(0, path.LastIndexOf('/'));
-            return Path.Combine(path, filename);
-        }
-    }
+    //public string pathForDocumentsFile(string filename)
+    //{
+    //    if (Application.platform == RuntimePlatform.IPhonePlayer)
+    //    {
+    //        string path = Application.dataPath.Substring(0, Application.dataPath.Length - 5);
+    //        path = path.Substring(0, path.LastIndexOf('/'));
+    //        return Path.Combine(Path.Combine(path, "Documents"), filename);
+    //    }
+    //    else if (Application.platform == RuntimePlatform.Android)
+    //    {
+    //        string path = Application.persistentDataPath;
+    //        path = path.Substring(0, path.LastIndexOf('/'));
+    //        return Path.Combine(path, filename);
+    //    }
+    //    else
+    //    {
+    //        string path = Application.dataPath;
+    //        path = path.Substring(0, path.LastIndexOf('/'));
+    //        return Path.Combine(path, filename);
+    //    }
+    //}
 
     //private void Update()
     //{

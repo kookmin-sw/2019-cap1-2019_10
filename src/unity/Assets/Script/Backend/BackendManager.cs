@@ -86,6 +86,8 @@ public enum RequestType {
 }
 
 public partial class BackendManager : MonoBehaviour {
+
+    public string totalUrl;
     //---- Public Delegates ----//
     /// <summary>
     /// The response delegate
@@ -106,7 +108,7 @@ public partial class BackendManager : MonoBehaviour {
     //---- URLS ----//
     public bool UseProduction = false;
     public bool Secure;
-    public string ProductionUrl = "http://foobar:8000/api/";
+    public string ProductionUrl = "http://203.246.113.177:8000/";
     public string DevelopmentUrl = "http://localhost:8000/api/";
 
     //---- Private Methods ----//
@@ -126,7 +128,7 @@ public partial class BackendManager : MonoBehaviour {
 #endif
         byte[] postData;
         string url = BackendUrl + command;
-
+        totalUrl = url;
         if (Secure) {
             url = url.Replace("http", "https");
         }

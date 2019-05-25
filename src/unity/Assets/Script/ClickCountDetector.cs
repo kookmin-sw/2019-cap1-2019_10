@@ -5,8 +5,8 @@ using UnityEngine.EventSystems;
 
 public class ClickCountDetector : MonoBehaviour, IPointerClickHandler
 {
-    public GameObject startButton;
-    public BaymaxGame baymaxGame;
+    public GameObject DialogueImage;
+    public GameObject start;
 
     public void OnPointerClick(PointerEventData eventData)
     {
@@ -14,8 +14,11 @@ public class ClickCountDetector : MonoBehaviour, IPointerClickHandler
 
         if(clickCount == 2)
         {
-            startButton.SetActive(false);
-            baymaxGame.OnDialogue();
+            start.SetActive(false);
+            //깨어나기
+            Debug.Log("깨어나기");
+            DialogueImage.SetActive(true);
+            Dialogue.instance.DialogueStart();
         }
     }
 }
