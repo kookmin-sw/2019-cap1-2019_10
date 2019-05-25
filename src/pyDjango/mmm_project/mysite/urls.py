@@ -24,25 +24,20 @@ from rest_framework import routers
 router = routers.DefaultRouter(trailing_slash=False)
 # router = routers.DefaultRouter()
 # router.register(r'users', views.UserViewSet)
-# router.register(r'emotions', views.EmotionViewSet)
 
 from django.contrib import admin
 from rest_framework_swagger.views import get_swagger_view
-from rest_framework.authtoken import views
 
 schema_view = get_swagger_view(title='My_Mood_Music API Manual')
 # url(r'^$', schema_view),
 
 urlpatterns = [
-
     path('admin/', admin.site.urls),
 
     # my_mood_music app
     path('api/', include(router.urls)),
     path('', include('my_mood_music.urls')),
     path('api/doc', schema_view),
-    path('api/get_token', views.obtain_auth_token),
-
 ]
 
 # url(r'^my_mood_music/', include('my_mood_music.urls', namespace ="my_mood_music")),

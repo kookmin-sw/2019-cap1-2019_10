@@ -7,7 +7,10 @@ from rest_framework import status
 
 
 from django.http.response import HttpResponse
+from django.db.models import Max
+import random
 import cognitive_face as CF
+from .models import *
 
 from sklearn.preprocessing import LabelEncoder
 import librosa
@@ -40,20 +43,39 @@ class RequestFaceAPI(APIView):
         super().__init__(**kwargs)
         self.result_age = 0.0
         self.result_emotion = []
+        self.music_list = []
+
+    def get_random3(self):
+        max_id = Happiness.objects.all().aggregate(max_id=Max("id"))['max_id']
+        music_list = []
+        for i in range(0,3):
+            pk = random.randint(1, max_id)
+            music = Happiness.objects.filter(pk=pk).first()
+            if music:
+                music_list.append(music)
+
+        self.music_list = music_list
+
+    def create_Analysis_Result(self):
+        new_post = Analysis_Result.objects.create(music_r1 = self.music_list[0], music_r2 = self.music_list[1], music_r3 = self.music_list[2])
 
     def get_data_from_faces(self, faces):
-        json_string = str(faces)
+        json_string = str(faces).replace("\'", "\"")
         dict_data = json.loads(json_string)  # Unicode decode Error
         emotions = dict_data['faceAttributes']['emotion']
         sorted_emotions = sorted(emotions.items(), key=operator.itemgetter(1), reverse=True)
 
         # 결과값이 0.0 이상인 tuple 만 list 에 저장한다.
-        result_emotion = [(emotion,value) for emotion,value in sorted_emotions if value>0]
+        result_emotion = [emotion for emotion,value in sorted_emotions if value>0]
         self.result_emotion = result_emotion
 
         # 추천 알고리즘에 적용할 age 추출
         result_age = dict_data['faceAttributes']['age']
         self.result_age = result_age
+
+        # DB 테이블에서 랜덤으로 값 가져와서 그 결과값 Analysis_Result에 쌓기
+
+
 
     def post(self, request, format=None):
         KEY = '86ad6a50a2af46189c45fc51819f4d9b'
@@ -81,27 +103,9 @@ class RequestFaceAPI(APIView):
         faces = CF.face.detect(data_test)
         # print(faces)
 
-        self.get_data_from_faces(faces)
+        self.get_data_from_faces(faces[0])
 
         return Response(self.result_emotion)
-
-    def get(self, request, format=None):
-        """
-        기본적으로 127.0.0.1:8000/ 에 접속했을 때 보여주기 위한 코드.
-
-        """
-        KEY = '86ad6a50a2af46189c45fc51819f4d9b'
-        CF.Key.set(KEY)
-
-        BASE_URL = 'https://koreacentral.api.cognitive.microsoft.com/face/v1.0/detect?returnFaceId=true&returnFaceLandmarks=false&returnFaceAttributes=age,emotion&recognitionModel=recognition_01&returnRecognitionModel=false '  # Replace with your regional Base URL
-        CF.BaseUrl.set(BASE_URL)
-
-        # You can use this example JPG or replace the URL below with your own URL to a JPEG image.
-        data = open('C:/Users/Oh YJ/Downloads/image_face/2.png', 'rb')
-        faces = CF.face.detect(data)
-
-        return HttpResponse(faces)
-
 
 lb = LabelEncoder()
 label = [
