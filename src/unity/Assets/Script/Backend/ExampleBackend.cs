@@ -49,6 +49,9 @@ public partial class BackendManager {
     public PostScoreSucces OnPostScoreSucces;
     public PostScoreFailed OnPostScoreFailed;
 
+    public delegate void PhotoLoaded(string[] photoEmotion);
+    public PhotoLoaded OnPhotoLoaded;
+
     // the authentication token will be set when a user has logged in
     private string authenticationToken = "";
 
@@ -239,6 +242,20 @@ public partial class BackendManager {
                 OnPostScoreFailed("Request failed: " + responseType + " - " + responseData["detail"]);
             }
         }
+    }
+
+    public void PostPhoto(byte[] imageData)
+    {
+        SendFile("face/", "photo", imageData, "photo.png", "image/png");
+    }
+    public void OnPostPhotoResponse()
+    {
+
+    }
+
+    public void GetPhotoResult()
+    {
+        //OnPhotoLoaded();
     }
 
     /// <summary>

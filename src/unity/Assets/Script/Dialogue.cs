@@ -47,6 +47,8 @@ public class Dialogue : BaseMenu
         content.Add("녹음끝");
         content.Add("기다려봐");
         content.Add("다시할래");
+
+        //backendManager.OnPhotoLoaded += SettingTag;
     }
 
     // Update is called once per frame
@@ -129,7 +131,7 @@ public class Dialogue : BaseMenu
 
     private IEnumerator TakeResult()
     {
-        yield return null;
+        yield return new WaitForSeconds(1f);
         ShowResult();
     }
 
@@ -153,5 +155,10 @@ public class Dialogue : BaseMenu
         cnt = 0;
 
         txt.text = content[cnt];
+    }
+
+    public void SettingTag(string[] photoEmotion)
+    {
+
     }
 }

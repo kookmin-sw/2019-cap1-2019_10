@@ -160,7 +160,7 @@ public partial class BackendManager : MonoBehaviour {
         StartCoroutine(HandleRequest(request, onResponse, callee));
     }
 
-    public void SendFile(string command, string dataType, byte[] postData, string fileName, string contentType)
+    public void SendFile(string command, string dataType, byte[] postData, string fileName, string contentType, RequestResponseDelegate onResponse = null, string authToken = "")
     {
         string url = BackendUrl + command;
 
@@ -172,21 +172,26 @@ public partial class BackendManager : MonoBehaviour {
         WWWForm form = new WWWForm();
         form.AddBinaryData(dataType, postData, fileName, contentType);
 
-        StartCoroutine(ServerThrows(url, form));
+        StartCoroutine(ServerThrows(url, form, onResponse));
     }
 
-    private IEnumerator ServerThrows(string url, WWWForm form)
+    public string[] emotion;
+    private IEnumerator ServerThrows(string url, WWWForm form, RequestResponseDelegate onResponse)
     {
-        UnityWebRequest www = UnityWebRequest.Post(url, form);
-        yield return www.SendWebRequest();
+        UnityWebRequest request = UnityWebRequest.Post(url, form);
+        yield return request.SendWebRequest();
 
-        if (www.isNetworkError || www.isHttpError)
+        if (request.isNetworkError || request.isHttpError)
         {
-            Debug.Log(www.error);
+            Debug.Log(request.error);
         }
         else
         {
             Debug.Log("Form upload complete!");
+
+            string str = DownloadHandlerBuffer.GetContent(request);
+            char[] delimiterChars = { ' ', ',', '[', ']', '\'', '\'', '\t', '\n' };
+            emotion = str.Split(delimiterChars);
         }
     }
     
