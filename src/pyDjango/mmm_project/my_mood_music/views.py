@@ -48,7 +48,12 @@ from .permissions import IsOwnerOrReadOnly
 import logging
 logger = logging.getLogger(__name__)
 
-
+class UserViewSet(viewsets.ModelViewSet):
+	queryset = User.objects.all()
+	serializer_class = UserSerializer
+	
+	def get(self, request, *args, **kwargs):
+		return self.list(request, *args, **kwargs)
 
 
 class UserAPI(DestroyAPIView, CreateAPIView):

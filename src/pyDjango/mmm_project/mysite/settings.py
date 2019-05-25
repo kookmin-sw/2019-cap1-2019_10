@@ -60,10 +60,9 @@ LOGGING = {
 }
 
 ALLOWED_HOSTS = [
-    '127.0.0.1',
-    'localhost',
-    'MyMoodMusic.ap-northeast-2.elasticbeanstalk.com',
-    'mymoodmusic-env-1.e93snf25rg.ap-northeast-2.elasticbeanstalk.com'
+	'localhost',
+	'127.0.0.1',
+    '203.246.113.177',
 ]
 
 
@@ -151,12 +150,13 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'MyMoodMusic',
-        'USER': 'MyMoodMusic',
-        'PASSWORD': 'qwer1234',
-        'HOST': 'mymoodmusic.cjcpvsk3fxnl.ap-northeast-2.rds.amazonaws.com',
-        'PORT': '3306',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': 'localhost',
+        'PORT': '',
         'OPTIONS' : {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+            'charset': 'utf8mb4',
             # 'sql_mode' : 'traditional'
         },
     }
