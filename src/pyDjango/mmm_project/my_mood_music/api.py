@@ -9,26 +9,19 @@ from rest_framework import status
 from django.http.response import HttpResponse
 import cognitive_face as CF
 
-from keras.utils import np_utils
 from sklearn.preprocessing import LabelEncoder
 import librosa
 import numpy as np
 import pandas as pd
-import glob
-import tensorflow as tf
 from keras.models import model_from_json
+
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+from .permissions import IsOwnerOrReadOnly
 
 
 import operator
 import json
-
-
-Sadness = []
-Happiness = []
-Surprise = []
-Fear = []
-Anger = []
-Disgust = []
 
 '''
 어플 시나리오 
@@ -39,29 +32,28 @@ Disgust = []
 5. 서버에서 youtube url을 받는다. 
 '''
 
+class RequestFaceAPI(APIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)  # 권한 옵션
 
-def get_final_emotion(face_api_result , speech_to_emotion_result):
-    return HttpResponse("TODO : 최종결과도출")
-
-
-class requestFaceAPI(APIView):
-    # authentication_classes = (TokenAuthentication,)
-    # permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)  # 권한 옵션
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.result_age = 0.0
+        self.result_emotion = []
 
     def get_data_from_faces(self, faces):
         json_string = str(faces)
         dict_data = json.loads(json_string)  # Unicode decode Error
         emotions = dict_data['faceAttributes']['emotion']
-        sorted_x = sorted(emotions.items(), key=operator.itemgetter(1))
+        sorted_emotions = sorted(emotions.items(), key=operator.itemgetter(1), reverse=True)
 
-        # 결과값이 크게 나온 emotion 3가지를 구한다
-        result_emotion = sorted_x[-3:]
+        # 결과값이 0.0 이상인 tuple 만 list 에 저장한다.
+        result_emotion = [(emotion,value) for emotion,value in sorted_emotions if value>0]
         self.result_emotion = result_emotion
 
         # 추천 알고리즘에 적용할 age 추출
         result_age = dict_data['faceAttributes']['age']
         self.result_age = result_age
-
 
     def post(self, request, format=None):
         KEY = '86ad6a50a2af46189c45fc51819f4d9b'
@@ -84,19 +76,20 @@ class requestFaceAPI(APIView):
         print('length of data_test is : ', len(data_test))
         print('finish to get ')
 
-        # 사진 2개 찍어서 보낼 때 처리!!
+        # 얼굴이 거꾸로 되었을 때는 잘 되는지 확인.
 
         faces = CF.face.detect(data_test)
         # print(faces)
 
         self.get_data_from_faces(faces)
 
-        # 어플에 result_emotion 3가지를 날린다. 만약 0 이하라면 날리지 않음.
-        # 이 일은 최종 감정 분석 결과를 도출해낸 후에 넣어야 함.
-
         return Response(self.result_emotion)
 
     def get(self, request, format=None):
+        """
+        기본적으로 127.0.0.1:8000/ 에 접속했을 때 보여주기 위한 코드.
+
+        """
         KEY = '86ad6a50a2af46189c45fc51819f4d9b'
         CF.Key.set(KEY)
 
@@ -108,17 +101,6 @@ class requestFaceAPI(APIView):
         faces = CF.face.detect(data)
 
         return HttpResponse(faces)
-
-
-class call(APIView):
-
-    def post(self, request, format=None):
-        audio_file = request.FILES.get('audio', '')
-        print(request.headers)
-        return HttpResponse(labelfrommodel(audio_file))
-
-    def get(self, request, format=None):
-        return HttpResponse("HHH")
 
 
 lb = LabelEncoder()
@@ -136,29 +118,43 @@ label = [
 ]
 
 
-def labelfrommodel(filename):
-    json_file = open('model.json', 'r')
-    loaded_model_json = json_file.read()
-    json_file.close()
-    loaded_model = model_from_json(loaded_model_json)
-    # load weights into new model
-    loaded_model.load_weights("Emotion_Voice_Detection_Model.h5")
+class Call(APIView):
 
-    X, sample_rate = librosa.load(filename, res_type='kaiser_fast', duration=2.5,
-                                  sr=22050 * 2, offset=0.5)
-    sample_rate = np.array(sample_rate)
-    mfccs = np.mean(librosa.feature.mfcc(y=X, sr=sample_rate, n_mfcc=13), axis=0)
+    def labelfrommodel(self, filename):
+        json_file = open('model.json', 'r')
+        loaded_model_json = json_file.read()
+        json_file.close()
+        loaded_model = model_from_json(loaded_model_json)
+        # load weights into new model
+        loaded_model.load_weights("Emotion_Voice_Detection_Model.h5")
 
-    featurelive = mfccs
-    livedf2 = featurelive
-    livedf2 = pd.DataFrame(data=livedf2)
-    livedf2 = livedf2.stack().to_frame().T
-    twodim = np.expand_dims(livedf2, axis=2)
-    livepreds = loaded_model.predict(twodim, batch_size=32, verbose=1)
-    livepreds1 = livepreds.argmax(axis=1)
-    liveabc = livepreds1.astype(int).flatten()
+        X, sample_rate = librosa.load(filename, res_type='kaiser_fast', duration=2.5,
+                                      sr=22050 * 2, offset=0.5)
+        sample_rate = np.array(sample_rate)
+        mfccs = np.mean(librosa.feature.mfcc(y=X, sr=sample_rate, n_mfcc=13), axis=0)
 
-    return label[int(liveabc)]
+        featurelive = mfccs
+        livedf2 = featurelive
+        livedf2 = pd.DataFrame(data=livedf2)
+        livedf2 = livedf2.stack().to_frame().T
+        twodim = np.expand_dims(livedf2, axis=2)
+        livepreds = loaded_model.predict(twodim, batch_size=32, verbose=1)
+        livepreds1 = livepreds.argmax(axis=1)
+        liveabc = livepreds1.astype(int).flatten()
+
+        return label[int(liveabc)]
+    def post(self, request, format=None):
+        audio_file = request.FILES.get('audio', '')
+        print(request.headers)
+        return HttpResponse(self.labelfrommodel(audio_file))
+
+    def get(self, request, format=None):
+        return HttpResponse("HHH")
+
+
+
+
+
 
 
 
