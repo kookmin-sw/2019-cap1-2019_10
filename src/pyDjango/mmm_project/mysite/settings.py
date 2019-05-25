@@ -60,10 +60,9 @@ LOGGING = {
 }
 
 ALLOWED_HOSTS = [
-    '127.0.0.1',
-    'localhost',
-    'MyMoodMusic.ap-northeast-2.elasticbeanstalk.com',
-    'mymoodmusic-env-1.e93snf25rg.ap-northeast-2.elasticbeanstalk.com'
+	'localhost',
+	'127.0.0.1',
+    '203.246.113.177',
 ]
 
 
@@ -157,7 +156,7 @@ DATABASES = {
         'PORT': '',
         'OPTIONS' : {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-            'charset' : 'utf8mb4'
+            'charset': 'utf8mb4',
             # 'sql_mode' : 'traditional'
         },
     }
