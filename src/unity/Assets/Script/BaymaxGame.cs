@@ -26,6 +26,8 @@ public class BaymaxGame : BaseGame
     public int stageCount;
     public Text DialogueText;
 
+    public bool check = false;
+
     //[SerializeField]
     //private GUIText turnText;
 
@@ -82,9 +84,10 @@ public class BaymaxGame : BaseGame
     //    highscoreMenu.enabled = false;
     //}
 
-    public bool TakePhoto()
+    public void TakePhoto()
     {
-        return phoneCamera.OnCamera();
+        phoneCamera.OnCamera();
+        //Dialogue.GetComponent<UnityEngine.EventSystems.PhysicsRaycaster>().enabled = true;
     }
 
     protected override bool IsMouseOverMenu()

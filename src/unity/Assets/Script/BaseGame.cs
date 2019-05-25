@@ -30,6 +30,7 @@ public abstract class BaseGame : MonoBehaviour {
 
     protected BackendManager backendManager;
     protected bool isLoggedIn { get; private set; }
+    protected bool isPhotoEnd { get; private set; }
 
     //private SavegameMenu saveMenu;
     private LoginMenu loginMenu;
@@ -61,6 +62,7 @@ public abstract class BaseGame : MonoBehaviour {
 
     protected virtual void Start() {
         isLoggedIn = false;
+        isPhotoEnd = false;
         //startButton.SetActive(false);
         //saveMenu.enabled = false;
         //audioRecorder.enabled = false;
@@ -87,6 +89,11 @@ public abstract class BaseGame : MonoBehaviour {
         isLoggedIn = true;
     }
 
+    protected virtual void EndPhotoStage()
+    {
+        isPhotoEnd = true;
+    }
+
     protected virtual bool IsMouseOverMenu() {
         return loginMenu.IsMouseOver();
     }
@@ -95,4 +102,8 @@ public abstract class BaseGame : MonoBehaviour {
         Invoke("DisableLoginMenu", 1.0f);
     }
 
+    private void OnPhotoEnded()
+    {
+        Invoke("EndPhotoStage", 1.0f);
+    }
 }

@@ -99,7 +99,6 @@ public class PhoneCamera : BaseMenu
     public bool OnCamera()
     {
         StartCoroutine("TakePicture");
-        GetComponent<UnityEngine.EventSystems.PhysicsRaycaster>().enabled = true;
         return true;
     }
 

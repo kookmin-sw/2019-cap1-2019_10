@@ -589,6 +589,7 @@ MonoBehaviour:
   ResultImage: {fileID: 1721410862}
   stageCount: 0
   DialogueText: {fileID: 1870375601}
+  check: 0
 --- !u!4 &470712112
 Transform:
   m_ObjectHideFlags: 0
@@ -1894,6 +1895,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   baymaxGame: {fileID: 470712111}
+  Dialogue: {fileID: 1635774597}
 --- !u!1 &1720794166
 GameObject:
   m_ObjectHideFlags: 0
