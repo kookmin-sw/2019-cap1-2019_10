@@ -1,24 +1,42 @@
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
+from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 # Create your models here.
 
 @python_2_unicode_compatible
 		
+'''
 class User_Information(models.Model):
         id = models.IntegerField(primary_key=True)
-        email = models.EmailField(default="")
+        user_id = models.CharField(max_length=300)
         password = models.CharField(max_length=300)
         research = models.IntegerField(default=0)
-	#emotion_id = models.ForeignKey(Emotion,on_delete=models.CASCADE)
-	#music_name = models.CharField(max_length=300)
-        #age = models.IntegerField(default=0)
 	
         def __str__(self):
-                return '{} {} {} {}'.format(self.id_u, self.email, self.password, self.research)
+                return '{} {} {} {}'.format(self.id, self.user_id, self.password, self.research)
 
+'''
+class User_Information(models.Model):
+        user = models.OneToOneField(User, on_delete=models.CASCADE)
+        user_id = models.CharField(max_length=300)
+        password = models.CharField(max_length=300)
+        research = models.IntegerField(default=0)
 
-''' onetoonefield 
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+        if created:
+                Profile.objects.create(user=instance)
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+        instance.profile.save()       
+
+               
+        
+''' onetoonefield
 
 
 class User_Table(models.Model):
@@ -34,13 +52,13 @@ class User_Table(models.Model):
         
 class Analysis_Result(models.Model):
         id = models.IntegerField(primary_key=True)
-        email = models.EmailField(default="")
+        user_id = models.CharField(max_length=300)
         music_r1 = models.CharField(max_length=500)
         music_r2 = models.CharField(max_length=500)
         music_r3 = models.CharField(max_length=500)
 
         def __str__(self):
-                return '{} {} {} {} {}'.format(self.id_r, self.email, self.music_r1, self.music_r2, self.music_r3)
+                return '{} {} {} {} {}'.format(self.id, self.user_id, self.music_r1, self.music_r2, self.music_r3)
         
         
 class Happiness(models.Model):
@@ -52,7 +70,7 @@ class Happiness(models.Model):
         tag_h2 = models.CharField(max_length=500, null=True)
 
         def __str__(self):
-                return '{} {} {} {} {} {}'.format(self.id_h, self.music_h, self.age_h, self.link_h, self.tag_h1, self.tag_h2)
+                return '{} {} {} {} {} {}'.format(self.id, self.music_h, self.age_h, self.link_h, self.tag_h1, self.tag_h2)
 
                
 class Anger(models.Model):
@@ -64,7 +82,7 @@ class Anger(models.Model):
         tag_a2 = models.CharField(max_length=500, null=True)
         
         def __str__(self):
-                return '{} {} {} {} {} {}'.format(self.id_a, self.music_a, self.age_a, self.link_a, self.tag_a1, self.tag_a2)
+                return '{} {} {} {} {} {}'.format(self.id, self.music_a, self.age_a, self.link_a, self.tag_a1, self.tag_a2)
 
                 
 class Fear(models.Model):
@@ -76,7 +94,7 @@ class Fear(models.Model):
         tag_f2 = models.CharField(max_length=500, null=True)
         
         def __str__(self):
-                return '{} {} {} {} {} {}'.format(self.id_f, self.music_f, self.age_f, self.link_f, self.tag_f1, self.tag_f2)                
+                return '{} {} {} {} {} {}'.format(self.id, self.music_f, self.age_f, self.link_f, self.tag_f1, self.tag_f2)                
 
 
 class Surprise(models.Model):
@@ -88,7 +106,7 @@ class Surprise(models.Model):
         tag_su2 = models.CharField(max_length=500, null=True)
         
         def __str__(self):
-                return '{} {} {} {} {} {}'.format(self.id_su, self.music_su, self.age_su, self.link_su, self.tag_su1, self.tag_su2)
+                return '{} {} {} {} {} {}'.format(self.id, self.music_su, self.age_su, self.link_su, self.tag_su1, self.tag_su2)
 
                 
 class Disgust(models.Model):
@@ -100,7 +118,7 @@ class Disgust(models.Model):
         tag_d2 = models.CharField(max_length=500, null=True)
         
         def __str__(self):
-                return '{} {} {} {} {} {}'.format(self.id_d, self.music_d, self.age_d, self.link_d, self.tag_d1, self.tag_d2)
+                return '{} {} {} {} {} {}'.format(self.id, self.music_d, self.age_d, self.link_d, self.tag_d1, self.tag_d2)
 
                 
 class Sadness(models.Model):
@@ -113,7 +131,7 @@ class Sadness(models.Model):
         tag_s2 = models.CharField(max_length=500, null=True)
         
         def __str__(self):
-                return '{} {} {} {} {} {} {}'.format(self.id_s, self.music_s, self.age_s, self.link_s, self.subclass_s, self.tag_s1, self.tag_s2)
+                return '{} {} {} {} {} {} {}'.format(self.id, self.music_s, self.age_s, self.link_s, self.subclass_s, self.tag_s1, self.tag_s2)
 
                 
 class Subclass_Sad(models.Model):
@@ -121,22 +139,22 @@ class Subclass_Sad(models.Model):
         subclass = models.CharField(max_length=500)
 
         def __str__(self):
-                return '{} {}'.format(self.id_sc, self.subclass)
+                return '{} {}'.format(self.id, self.subclass)
 
 
 class Lie(models.Model):
-        id_l = models.IntegerField(primary_key=True)
+        id = models.IntegerField(primary_key=True)
         music_l = models.CharField(max_length=500)
         link_l = models.URLField()
 
         def __str__(self):
-                return '{} {} {}'.format(self.id_l, self.music_l, self.link_l)
+                return '{} {} {}'.format(self.id, self.music_l, self.link_l)
 
 
 class Child(models.Model):
-        id_c = models.IntegerField(primary_key=True)
+        id = models.IntegerField(primary_key=True)
         music_c = models.CharField(max_length=500)
         link_c = models.URLField()
 
         def __str__(self):
-                return '{} {} {}'.format(self.id_c, self.music_c, self.link_c)      
+                return '{} {} {}'.format(self.id, self.music_c, self.link_c)      
