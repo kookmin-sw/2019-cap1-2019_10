@@ -63,7 +63,7 @@ public class PhoneCamera : BaseMenu
         Debug.Log("find front camera");
         camAvailable = true;
 
-        //StartCoroutine("TakePicture");
+        //StartCoroutine("TakePicture");        
     }
 
     // 사진찍기
@@ -85,9 +85,9 @@ public class PhoneCamera : BaseMenu
 
         UnityEngine.Object.Destroy(snap);
 
-        backendManager.SendFile("face/", "photo", imageData, "photo.png", "image/png");
+        backendManager.PostPhoto(imageData);
 
-        BaymaxGame.instance.photoCheck = true;
+        imageData = null;
     }
 
     private IEnumerator TakePicture()
@@ -98,12 +98,11 @@ public class PhoneCamera : BaseMenu
         frontCam.Stop();
     }
 
-    public bool OnCamera()
+    public void OnCamera()
     {
         StartCoroutine("TakePicture");
-
-        return true;
     }
+
 
     // 저장경로 찾기
     //public string pathForDocumentsFile(string filename)

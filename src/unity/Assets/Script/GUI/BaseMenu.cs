@@ -37,7 +37,7 @@ public class BaseMenu : MonoBehaviour {
         return InRect(mp) && enabled;
     }
 
-    private void Awake() {
+    protected void Awake() {
         backendManager = GetComponent<BackendManager>();
         if (backendManager == null) {
             Debug.LogWarning("BackendManager not found, disabling menu.");

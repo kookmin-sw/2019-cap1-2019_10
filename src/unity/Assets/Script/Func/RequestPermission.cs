@@ -7,9 +7,10 @@ public class RequestPermission : MonoBehaviour
 {
     void Start()
     {
-        if (Permission.HasUserAuthorizedPermission(Permission.Microphone))
+        if (Permission.HasUserAuthorizedPermission(Permission.Microphone) && Permission.HasUserAuthorizedPermission(Permission.Camera))
         {
             // The user authorized use of the microphone.
+            Debug.Log("microphone and camera permission ok");
         }
         else
         {

@@ -20,15 +20,16 @@ public class Dialogue : BaseMenu
     State state;
     public bool locked = true;
     public bool clicked = false;
-
-    public Vector3 MousePosition;
+    public int retry = 0;
 
     //public Button.ButtonClickedEvent OnItemClick;
     public const int STATE_MAX = 6;
     enum State { Start, Photo, PhotoFin, Question, RecordeFin, Loading, Reset};
 
-    private void Awake()
+    protected void Awake()
     {
+        base.Awake();
+
         instance = this;
     }
 
@@ -38,6 +39,7 @@ public class Dialogue : BaseMenu
         locked = true;
         clicked = false;
         cnt = 0;
+        retry = 0;
         state = State.Start;
 
         content.Add("시작합니다");
@@ -49,6 +51,10 @@ public class Dialogue : BaseMenu
         content.Add("다시할래");
 
         //backendManager.OnPhotoLoaded += SettingTag;
+        backendManager.OnPostPhotoSuccess += OnPostPhotoSuccess;
+        backendManager.OnPostPhotoFailed += OnPostPhotoFailed;
+        backendManager.OnPostAudioSuccess += OnPostAudioSuccess;
+        backendManager.OnPostAudioFailed += OnPostAudioFailed;
     }
 
     // Update is called once per frame
@@ -97,9 +103,9 @@ public class Dialogue : BaseMenu
                 break;
             case State.Loading:
                 yield return StartCoroutine("TakeResult");
+                locked = false;
                 break;
             case State.Reset:
-                
                 break;
         }
 
@@ -117,21 +123,21 @@ public class Dialogue : BaseMenu
     {
         TakePhoto();
         yield return new WaitUntil(() => BaymaxGame.instance.photoCheck);
-        BaymaxGame.instance.photoCheck = false;
         yield return new WaitForSeconds(1f);
+        BaymaxGame.instance.photoCheck = false;
     }
 
     private IEnumerator TakeRecorde()
     {
         OnRecorde();
         yield return new WaitUntil(() => BaymaxGame.instance.recodeCheck);
-        BaymaxGame.instance.recodeCheck = false;
         yield return new WaitForSeconds(1f);
+        BaymaxGame.instance.recodeCheck = false;
     }
 
     private IEnumerator TakeResult()
     {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(5f);
         ShowResult();
     }
 
@@ -160,5 +166,48 @@ public class Dialogue : BaseMenu
     public void SettingTag(string[] photoEmotion)
     {
 
+
+    }
+
+    public void OnPostPhotoSuccess(string[] emotions)
+    {
+        Debug.Log("success");
+        BaymaxGame.instance.photoCheck = true;
+        retry = 0;
+    }
+
+    public void OnPostPhotoFailed()
+    {
+        if (retry < 3)
+        {
+            txt.text = "다시찍을게 기다려보ㅏ";
+            Debug.Log("다시");
+            TakePhoto();
+            retry++;
+        }
+        else
+        {
+            txt.text = "서버 상태가 안좋아서 더이상 진행할 수 없어 미아내";
+        }
+    }
+
+    public void OnPostAudioSuccess(string[] emotions)
+    {
+        Debug.Log("success");
+        BaymaxGame.instance.recodeCheck = true;
+        retry = 0;
+    }
+
+    public void OnPostAudioFailed()
+    {
+        if (retry < 3)
+        {
+            txt.text = "다시녹음해봐 기다려보ㅏ";
+            retry++;
+        }
+        else
+        {
+            txt.text = "서버 상태가 안좋아서 더이상 진행할 수 없어 미아내";
+        }
     }
 }

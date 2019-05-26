@@ -87,7 +87,6 @@ public enum RequestType {
 
 public partial class BackendManager : MonoBehaviour {
 
-    public string totalUrl;
     //---- Public Delegates ----//
     /// <summary>
     /// The response delegate
@@ -96,6 +95,7 @@ public partial class BackendManager : MonoBehaviour {
     /// <param name="jsonResponse">the json object of the response, this can be null when no content is returned(eg. HTTP 204)</param>
     /// <param name="callee">the name of the method doing the request(used for testing)</param>
     public delegate void RequestResponseDelegate(ResponseType responseType, JToken jsonResponse, string callee);
+    public delegate void FileRequestResponseDelegate(ResponseType responseType, string[] strResponse, string callee);
 
 
     //---- Public Properties ----//
@@ -128,7 +128,7 @@ public partial class BackendManager : MonoBehaviour {
 #endif
         byte[] postData;
         string url = BackendUrl + command;
-        totalUrl = url;
+
         if (Secure) {
             url = url.Replace("http", "https");
         }
@@ -160,8 +160,11 @@ public partial class BackendManager : MonoBehaviour {
         StartCoroutine(HandleRequest(request, onResponse, callee));
     }
 
-    public void SendFile(string command, string dataType, byte[] postData, string fileName, string contentType, RequestResponseDelegate onResponse = null, string authToken = "")
+    public void SendFile(RequestType type, string command, WWWForm wwwForm, FileRequestResponseDelegate onResponse = null, string authToken = "")
     {
+        UnityWebRequest request;
+
+        byte[] postData;
         string url = BackendUrl + command;
 
         if (Secure)
@@ -169,32 +172,117 @@ public partial class BackendManager : MonoBehaviour {
             url = url.Replace("http", "https");
         }
 
-        WWWForm form = new WWWForm();
-        form.AddBinaryData(dataType, postData, fileName, contentType);
-
-        StartCoroutine(ServerThrows(url, form, onResponse));
-    }
-
-    public string[] emotion;
-    private IEnumerator ServerThrows(string url, WWWForm form, RequestResponseDelegate onResponse)
-    {
-        UnityWebRequest request = UnityWebRequest.Post(url, form);
-        yield return request.SendWebRequest();
-
-        if (request.isNetworkError || request.isHttpError)
+        if (wwwForm == null)
         {
-            Debug.Log(request.error);
+            wwwForm = new WWWForm();
+            postData = new byte[] { 1 };
         }
         else
         {
-            Debug.Log("Form upload complete!");
+            postData = wwwForm.data;
+        }
 
-            string str = DownloadHandlerBuffer.GetContent(request);
-            char[] delimiterChars = { ' ', ',', '[', ']', '\'', '\'', '\t', '\n' };
-            emotion = str.Split(delimiterChars);
+        request = UnityWebRequest.Post(url, wwwForm);
+
+        System.Diagnostics.StackTrace stackTrace = new System.Diagnostics.StackTrace();
+        string callee = stackTrace.GetFrame(1).GetMethod().Name;
+        StartCoroutine(HandleFileRequest(request, onResponse, callee));
+    }
+
+    private IEnumerator HandleFileRequest(UnityWebRequest request, FileRequestResponseDelegate onResponse, string callee)
+    {
+        request.SendWebRequest();
+
+        //Wait till request is done
+        while (true)
+        {
+            if (request.isDone)
+            {
+                break;
+            }
+            yield return new WaitForEndOfFrame();
+        }
+        //yield return request.SendWebRequest();
+
+        //catch proper client errors(eg. can't reach the server)
+        if (!String.IsNullOrEmpty(request.error))
+        {
+            if (onResponse != null)
+            {
+                onResponse(ResponseType.ClientError, null, callee);
+            }
+            yield break;
+        }
+        int statusCode = 200;
+
+        //if any other error occurred(probably 4xx range), see http://www.django-rest-framework.org/api-guide/status-codes/
+        bool responseSuccessful = (statusCode >= 200 && statusCode <= 206);
+        string emotion = null;
+
+        try
+        {
+            emotion = request.downloadHandler.text;
+        }
+        catch (Exception ex)
+        {
+            if (onResponse != null)
+            {
+                if (!responseSuccessful)
+                {
+                    if (statusCode == 404)
+                    {
+                        //404's should not be treated as unparsable
+                        Debug.LogWarning("Page not found: " + request.url);
+                        onResponse(ResponseType.PageNotFound, null, callee);
+                    }
+                    else
+                    {
+                        Debug.Log("Could not parse the response");
+                        Debug.Log("Exception=" + ex.ToString());
+                        onResponse(ResponseType.ParseError, null, callee);
+                    }
+                }
+                else
+                {
+                    if (request.downloadHandler.text == "")
+                    {
+                        onResponse(ResponseType.Success, null, callee);
+                    }
+                    else
+                    {
+                        Debug.Log("Could not parse the response");
+                        Debug.Log("Exception=" + ex.ToString());
+                        onResponse(ResponseType.ParseError, null, callee);
+                    }
+                }
+            }
+            yield break;
+        }
+
+        char[] delimiterChars = { ' ', ',', '[', ']', '\'', '\'', '\t', '\n', '\0'};
+        string[] emotions = emotion.Split(delimiterChars);
+
+        //byte[] bytes = request.downloadHandler.data;
+        //for (int i = 0; i < bytes.Length; i++) print(bytes[i]);
+
+        //for (int i = 0; i < emotions.Length; i++) Debug.Log(emotion[i]);
+
+        if (!responseSuccessful)
+        {
+            if (onResponse != null)
+            {
+                onResponse(ResponseType.RequestError, emotions, callee);
+            }
+            yield break;
+        }
+
+        //deal with successful responses
+        if (onResponse != null)
+        {
+            onResponse(ResponseType.Success, emotions, callee);
         }
     }
-    
+
     private IEnumerator HandleRequest(WWW request, RequestResponseDelegate onResponse, string callee) {
         //Wait till request is done
         while (true) {

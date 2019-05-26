@@ -17,6 +17,8 @@ public class AudioRecorder : BaseMenu
     private bool clicked = false;
     public byte[] audioData;
 
+    public GameObject RecorderError;
+
     //Get the audiosource here to save resources
     private void Start()
     {
@@ -29,6 +31,8 @@ public class AudioRecorder : BaseMenu
 
         if (clicked)
         {
+            RecorderError.SetActive(false);
+
             //Get the max frequency of a microphone, if it's less than 44100 record at the max frequency, else record at 44100
             int minFreq;
             int maxFreq;
@@ -47,24 +51,30 @@ public class AudioRecorder : BaseMenu
             //End the recording when the mouse comes back up, then play it
             Microphone.End("");
 
-            //Trim the audioclip by the length of the recording
-            AudioClip recordingNew = AudioClip.Create(recording.name, (int)((Time.time - startRecordingTime) * recording.frequency), recording.channels, recording.frequency, false);
-            float[] data = new float[(int)((Time.time - startRecordingTime) * recording.frequency)];
-            recording.GetData(data, 0);
-            recordingNew.SetData(data, 0);
-            this.recording = recordingNew;
+            if ((int)((Time.time - startRecordingTime)) < 3)
+            {
+                RecorderError.SetActive(true);
+            }
+            else
+            {
+                //Trim the audioclip by the length of the recording
+                AudioClip recordingNew = AudioClip.Create(recording.name, (int)((Time.time - startRecordingTime) * recording.frequency), recording.channels, recording.frequency, false);
+                float[] data = new float[(int)((Time.time - startRecordingTime) * recording.frequency)];
+                recording.GetData(data, 0);
+                recordingNew.SetData(data, 0);
+                this.recording = recordingNew;
 
-            //Play recording
-            audioSource.clip = recording;
-            //audioSource.Play();
+                //Play recording
+                audioSource.clip = recording;
+                //audioSource.Play();
 
-            filepath = SavWav.Save("myfile", audioSource.clip);
-            audioData = File.ReadAllBytes(filepath);
-            backendManager.SendFile("speech/", "audio", audioData, "myfile.wav", "audio/wav");
-            BaymaxGame.instance.recodeCheck = true;
+                filepath = SavWav.Save("myfile", audioSource.clip);
+                audioData = File.ReadAllBytes(filepath);
+                backendManager.PostAudio(audioData);
 
-            audioData = null;
-            File.Delete(filepath);
+                audioData = null;
+                File.Delete(filepath);
+            }
         }
     }
 }

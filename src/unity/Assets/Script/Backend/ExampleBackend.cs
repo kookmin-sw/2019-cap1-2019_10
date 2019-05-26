@@ -49,8 +49,15 @@ public partial class BackendManager {
     public PostScoreSucces OnPostScoreSucces;
     public PostScoreFailed OnPostScoreFailed;
 
-    public delegate void PhotoLoaded(string[] photoEmotion);
-    public PhotoLoaded OnPhotoLoaded;
+    public delegate void PostPhotoSuccess(string[] photos);
+    public delegate void PostPhotoFailed();
+    public PostPhotoSuccess OnPostPhotoSuccess;
+    public PostPhotoFailed OnPostPhotoFailed;
+
+    public delegate void PostAudioSuccess(string[] audios);
+    public delegate void PostAudioFailed();
+    public PostAudioSuccess OnPostAudioSuccess;
+    public PostAudioFailed OnPostAudioFailed;
 
     // the authentication token will be set when a user has logged in
     private string authenticationToken = "";
@@ -140,43 +147,6 @@ public partial class BackendManager {
 
 
     /// <summary>
-    /// Does a POST or PUT request to the server, depending on if the SaveGame you provide has an id or not. If the id is present, the savegame will be updated by of PUT request. Else
-    /// a new savegame will be POST'ed to the server. On success, the OnSaveGameSuccess delegate will be called. On fail, the OnSaveGameFailed delegate will be called.
-    /// </summary>
-    /// <param name="savegame"></param>
-    //public void SaveGame(Savegame savegame) {
-    //    WWWForm form = new WWWForm();
-    //    form.AddField("name", savegame.Name);
-    //    form.AddField("type", savegame.Type);
-    //    form.AddBinaryData("file", System.Text.Encoding.UTF8.GetBytes(savegame.File));
-    //    if (savegame.Id == -1) {
-    //        Send(RequestType.Post, "savegame", form, OnSaveGameResponse, authenticationToken);
-    //    } else {
-    //        Send(RequestType.Put, "savegame/" + savegame.Id + "/", form, OnSaveGameResponse, authenticationToken);
-    //    }
-        
-    //}
-
-    //private void OnSaveGameResponse(ResponseType responseType, JToken responseData, string callee) {
-    //    if (responseType == ResponseType.Success) {
-    //        if (OnSaveGameSucces != null) {
-    //            OnSaveGameSucces();
-    //        }
-    //    } else if (responseType == ResponseType.ClientError) {
-    //        if (OnSaveGameFailed != null) {
-    //            OnSaveGameFailed("Could not reach the server. Please try again later.");
-    //        }
-    //    } else {
-    //        string[] errors;
-    //        if (!ContainsSubfield(responseData, "name", out errors) && OnSaveGameFailed != null) {
-    //            OnSaveGameFailed("Request failed: " + responseData + " - Name was not provided");
-    //        } else if(OnSaveGameFailed != null){
-    //            OnSaveGameFailed("Request failed: " + responseType + " - " + responseData["detail"]);
-    //        }
-    //    }
-    //}
-
-    /// <summary>
     /// Does a GET request at the server, getting you all the savegames of the giving samegame type. On success, the OnGamesLoaded delegate will be called. On fail, the OnGamesLoadedFailed will be called.
     /// </summary>
     /// <param name="savegameTypeName">The name of the savegame type you wish to get. Example: JeuDeBouleData</param>
@@ -246,11 +216,54 @@ public partial class BackendManager {
 
     public void PostPhoto(byte[] imageData)
     {
-        SendFile("face/", "photo", imageData, "photo.png", "image/png");
+        WWWForm form = new WWWForm();
+        form.AddBinaryData("photo", imageData, "photo.png", "image/png");
+        SendFile(RequestType.Post, "face/", form, OnPostPhotoResponse, authenticationToken);
     }
-    public void OnPostPhotoResponse()
-    {
 
+    private void OnPostPhotoResponse(ResponseType responseType, string[] responseData, string callee)
+    {
+        if (responseType == ResponseType.Success)
+        {
+            if (OnPostPhotoSuccess != null)
+            {
+                OnPostPhotoSuccess(responseData);
+            }
+        }
+        else
+        {
+            if (OnPostPhotoFailed != null)
+            {
+                //OnScoreLoadedFailed("Could not reach the server. Please try again later.");
+                OnPostPhotoFailed();
+            }
+        }
+    }
+
+    public void PostAudio(byte[] audioData)
+    {
+        WWWForm form = new WWWForm();
+        form.AddBinaryData("audio", audioData, "myfile.wav", "audio/wav");
+        SendFile(RequestType.Post, "speech/", form, OnPostAudioResponse, authenticationToken);
+    }
+
+    private void OnPostAudioResponse(ResponseType responseType, string[] responseData, string callee)
+    {
+        if (responseType == ResponseType.Success)
+        {
+            if (OnPostAudioSuccess != null)
+            {
+                OnPostAudioSuccess(responseData);
+            }
+        }
+        else
+        {
+            if (OnPostAudioFailed != null)
+            {
+                //OnScoreLoadedFailed("Could not reach the server. Please try again later.");
+                OnPostAudioFailed();
+            }
+        }
     }
 
     public void GetPhotoResult()
