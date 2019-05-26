@@ -52,7 +52,7 @@ class User_Table(models.Model):
         
 class Analysis_Result(models.Model):
         id = models.IntegerField(primary_key=True)
-        user_id = models.CharField(max_length=300)
+        user_id = models.CharField(max_length=300, null=True)
         music_r1 = models.CharField(max_length=500)
         music_r2 = models.CharField(max_length=500)
         music_r3 = models.CharField(max_length=500)
@@ -71,7 +71,7 @@ class Happiness(models.Model):
 
         def __str__(self):
                 return '{} {} {} {} {} {}'.format(self.id, self.music_h, self.age_h, self.link_h, self.tag_h1, self.tag_h2)
-
+        
                
 class Anger(models.Model):
         id = models.IntegerField(primary_key=True)
