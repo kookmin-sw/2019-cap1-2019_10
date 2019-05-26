@@ -8,7 +8,7 @@ from django.dispatch import receiver
 
 @python_2_unicode_compatible
 		
-'''
+'''''
 class User_Information(models.Model):
         id = models.IntegerField(primary_key=True)
         user_id = models.CharField(max_length=300)
@@ -18,7 +18,7 @@ class User_Information(models.Model):
         def __str__(self):
                 return '{} {} {} {}'.format(self.id, self.user_id, self.password, self.research)
 
-'''
+
 class User_Information(models.Model):
         user = models.OneToOneField(User, on_delete=models.CASCADE)
         user_id = models.CharField(max_length=300)
@@ -36,7 +36,7 @@ def save_user_profile(sender, instance, **kwargs):
 
                
         
-''' onetoonefield
+ onetoonefield
 
 
 class User_Table(models.Model):
