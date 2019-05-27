@@ -59,6 +59,12 @@ public partial class BackendManager {
     public PostAudioSuccess OnPostAudioSuccess;
     public PostAudioFailed OnPostAudioFailed;
 
+    public delegate void ResultLoaded(List<Result> results);
+    public delegate void ResultLoadedFailed(string errorMsg);
+    public ResultLoaded OnResultLoaded;
+    public ResultLoadedFailed OnResultLoadedFailed;
+
+
     // the authentication token will be set when a user has logged in
     private string authenticationToken = "";
 
@@ -214,6 +220,36 @@ public partial class BackendManager {
         }
     }
 
+    public void GetResult()
+    {
+        SendFile(RequestType.Get, "test1", null, OnGetResultResponse, authenticationToken);
+    }
+
+    private void OnGetResultResponse(ResponseType responseType, string[] responseData, JToken responseJson, string callee)
+    {
+        if (responseType == ResponseType.Success)
+        {
+            if (OnResultLoaded != null)
+            {
+                Result results = JsonConvert.DeserializeObject<Result>(responseJson.ToString());
+                Debug.Log(results.music_1);
+                Debug.Log(results.link_1);
+                Debug.Log(results.music_2);
+                Debug.Log(results.link_2);
+                Debug.Log(results.music_3);
+                Debug.Log(results.link_3);
+                //OnResultLoaded(JsonConvert.DeserializeObject<List<Result>>(responseJson.ToString()));
+            }
+        }
+        else
+        {
+            if (OnResultLoadedFailed != null)
+            {
+                OnResultLoadedFailed("Could not reach the server. Please try again later.");
+            }
+        }
+    }
+
     public void PostPhoto(byte[] imageData)
     {
         WWWForm form = new WWWForm();
@@ -221,7 +257,7 @@ public partial class BackendManager {
         SendFile(RequestType.Post, "face/", form, OnPostPhotoResponse, authenticationToken);
     }
 
-    private void OnPostPhotoResponse(ResponseType responseType, string[] responseData, string callee)
+    private void OnPostPhotoResponse(ResponseType responseType, string[] responseData, JToken responseJson, string callee)
     {
         if (responseType == ResponseType.Success)
         {
@@ -247,7 +283,7 @@ public partial class BackendManager {
         SendFile(RequestType.Post, "speech/", form, OnPostAudioResponse, authenticationToken);
     }
 
-    private void OnPostAudioResponse(ResponseType responseType, string[] responseData, string callee)
+    private void OnPostAudioResponse(ResponseType responseType, string[] responseData, JToken responseJson, string callee)
     {
         if (responseType == ResponseType.Success)
         {
@@ -265,36 +301,6 @@ public partial class BackendManager {
             }
         }
     }
-
-    public void GetPhotoResult()
-    {
-        //OnPhotoLoaded();
-    }
-
-    /// <summary>
-    /// Does a DELETE request to the backend, trying to delete the savegame with the id you provided. On success, the OnDeleteSavegameSucces will be called.
-    /// On fail, the OnDeleteSavegameFailed will be called.
-    /// </summary>
-    /// <param name="index"></param>
-    //public void DeleteSavegame(int index) {
-    //    Send(RequestType.Delete, "savegame/" + index + "/", null, OnDeleteSavegameResponse, authenticationToken);
-    //}
-
-    //private void OnDeleteSavegameResponse(ResponseType responseType, JToken responseData, string callee) {
-    //    if (responseType == ResponseType.Success) {
-    //        if (OnDeleteSavegameSucces != null) {
-    //            OnDeleteSavegameSucces();
-    //        }
-    //    } else if (responseType == ResponseType.ClientError) {
-    //        if (OnDeleteSavegameFailed != null) {
-    //            OnDeleteSavegameFailed("Could not reach the server. Please try again later.");
-    //        }
-    //    } else {
-    //        if (OnDeleteSavegameFailed != null) {
-    //            OnDeleteSavegameFailed("Request failed: " + responseType + " - " + responseData["detail"]);
-    //        }
-    //    }
-    //}
 
     /// <summary>
     /// Helper method which will check and fill the given string[] array, if the given JToken has the given key

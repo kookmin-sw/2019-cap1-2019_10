@@ -95,7 +95,7 @@ public partial class BackendManager : MonoBehaviour {
     /// <param name="jsonResponse">the json object of the response, this can be null when no content is returned(eg. HTTP 204)</param>
     /// <param name="callee">the name of the method doing the request(used for testing)</param>
     public delegate void RequestResponseDelegate(ResponseType responseType, JToken jsonResponse, string callee);
-    public delegate void FileRequestResponseDelegate(ResponseType responseType, string[] strResponse, string callee);
+    public delegate void FileRequestResponseDelegate(ResponseType responseType, string[] strResponse, JToken jsonResponse, string callee);
 
 
     //---- Public Properties ----//
@@ -160,6 +160,101 @@ public partial class BackendManager : MonoBehaviour {
         StartCoroutine(HandleRequest(request, onResponse, callee));
     }
 
+    private IEnumerator HandleRequest(WWW request, RequestResponseDelegate onResponse, string callee)
+    {
+        //Wait till request is done
+        while (true)
+        {
+            if (request.isDone)
+            {
+                break;
+            }
+            yield return new WaitForEndOfFrame();
+        }
+
+        //catch proper client errors(eg. can't reach the server)
+        if (!String.IsNullOrEmpty(request.error))
+        {
+            if (onResponse != null)
+            {
+                onResponse(ResponseType.ClientError, null, callee);
+            }
+            yield break;
+        }
+        int statusCode = 200;
+
+        if (request.responseHeaders.ContainsKey("REAL_STATUS"))
+        {
+            string status = request.responseHeaders["REAL_STATUS"];
+            statusCode = int.Parse(status.Split(' ')[0]);
+        }
+        //if any other error occurred(probably 4xx range), see http://www.django-rest-framework.org/api-guide/status-codes/
+        bool responseSuccessful = (statusCode >= 200 && statusCode <= 206);
+        JToken responseObj = null;
+
+        try
+        {
+            if (request.text.StartsWith("["))
+            {
+                responseObj = JArray.Parse(request.text);
+            }
+            else
+            {
+                responseObj = JObject.Parse(request.text);
+            }
+        }
+        catch (Exception ex)
+        {
+            if (onResponse != null)
+            {
+                if (!responseSuccessful)
+                {
+                    if (statusCode == 404)
+                    {
+                        //404's should not be treated as unparsable
+                        Debug.LogWarning("Page not found: " + request.url);
+                        onResponse(ResponseType.PageNotFound, null, callee);
+                    }
+                    else
+                    {
+                        Debug.Log("Could not parse the response, request.text=" + request.text);
+                        Debug.Log("Exception=" + ex.ToString());
+                        onResponse(ResponseType.ParseError, null, callee);
+                    }
+                }
+                else
+                {
+                    if (request.text == "")
+                    {
+                        onResponse(ResponseType.Success, null, callee);
+                    }
+                    else
+                    {
+                        Debug.Log("Could not parse the response, request.text=" + request.text);
+                        Debug.Log("Exception=" + ex.ToString());
+                        onResponse(ResponseType.ParseError, null, callee);
+                    }
+                }
+            }
+            yield break;
+        }
+
+        if (!responseSuccessful)
+        {
+            if (onResponse != null)
+            {
+                onResponse(ResponseType.RequestError, responseObj, callee);
+            }
+            yield break;
+        }
+
+        //deal with successful responses
+        if (onResponse != null)
+        {
+            onResponse(ResponseType.Success, responseObj, callee);
+        }
+    }
+
     public void SendFile(RequestType type, string command, WWWForm wwwForm, FileRequestResponseDelegate onResponse = null, string authToken = "")
     {
         UnityWebRequest request;
@@ -176,13 +271,13 @@ public partial class BackendManager : MonoBehaviour {
         {
             wwwForm = new WWWForm();
             postData = new byte[] { 1 };
+            request = UnityWebRequest.Get(url);
         }
         else
         {
             postData = wwwForm.data;
+            request = UnityWebRequest.Post(url, wwwForm);
         }
-
-        request = UnityWebRequest.Post(url, wwwForm);
 
         System.Diagnostics.StackTrace stackTrace = new System.Diagnostics.StackTrace();
         string callee = stackTrace.GetFrame(1).GetMethod().Name;
@@ -209,7 +304,7 @@ public partial class BackendManager : MonoBehaviour {
         {
             if (onResponse != null)
             {
-                onResponse(ResponseType.ClientError, null, callee);
+                onResponse(ResponseType.ClientError, null, null, callee);
             }
             yield break;
         }
@@ -217,11 +312,33 @@ public partial class BackendManager : MonoBehaviour {
 
         //if any other error occurred(probably 4xx range), see http://www.django-rest-framework.org/api-guide/status-codes/
         bool responseSuccessful = (statusCode >= 200 && statusCode <= 206);
+
         string emotion = null;
+        JToken responseObj = null;
 
         try
         {
+            //Debug.Log(request.downloadHandler.text);
             emotion = request.downloadHandler.text;
+            string finalJsonStr = emotion.Replace("\\", "");
+            finalJsonStr = finalJsonStr.Replace("[", "");
+            finalJsonStr = finalJsonStr.Substring(1, finalJsonStr.Length - 3);
+
+            //Debug.Log(finalJsonStr);
+
+            if (finalJsonStr.StartsWith("["))
+            {
+                //Debug.Log("array");
+                responseObj = JArray.Parse(finalJsonStr);
+            }
+            else
+            {
+                //Debug.Log("object");
+                responseObj = JObject.Parse(finalJsonStr);
+                Debug.Log(responseObj);
+            }
+
+            if (emotion == "please try again") throw new Exception();
         }
         catch (Exception ex)
         {
@@ -233,26 +350,26 @@ public partial class BackendManager : MonoBehaviour {
                     {
                         //404's should not be treated as unparsable
                         Debug.LogWarning("Page not found: " + request.url);
-                        onResponse(ResponseType.PageNotFound, null, callee);
+                        onResponse(ResponseType.PageNotFound, null, null, callee);
                     }
                     else
                     {
                         Debug.Log("Could not parse the response");
                         Debug.Log("Exception=" + ex.ToString());
-                        onResponse(ResponseType.ParseError, null, callee);
+                        onResponse(ResponseType.ParseError, null, null, callee);
                     }
                 }
                 else
                 {
                     if (request.downloadHandler.text == "")
                     {
-                        onResponse(ResponseType.Success, null, callee);
+                        onResponse(ResponseType.Success, null, null, callee);
                     }
                     else
                     {
                         Debug.Log("Could not parse the response");
                         Debug.Log("Exception=" + ex.ToString());
-                        onResponse(ResponseType.ParseError, null, callee);
+                        onResponse(ResponseType.ParseError, null, null, callee);
                     }
                 }
             }
@@ -260,18 +377,31 @@ public partial class BackendManager : MonoBehaviour {
         }
 
         char[] delimiterChars = { ' ', ',', '[', ']', '\'', '\'', '\t', '\n', '\0'};
-        string[] emotions = emotion.Split(delimiterChars);
+        string[] splitEmotion = emotion.Split(delimiterChars);
 
         //byte[] bytes = request.downloadHandler.data;
         //for (int i = 0; i < bytes.Length; i++) print(bytes[i]);
 
-        //for (int i = 0; i < emotions.Length; i++) Debug.Log(emotion[i]);
+        //string[] emotions = { };
+        //int cnt = 0;
+        //for (int i = 0; i < splitEmotion.Length; i++)
+        //{
+        //    if (splitEmotion[i] != "")
+        //    {
+        //        Debug.Log(splitEmotion[i]);
+        //    }
+        //}
+
+        //for(int i = 0; i<emotions.Length; i++)
+        //{
+        //    Debug.Log(emotions[i]);
+        //}
 
         if (!responseSuccessful)
         {
             if (onResponse != null)
             {
-                onResponse(ResponseType.RequestError, emotions, callee);
+                onResponse(ResponseType.RequestError, splitEmotion, null, callee);
             }
             yield break;
         }
@@ -279,77 +409,7 @@ public partial class BackendManager : MonoBehaviour {
         //deal with successful responses
         if (onResponse != null)
         {
-            onResponse(ResponseType.Success, emotions, callee);
-        }
-    }
-
-    private IEnumerator HandleRequest(WWW request, RequestResponseDelegate onResponse, string callee) {
-        //Wait till request is done
-        while (true) {
-            if (request.isDone) {
-                break;
-            }
-            yield return new WaitForEndOfFrame();
-        }
-
-        //catch proper client errors(eg. can't reach the server)
-        if (!String.IsNullOrEmpty(request.error)) {
-            if (onResponse != null) {
-                onResponse(ResponseType.ClientError, null, callee);
-            }
-            yield break;
-        }
-        int statusCode = 200;
-        
-        if (request.responseHeaders.ContainsKey("REAL_STATUS")) {
-            string status = request.responseHeaders["REAL_STATUS"];
-            statusCode = int.Parse(status.Split(' ')[0]);
-        }
-        //if any other error occurred(probably 4xx range), see http://www.django-rest-framework.org/api-guide/status-codes/
-        bool responseSuccessful = (statusCode >= 200 && statusCode <= 206);
-        JToken responseObj = null;
-
-        try {
-            if (request.text.StartsWith("[")) { 
-                responseObj = JArray.Parse(request.text); 
-            } else { 
-                responseObj = JObject.Parse(request.text); 
-            }
-        } catch (Exception ex) {
-            if (onResponse != null) {
-                if (!responseSuccessful) {
-                    if (statusCode == 404) {
-                        //404's should not be treated as unparsable
-                        Debug.LogWarning("Page not found: " + request.url);
-                        onResponse(ResponseType.PageNotFound, null, callee);
-                    } else {
-                        Debug.Log("Could not parse the response, request.text=" + request.text);
-                        Debug.Log("Exception=" + ex.ToString());
-                        onResponse(ResponseType.ParseError, null, callee);
-                    }
-                } else {
-                    if (request.text == "") {
-                        onResponse(ResponseType.Success, null, callee);
-                    } else {
-                        Debug.Log("Could not parse the response, request.text=" + request.text);
-                        Debug.Log("Exception=" + ex.ToString());
-                        onResponse(ResponseType.ParseError, null, callee);
-                    }
-                }
-            }
-            yield break;
-        }
-
-        if (!responseSuccessful) {
-            if (onResponse != null) {
-                onResponse(ResponseType.RequestError, responseObj, callee);
-            }
-            yield break;
-        }
-         
-        //deal with successful responses
-        if (onResponse != null) {
-            onResponse(ResponseType.Success, responseObj, callee);
+            onResponse(ResponseType.Success, splitEmotion, responseObj, callee);
         }
     }
 }

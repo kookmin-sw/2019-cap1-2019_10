@@ -172,6 +172,10 @@ public class Dialogue : BaseMenu
     public void OnPostPhotoSuccess(string[] emotions)
     {
         Debug.Log("success");
+        for (int i = 0; i < emotions.Length; i++)
+        {
+            if (emotions[i] != "") Debug.Log(emotions[i]);
+        }
         BaymaxGame.instance.photoCheck = true;
         retry = 0;
     }
