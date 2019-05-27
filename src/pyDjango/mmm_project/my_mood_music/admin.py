@@ -1,18 +1,17 @@
 from django.contrib import admin
-from .models import User_Information, Analysis_Result, Happiness, Anger, Fear, Surprise, Disgust, Sadness, \
-    Subclass_Sad, Lie, Child
+from .models import Analysis_Result, Happiness, Anger, Fear, Surprise, Disgust, Sadness, Subclass_Sad, Lie, \
+    Child
 
 
 # Register your models here.
 
 
 # Emotion 클래스가 Admin사이트에서 어떤 모습으로 보여줄지를 정의
-class UserAdmin(admin.ModelAdmin):
-    list_display = ('id', 'email', 'password', 'research')
-
+# class UserAdmin(admin.ModelAdmin):
+# list_display = ('id_u','email','password', 'research')
 
 class ResultAdmin(admin.ModelAdmin):
-    list_display = ('id', 'email', 'music_r1', 'music_r2', 'music_r3')
+    list_display = ('id', 'user_id', 'music_r1', 'music_r2', 'music_r3')
 
 
 class HappinessAdmin(admin.ModelAdmin):
@@ -51,7 +50,7 @@ class ChildAdmin(admin.ModelAdmin):
     list_display = ('id', 'music_c', 'link_c')
 
 
-admin.site.register(User_Information, UserAdmin)
+# admin.site.register(User_Information,UserAdmin)
 admin.site.register(Analysis_Result, ResultAdmin)
 admin.site.register(Happiness, HappinessAdmin)
 admin.site.register(Anger, AngerAdmin)

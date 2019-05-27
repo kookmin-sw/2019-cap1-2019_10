@@ -1,3 +1,6 @@
+from django.http.response import HttpResponse
+
+
 class Unity3DMiddleware(object):
     """
     An Unity3D middleware which replaces the response status code with 200
@@ -7,6 +10,15 @@ class Unity3DMiddleware(object):
     These modifications are necessary if you want to work with Unity's WWW class and
     still keep the original Django RestFramework conventions.
     """
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        return self.get_response(request)
+
+    def process_exception(self, request, exception):
+        return HttpResponse("in exception")
 
     def process_request(self, request):
         """

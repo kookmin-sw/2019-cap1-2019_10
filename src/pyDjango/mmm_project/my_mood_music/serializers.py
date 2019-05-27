@@ -18,7 +18,7 @@ class CreateUserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = User(
             email=validated_data['email'],
-            username=validated_data['username']
+            username=validated_data['username'],
         )
         user.set_password(validated_data['password'])
         user.save()
@@ -82,9 +82,3 @@ class Analysis_ResultSerializer(serializers.ModelSerializer):
     class Meta:
         model = Analysis_Result
         fields = '__all__'
-
-class User_InformationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User_Information
-        fields = '__all__'
-

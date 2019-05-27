@@ -57,7 +57,7 @@ print(disgust)
 # CF.BaseUrl.set(BASE_URL)
 #
 # # You can use this example JPG or replace the URL below with your own URL to a JPEG image.
-# data = open('C:/Users/Oh YJ/Downloads/image_face/im22ages.jpg', 'rb')
+# data = open('C:/Users/Oh YJ/Downloads/image_face/2.png', 'rb')
 # faces = CF.face.detect(data)
 #
 # print(faces)

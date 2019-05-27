@@ -45,8 +45,8 @@ from .permissions import IsOwnerOrReadOnly
 #     queryset = Emotion_Information.objects.all()
 #     serializer_class = EmotionSerializer
 
-import logging
-logger = logging.getLogger(__name__)
+# import logging
+# logger = logging.getLogger(__name__)
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
@@ -54,29 +54,4 @@ class UserViewSet(viewsets.ModelViewSet):
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
-
-
-
-class UserAPI(DestroyAPIView, CreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = CreateUserSerializer
-
-    def perform_destroy(self, instance):
-        user = User.objects.get(username=self.request.data['username'], email=self.request.data['email'])
-        if user.check_password(self.request.data['password']) is False:
-            return Response('You are not authorized to do that.', status=status.HTTP_401_UNAUTHORIZED)
-        instance.delete()
-
-class GetAuthToken(GenericAPIView):
-    throttle_classes = ()
-    permission_classes = ()
-    parser_classes = (parsers.FormParser, parsers.MultiPartParser, parsers.JSONParser,)
-    renderer_classes = (renderers.JSONRenderer,)
-
-    def post(self, request):
-        serializer = AuthTokenSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
-        token, created = Token.objects.get_or_create(user=user)
-        return Response({'token': token.key})
 
