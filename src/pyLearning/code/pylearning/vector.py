@@ -14,7 +14,7 @@ wav_files = []
 
 for i in range(8):
     all_mfccs = []
-    files = glob.glob('~~~.wav' % i)#내 파일명형식은?? wav파일 다 불러오기
+    files = glob.glob('~~~.wav' % i)#wav파일 다 불러오기
     col = len(files)
     all_mfccs = np.ndarray(shape=[0,39], dtype=np.float32)
     print(all_mfccs.shape)
