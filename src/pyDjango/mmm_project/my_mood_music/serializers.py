@@ -2,10 +2,9 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = User
-        fields = ('url', 'username', 'email')
-
+	class Meta:
+		model = User
+		fields = ('url', 'username', 'email')
 
 class CreateUserSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(required=True)
@@ -76,15 +75,10 @@ class LieSerializer(serializers.ModelSerializer):
 class ChildSerializer(serializers.ModelSerializer):
     class Meta:
         model = Child
-        fields = '__all__'
+        fields = ('music', 'link',)
 
 class Analysis_ResultSerializer(serializers.ModelSerializer):
     class Meta:
         model = Analysis_Result
-        fields = '__all__'
-
-class User_InformationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User_Information
-        fields = '__all__'
+        fields = ('music_r1', 'music_r2', 'music_r3',)
 

@@ -49,12 +49,11 @@ import logging
 logger = logging.getLogger(__name__)
 
 class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
+	queryset = User.objects.all()
+	serializer_class = UserSerializer
+	
+	def get(self, request, *args, **kwargs):
+		return self.list(request, *args, **kwargs)
 
 
 class UserAPI(DestroyAPIView, CreateAPIView):
@@ -67,6 +66,10 @@ class UserAPI(DestroyAPIView, CreateAPIView):
             return Response('You are not authorized to do that.', status=status.HTTP_401_UNAUTHORIZED)
         instance.delete()
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 class GetAuthToken(GenericAPIView):
     throttle_classes = ()
     permission_classes = ()
@@ -74,6 +77,7 @@ class GetAuthToken(GenericAPIView):
     renderer_classes = (renderers.JSONRenderer,)
 
     def post(self, request):
+
         serializer = AuthTokenSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
