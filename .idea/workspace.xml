@@ -2,40 +2,22 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a8b26b8f-c968-4e86-897f-3c97d607cf86" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/exception.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pyDjango/mmm_project (5).zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pyDjango/mmm_project (6).zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pyDjango/mmm_project.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pyDjango/mmm_project/.ebextensions/django.config" beforeDir="false" afterPath="$PROJECT_DIR$/src/pyDjango/mmm_project/.ebextensions/django.config" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pyDjango/mmm_project/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/src/pyDjango/mmm_project/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pyDjango/mmm_project/bookmark/ReadMe.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pyDjango/mmm_project/bookmark/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pyDjango/mmm_project/bookmark/admin.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pyDjango/mmm_project/bookmark/apps.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pyDjango/mmm_project/bookmark/migrations/0001_initial.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pyDjango/mmm_project/bookmark/migrations/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pyDjango/mmm_project/bookmark/models.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pyDjango/mmm_project/bookmark/templates/bookmark/bookmark_detail.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pyDjango/mmm_project/bookmark/templates/bookmark/bookmark_list.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pyDjango/mmm_project/bookmark/tests.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pyDjango/mmm_project/bookmark/views.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pyDjango/mmm_project/lie.csv" beforeDir="false" afterPath="$PROJECT_DIR$/src/pyDjango/mmm_project/lie.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pyDjango/mmm_project/manage.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/pyDjango/mmm_project/manage.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/Dropped Text.txt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/admin.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/api.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/api.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/apps.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/middleware.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/middleware.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/migrations/0001_initial.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/migrations/0001_initial.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/permissions.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/permissions.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/pseudo_recommend.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/recommendation.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/serializers.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/tests.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pyDjango/mmm_project/mysite/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/pyDjango/mmm_project/mysite/settings.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pyDjango/mmm_project/mysite/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/pyDjango/mmm_project/mysite/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pyDjango/mmm_project/mysite/wsgi.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/pyDjango/mmm_project/mysite/wsgi.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pyDjango/mmm_project/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/pyDjango/mmm_project/requirements.txt" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -46,76 +28,21 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/permissions.py">
+        <entry file="file://$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/middleware.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret column="38" selection-start-column="38" selection-end-column="38" />
+            <state relative-caret-position="223">
+              <caret line="34" column="33" selection-start-line="34" selection-start-column="33" selection-end-line="34" selection-end-column="33" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/pyDjango/mmm_project/mysite/settings.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="494">
-              <caret line="85" lean-forward="true" selection-start-line="85" selection-end-line="85" />
-              <folding>
-                <element signature="e#307#316#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/pyDjango/mmm_project/mysite/urls.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="616">
-              <caret line="44" selection-start-line="44" selection-end-line="44" />
-              <folding>
-                <element signature="e#630#639#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/apps.py">
-          <provider selected="true" editor-type-id="text-editor" />
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/api.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="589">
-              <caret line="31" column="8" lean-forward="true" selection-start-line="31" selection-start-column="8" selection-end-line="31" selection-end-column="8" />
+            <state relative-caret-position="380">
+              <caret line="185" column="31" selection-start-line="185" selection-start-column="31" selection-end-line="185" selection-end-column="31" />
               <folding>
-                <element signature="e#11#64#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/pseudo_recommend.txt">
-          <provider selected="true" editor-type-id="text-editor" />
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/recommendation.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="551">
-              <caret line="252" lean-forward="true" selection-start-line="252" selection-end-line="252" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/tests.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="266">
-              <caret line="19" column="27" selection-start-line="19" selection-start-column="27" selection-end-line="19" selection-end-column="27" />
-              <folding>
-                <element signature="e#0#32#0" expanded="true" />
+                <element signature="e#46#99#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -124,8 +51,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/serializers.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1577">
-              <caret line="84" selection-start-line="84" selection-end-line="84" />
+            <state relative-caret-position="19">
+              <caret line="20" column="42" selection-start-line="20" selection-start-column="42" selection-end-line="20" selection-end-column="42" />
               <folding>
                 <element signature="e#0#43#0" expanded="true" />
               </folding>
@@ -134,12 +61,77 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/pyDjango/mmm_project/mysite/settings.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-373">
+              <caret line="159" column="10" lean-forward="true" selection-start-line="159" selection-start-column="10" selection-end-line="159" selection-end-column="10" />
+              <folding>
+                <element signature="e#307#316#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/views.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="185">
+              <caret line="77" column="41" selection-start-line="77" selection-start-column="41" selection-end-line="77" selection-end-column="41" />
+              <folding>
+                <element signature="e#0#35#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/admin.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="133">
+              <caret line="8" column="36" selection-start-line="8" selection-start-column="36" selection-end-line="8" selection-end-column="36" />
+              <folding>
+                <element signature="e#0#32#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/__init__.py">
+          <provider selected="true" editor-type-id="text-editor" />
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/urls.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="323">
-              <caret line="20" column="50" selection-start-line="20" selection-start-column="50" selection-end-line="20" selection-end-column="50" />
+            <state relative-caret-position="285">
+              <caret line="15" column="42" selection-start-line="15" selection-start-column="42" selection-end-line="15" selection-end-column="42" />
               <folding>
-                <element signature="e#1#21#0" expanded="true" />
+                <element signature="e#0#61#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/tests.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="456">
+              <caret line="24" column="27" lean-forward="true" selection-start-line="24" selection-start-column="27" selection-end-line="24" selection-end-column="27" />
+              <folding>
+                <element signature="e#0#32#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/pyDjango/mmm_project/mysite/urls.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="171">
+              <caret line="33" column="26" selection-start-line="33" selection-start-column="26" selection-end-line="33" selection-end-column="26" />
+              <folding>
+                <element signature="e#630#639#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -162,6 +154,11 @@
       <find>apiview</find>
       <find>Token</find>
       <find>response</find>
+      <find>self.music_list</find>
+      <find>please try again</find>
+      <find>process</find>
+      <find>music_list</find>
+      <find>subclass</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -170,35 +167,35 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/permissions.py" />
         <option value="$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/migrations/0003_auto_20190416_0058.py" />
-        <option value="$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/admin.py" />
-        <option value="$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/models.py" />
         <option value="$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/migrations/0004_auto_20190524_0631.py" />
         <option value="$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/migrations/0003_auto_20190524_0641.py" />
-        <option value="$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/tests.py" />
-        <option value="$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/views.py" />
-        <option value="$PROJECT_DIR$/src/pyDjango/mmm_project/mysite/urls.py" />
-        <option value="$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/api.py" />
-        <option value="$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/urls.py" />
-        <option value="$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/serializers.py" />
         <option value="$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/recommendation.py" />
+        <option value="$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/views.py" />
+        <option value="$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/serializers.py" />
+        <option value="$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/permissions.py" />
+        <option value="$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/models.py" />
+        <option value="$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/middleware.py" />
+        <option value="$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/exception.py" />
+        <option value="$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/admin.py" />
         <option value="$PROJECT_DIR$/src/pyDjango/mmm_project/mysite/settings.py" />
+        <option value="$PROJECT_DIR$/src/pyDjango/mmm_project/mysite/urls.py" />
+        <option value="$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/urls.py" />
+        <option value="$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/tests.py" />
+        <option value="$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/api.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="146" />
-    <option name="y" value="22" />
+  <component name="ProjectFrameBounds" extendedState="7">
+    <option name="x" value="793" />
     <option name="width" value="814" />
-    <option name="height" value="868" />
+    <option name="height" value="867" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -227,6 +224,20 @@
               <item name="2019-cap1-2019_10" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="pyDjango" type="462c0819:PsiDirectoryNode" />
+              <item name=".idea" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="2019-cap1-2019_10" type="b2602c69:ProjectViewProjectNode" />
+              <item name="2019-cap1-2019_10" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="pyDjango" type="462c0819:PsiDirectoryNode" />
+              <item name=".vscode" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="2019-cap1-2019_10" type="b2602c69:ProjectViewProjectNode" />
+              <item name="2019-cap1-2019_10" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="pyDjango" type="462c0819:PsiDirectoryNode" />
               <item name="mmm_project" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -235,7 +246,7 @@
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="pyDjango" type="462c0819:PsiDirectoryNode" />
               <item name="mmm_project" type="462c0819:PsiDirectoryNode" />
-              <item name="my_mood_music" type="462c0819:PsiDirectoryNode" />
+              <item name=".ebextensions" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="2019-cap1-2019_10" type="b2602c69:ProjectViewProjectNode" />
@@ -244,7 +255,6 @@
               <item name="pyDjango" type="462c0819:PsiDirectoryNode" />
               <item name="mmm_project" type="462c0819:PsiDirectoryNode" />
               <item name="my_mood_music" type="462c0819:PsiDirectoryNode" />
-              <item name="migrations" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="2019-cap1-2019_10" type="b2602c69:ProjectViewProjectNode" />
@@ -258,6 +268,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -330,23 +341,23 @@
     <frame x="-8" y="-8" width="1616" height="876" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.16983524" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.13688946" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32884097" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.29110512" />
+      <window_info anchor="bottom" x="22" y="160" width="624" height="414" id="Run" order="2" visible="true" weight="0.20619947" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32884097" />
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Terminal" order="8" weight="0.32749325" />
-      <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
+      <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" weight="0.3328786" />
       <window_info anchor="bottom" id="Python Console" order="10" weight="0.32884097" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.24933687" />
     </layout>
     <layout-to-restore>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24613403" />
@@ -369,18 +380,7 @@
     </layout-to-restore>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/pyDjango/mmm_project/bookmark/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <folding>
-            <element signature="e#0#35#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/__init__.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
+    <entry file="file://$PROJECT_DIR$/src/pyDjango/mmm_project/bookmark/views.py" />
     <entry file="file://$USER_HOME$/OneDrive/컴퓨터네트워크/hw2/20153194.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="209">
@@ -433,19 +433,51 @@
     <entry file="file://$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/migrations/__init__.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/admin.py">
+    <entry file="file://$PROJECT_DIR$/src/pyDjango/.idea/workspace.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="17" column="39" selection-start-line="17" selection-start-column="39" selection-end-line="17" selection-end-column="39" />
-          <folding>
-            <element signature="e#0#32#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="179">
+          <caret line="145" column="74" selection-start-line="145" selection-start-column="74" selection-end-line="145" selection-end-column="74" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/pyDjango/.idea/vcs.xml">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/pyDjango/.idea/pyDjango.iml">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/pyDjango/.idea/modules.xml">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/pyDjango/.idea/misc.xml">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/pyDjango/.idea/encodings.xml">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/migrations/0002_auto_20190527_2034.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-229">
+          <caret line="21" column="10" selection-start-line="21" selection-start-column="10" selection-end-line="21" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/Dropped Text.txt">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/pseudo_recommend.txt">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/recommendation.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-53">
+          <caret line="248" column="87" lean-forward="true" selection-start-line="248" selection-start-column="87" selection-end-line="248" selection-end-column="87" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/pyDjango/mmm_project/mysite/wsgi.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="266">
+        <state relative-caret-position="304">
           <caret line="16" selection-start-line="16" selection-end-line="16" />
           <folding>
             <element signature="e#222#231#0" expanded="true" />
@@ -453,77 +485,60 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/middleware.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="380">
-          <caret line="20" column="33" selection-start-line="20" selection-start-column="33" selection-end-line="20" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/pyDjango/mmm_project/mysite/urls.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="616">
-          <caret line="44" selection-start-line="44" selection-end-line="44" />
-          <folding>
-            <element signature="e#630#639#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/apps.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/tests.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="266">
-          <caret line="19" column="27" selection-start-line="19" selection-start-column="27" selection-end-line="19" selection-end-column="27" />
-          <folding>
-            <element signature="e#0#32#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/permissions.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="38" selection-start-column="38" selection-end-column="38" />
+        <state relative-caret-position="190">
+          <caret line="10" column="28" selection-start-line="10" selection-start-column="28" selection-end-line="10" selection-end-column="28" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/models.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1178">
-          <caret line="40" column="45" lean-forward="true" selection-start-line="40" selection-start-column="45" selection-end-line="40" selection-end-column="45" />
+        <state relative-caret-position="194">
+          <caret line="86" lean-forward="true" selection-start-line="86" selection-end-line="86" />
           <folding>
             <element signature="e#0#28#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/api.py">
+    <entry file="file://$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/exception.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="589">
-          <caret line="31" column="8" lean-forward="true" selection-start-line="31" selection-start-column="8" selection-end-line="31" selection-end-column="8" />
+        <state relative-caret-position="133">
+          <caret line="7" lean-forward="true" selection-end-line="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/apps.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/__init__.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/admin.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="133">
+          <caret line="8" column="36" selection-start-line="8" selection-start-column="36" selection-end-line="8" selection-end-column="36" />
           <folding>
-            <element signature="e#11#64#0" expanded="true" />
+            <element signature="e#0#32#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/urls.py">
+    <entry file="file://$PROJECT_DIR$/src/pyDjango/mmm_project/mysite/urls.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="20" column="50" selection-start-line="20" selection-start-column="50" selection-end-line="20" selection-end-column="50" />
+        <state relative-caret-position="171">
+          <caret line="33" column="26" selection-start-line="33" selection-start-column="26" selection-end-line="33" selection-end-column="26" />
           <folding>
-            <element signature="e#1#21#0" expanded="true" />
+            <element signature="e#630#639#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/serializers.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1577">
-          <caret line="84" selection-start-line="84" selection-end-line="84" />
+        <state relative-caret-position="19">
+          <caret line="20" column="42" selection-start-line="20" selection-start-column="42" selection-end-line="20" selection-end-column="42" />
           <folding>
             <element signature="e#0#43#0" expanded="true" />
           </folding>
@@ -532,30 +547,57 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="456">
-          <caret line="54" column="44" selection-start-line="54" selection-start-column="44" selection-end-line="54" selection-end-column="44" />
+        <state relative-caret-position="185">
+          <caret line="77" column="41" selection-start-line="77" selection-start-column="41" selection-end-line="77" selection-end-column="41" />
           <folding>
             <element signature="e#0#35#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/pseudo_recommend.txt">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/recommendation.py">
+    <entry file="file://$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/middleware.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="551">
-          <caret line="252" lean-forward="true" selection-start-line="252" selection-end-line="252" />
+        <state relative-caret-position="223">
+          <caret line="34" column="33" selection-start-line="34" selection-start-column="33" selection-end-line="34" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/urls.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="15" column="42" selection-start-line="15" selection-start-column="42" selection-end-line="15" selection-end-column="42" />
+          <folding>
+            <element signature="e#0#61#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/tests.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="456">
+          <caret line="24" column="27" lean-forward="true" selection-start-line="24" selection-start-column="27" selection-end-line="24" selection-end-column="27" />
+          <folding>
+            <element signature="e#0#32#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/pyDjango/mmm_project/mysite/settings.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="494">
-          <caret line="85" lean-forward="true" selection-start-line="85" selection-end-line="85" />
+        <state relative-caret-position="-373">
+          <caret line="159" column="10" lean-forward="true" selection-start-line="159" selection-start-column="10" selection-end-line="159" selection-end-column="10" />
           <folding>
             <element signature="e#307#316#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/pyDjango/mmm_project/my_mood_music/api.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="380">
+          <caret line="185" column="31" selection-start-line="185" selection-start-column="31" selection-end-line="185" selection-end-column="31" />
+          <folding>
+            <element signature="e#46#99#0" expanded="true" />
           </folding>
         </state>
       </provider>

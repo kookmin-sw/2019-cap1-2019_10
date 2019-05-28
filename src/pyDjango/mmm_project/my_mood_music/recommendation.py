@@ -42,15 +42,12 @@ class Recommendation(APIView):
             Music = { }
             max_id = table.objects.all().aggregate(max_id=Max("id"))['max_id']
             music_list = []
-            pk_list = []
             count = 0
             while True:
                 if count == 3 :
                     break
                 pk = random.randint(1, max_id) # pk can equal, have to correct
                 print(pk)
-                if pk in pk_list : continue
-                pk_list.append(pk)
                 music = table.objects.filter(id=pk).first()
                 print('music.music : ' , music.music)
                 print('music.link : ', music.link)
@@ -60,7 +57,7 @@ class Recommendation(APIView):
                     Music['link_{}'.format(count+1)] = music.link
                     count += 1
             music_list.append(Music) # list of dictionary
-            print('music_list : ' , music_list)
+            print(music_list)
             return music_list
         except Exception as e :
             print(e)
@@ -119,14 +116,14 @@ class Recommendation(APIView):
             #print(dic)
 
         #전처리 - 거짓말인 경우, 거짓말 테이블 선택
-        if self.tone_res == "sadness" and happiness > 0 :
+        if tone_res == "sadness" and happiness > 0 :
             print("행복 얼굴로 슬픈 목소리를 내는 거짓말쟁이1")
             table1 = 6
             table2 = 6
             table3 = 6 
             return table1, table2, table3
 
-        elif self.tone_res == "happiness" and sadness > 0 :
+        elif tone_res == "happiness" and sadness > 0 :
             print("슬픈 얼굴로 행복 목소리를 내는 거짓말쟁이2")
             table1 = 6
             table2 = 6
@@ -164,7 +161,7 @@ class Recommendation(APIView):
                 table2 = 0  #0:화남테이블
 
                 #table3 : '2순위 감정'에 해당하는 감정 테이블
-                table3 = self.table_idx.index(rank_emotion[1])
+                table3 = table_idx.index(rank_emotion[1])
                 if table3 == 4 : #2순위가 SADNESS라면, 41인 슬픔(1)음악(잔잔)을 선택한다. 
                     table3 = 41
 
@@ -173,7 +170,7 @@ class Recommendation(APIView):
                 table2 = 41 #슬픔(1)음악(잔잔)
 
                 #table3 : 2순위 감정에 해당하는 감정 테이블
-                table3 = self.table_idx.index(rank_emotion[1])
+                table3 = table_idx.index(rank_emotion[1])
                 if table3 == 4 :
                     table3 = 41
 
@@ -186,12 +183,12 @@ class Recommendation(APIView):
                     table1 = 3
 
                     #table2 : 2순위 감정에 해당하는 감정 테이블
-                    table2 = self.table_idx.index(rank_emotion[1])
+                    table2 = table_idx.index(rank_emotion[1])
                     if table2 == 4 :
                         table2 = 41
 
                     #table3 : 3순위 감정에 해당하는 감정 테이블
-                    table3 = self.table_idx.index(rank_emotion[2])
+                    table3 = table_idx.index(rank_emotion[2])
                     if table3 == 4 :
                         table3 = 41
 
@@ -200,7 +197,7 @@ class Recommendation(APIView):
                 table2 = 1  #1:경멸_역겨움 테이블
 
                 #table3 : 2순위 감정에 해당하는 감정 테이블
-                table3 = self.table_idx.index(rank_emotion[1])
+                table3 = table_idx.index(rank_emotion[1])
                 if table3 == 4 :
                     table3 = 41
 
@@ -210,7 +207,7 @@ class Recommendation(APIView):
                 table3 = 43 #슬픔(3)음악(기분전환)
 
             elif rank_emotion[0] == "surprise" :
-                if surprise >= 0.8 :
+                if SURPRISE >= 0.8 :
                     table1 = 5 #5:놀람테이블
                     table2 = 5
                     table3 = 5 
@@ -218,12 +215,12 @@ class Recommendation(APIView):
                     table1 = 5
 
                     #table2 : 2순위 감정에 해당하는 감정 테이블
-                    table2 = self.table_idx.index(rank_emotion[1])
+                    table2 = table_idx.index(rank_emotion[1])
                     if table2 == 4 :
                         table2 = 41
 
                     #table3 : 3순위 감정에 해당하는 감정 테이블
-                    table3 = self.table_idx.index(rank_emotion[2])
+                    table3 = table_idx.index(rank_emotion[2])
                     if table3 == 4 :
                         table3 = 41
 
