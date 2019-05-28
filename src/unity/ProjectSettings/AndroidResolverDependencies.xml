@@ -1,0 +1,14 @@
+<dependencies>
+  <packages>
+    <package>com.android.support:support-v4:24+</package>
+  </packages>
+  <files>
+    <file>Assets/Plugins/Android/com.android.support.support-annotations-24.2.1.jar</file>
+    <file>Assets/Plugins/Android/com.android.support.support-compat-24.2.1.aar</file>
+    <file>Assets/Plugins/Android/com.android.support.support-core-ui-24.2.1.aar</file>
+    <file>Assets/Plugins/Android/com.android.support.support-core-utils-24.2.1.aar</file>
+    <file>Assets/Plugins/Android/com.android.support.support-fragment-24.2.1.aar</file>
+    <file>Assets/Plugins/Android/com.android.support.support-media-compat-24.2.1.aar</file>
+    <file>Assets/Plugins/Android/com.android.support.support-v4-24.2.1.aar</file>
+  </files>
+</dependencies>
