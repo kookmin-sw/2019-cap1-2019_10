@@ -90,6 +90,7 @@ public class PhoneCamera : BaseMenu
         imageData = null;
     }
 
+    // 카메라 켜고 사진찍고 카메라 끄기
     private IEnumerator TakePicture()
     {
         frontCam.Play();

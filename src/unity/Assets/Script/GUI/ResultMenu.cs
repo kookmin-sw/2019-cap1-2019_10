@@ -2,12 +2,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.UI;
 
 public class ResultMenu : BaseMenu
 {
     private bool loading;
     private Result results;
     private Score newestResult;
+
+    public Text MusicButton1, MusicButton2, MusicButton3;
  
     // Start is called before the first frame update
     void Start()
@@ -31,6 +34,11 @@ public class ResultMenu : BaseMenu
         //    Debug.Log(result);
         //}
         this.results = results;
+
+        MusicButton1.text = results.music_1;
+        MusicButton2.text = results.music_2;
+        MusicButton3.text = results.music_3;
+
         loading = false;
         //newestScore = scores.OrderByDescending(s => s.Updated).FirstOrDefault(s => s.Amount == (int)CurrentScore);
         //loading = false;

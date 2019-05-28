@@ -255,6 +255,7 @@ public partial class BackendManager : MonoBehaviour {
         }
     }
 
+    // UnityWebRequest로 하는 통신
     public void SendFile(RequestType type, string command, WWWForm wwwForm, FileRequestResponseDelegate onResponse = null, string authToken = "")
     {
         UnityWebRequest request;

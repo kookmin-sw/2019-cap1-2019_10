@@ -5,6 +5,7 @@ using UnityEngine.Android;
 
 public class RequestPermission : MonoBehaviour
 {
+    //permission 요청하기
     void Start()
     {
         if (Permission.HasUserAuthorizedPermission(Permission.Microphone) && Permission.HasUserAuthorizedPermission(Permission.Camera))

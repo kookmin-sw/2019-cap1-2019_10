@@ -29,6 +29,7 @@ public class AudioRecorder : BaseMenu
     {
         clicked = !clicked;
 
+        // 첫번째 클릭은 녹음 시작 (~ing)
         if (clicked)
         {
             RecorderError.SetActive(false);
@@ -46,6 +47,7 @@ public class AudioRecorder : BaseMenu
             startRecordingTime = Time.time;
         }
 
+        // 두번째 클릭은 녹음 멈추고 저장하고 서버보내고 지우기
         if (!clicked)
         {
             //End the recording when the mouse comes back up, then play it

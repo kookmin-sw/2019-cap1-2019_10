@@ -151,30 +151,6 @@ public partial class BackendManager {
         }
     }
 
-
-    /// <summary>
-    /// Does a GET request at the server, getting you all the savegames of the giving samegame type. On success, the OnGamesLoaded delegate will be called. On fail, the OnGamesLoadedFailed will be called.
-    /// </summary>
-    /// <param name="savegameTypeName">The name of the savegame type you wish to get. Example: JeuDeBouleData</param>
-    //public void LoadGames(string savegameTypeName) {
-    //    WWWForm form = new WWWForm();
-    //    form.AddField("SavegameType", savegameTypeName);
-    //    Send(RequestType.Get, "savegames/", form, OnLoadGamesResponse, authenticationToken);
-    //}
-
-    //private void OnLoadGamesResponse(ResponseType responseType, JToken responseData, string callee)
-    //{
-    //    if (responseType == ResponseType.Success) {
-    //        if (OnGamesLoaded != null) {
-    //            OnGamesLoaded(JsonConvert.DeserializeObject<List<Savegame>>(responseData.ToString()));
-    //        }
-    //    } else {
-    //        if (OnGamesLoadedFailed != null) {
-    //            OnGamesLoadedFailed("Could not reach the server. Please try again later.");
-    //        }
-    //    }
-    //}
-
     /// <summary>
     /// Does a GET request at the backend, getting you all scores. When succesfull, the OnScoresLoaded delegate will be called. When failing, the OnScoresLoadedFailed delegate will be called.
     /// </summary>
