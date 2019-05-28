@@ -1,57 +1,12 @@
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
-from django.contrib.auth.models import User
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 
 # Create your models here.
 
 @python_2_unicode_compatible
-		
-'''''
-class User_Information(models.Model):
-        id = models.IntegerField(primary_key=True)
-        user_id = models.CharField(max_length=300)
-        password = models.CharField(max_length=300)
-        research = models.IntegerField(default=0)
-	
-        def __str__(self):
-                return '{} {} {} {}'.format(self.id, self.user_id, self.password, self.research)
-
-
-class User_Information(models.Model):
-        user = models.OneToOneField(User, on_delete=models.CASCADE)
-        user_id = models.CharField(max_length=300)
-        password = models.CharField(max_length=300)
-        research = models.IntegerField(default=0)
-
-@receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
-        if created:
-                Profile.objects.create(user=instance)
-
-@receiver(post_save, sender=User)
-def save_user_profile(sender, instance, **kwargs):
-        instance.profile.save()       
-
-               
-        
- onetoonefield
-
-
-class User_Table(models.Model):
-        user_information = models.OneToOneField(
-                User_Information,
-                on_delete = models.CASCADE,
-                primary_key = True,
-        )
-        def __str__(self):
-                return '{}'.format(self.user_information)
-                
-''' 
         
 class Analysis_Result(models.Model):
-        id = models.IntegerField(primary_key=True)
+        id = models.AutoField(primary_key=True)
         user_id = models.CharField(max_length=300, null=True)
         music_r1 = models.CharField(max_length=500)
         music_r2 = models.CharField(max_length=500)
@@ -62,80 +17,80 @@ class Analysis_Result(models.Model):
         
         
 class Happiness(models.Model):
-        id = models.IntegerField(primary_key=True)
-        music_h = models.CharField(max_length=500)
-        age_h = models.IntegerField(default=0)
-        link_h = models.URLField()
-        tag_h1 = models.CharField(max_length=500, null=True)
-        tag_h2 = models.CharField(max_length=500, null=True)
+        id = models.AutoField(primary_key=True)
+        music = models.CharField(max_length=500)
+        age = models.IntegerField(default=0)
+        link = models.URLField()
+        tag_1 = models.CharField(max_length=500, null=True)
+        tag_2 = models.CharField(max_length=500, null=True)
 
         def __str__(self):
-                return '{} {} {} {} {} {}'.format(self.id, self.music_h, self.age_h, self.link_h, self.tag_h1, self.tag_h2)
-        
+                return '{} {} {} {} {} {}'.format(self.id, self.music, self.age, self.link, self.tag_1, self.tag_2)
+
                
 class Anger(models.Model):
-        id = models.IntegerField(primary_key=True)
-        music_a = models.CharField(max_length=500)
-        age_a = models.IntegerField(default=0)
-        link_a = models.URLField()
-        tag_a1 = models.CharField(max_length=500, null=True)
-        tag_a2 = models.CharField(max_length=500, null=True)
+        id = models.AutoField(primary_key=True)
+        music = models.CharField(max_length=500)
+        age = models.IntegerField(default=0)
+        link = models.URLField()
+        tag_1 = models.CharField(max_length=500, null=True)
+        tag_2 = models.CharField(max_length=500, null=True)
         
         def __str__(self):
-                return '{} {} {} {} {} {}'.format(self.id, self.music_a, self.age_a, self.link_a, self.tag_a1, self.tag_a2)
+                return '{} {} {} {} {} {}'.format(self.id, self.music, self.age, self.link, self.tag_1, self.tag_2)
 
                 
 class Fear(models.Model):
-        id = models.IntegerField(primary_key=True)
-        music_f = models.CharField(max_length=500)
-        age_f = models.IntegerField(default=0)
-        link_f = models.URLField()
-        tag_f1 = models.CharField(max_length=500, null=True)
-        tag_f2 = models.CharField(max_length=500, null=True)
+        id = models.AutoField(primary_key=True)
+        music = models.CharField(max_length=500)
+        age = models.IntegerField(default=0)
+        link = models.URLField()
+        tag_1 = models.CharField(max_length=500, null=True)
+        tag_2 = models.CharField(max_length=500, null=True)
         
         def __str__(self):
-                return '{} {} {} {} {} {}'.format(self.id, self.music_f, self.age_f, self.link_f, self.tag_f1, self.tag_f2)                
+                return '{} {} {} {} {} {}'.format(self.id, self.music, self.age, self.link, self.tag_1, self.tag_2)                
 
 
 class Surprise(models.Model):
-        id = models.IntegerField(primary_key=True)
-        music_su = models.CharField(max_length=500)
-        age_su = models.IntegerField(default=0)
-        link_su = models.URLField()
-        tag_su1 = models.CharField(max_length=500, null=True)
-        tag_su2 = models.CharField(max_length=500, null=True)
+        id = models.AutoField(primary_key=True)
+        music = models.CharField(max_length=500)
+        age = models.IntegerField(default=0)
+        link = models.URLField()
+        tag_1 = models.CharField(max_length=500, null=True)
+        tag_2 = models.CharField(max_length=500, null=True)
         
         def __str__(self):
-                return '{} {} {} {} {} {}'.format(self.id, self.music_su, self.age_su, self.link_su, self.tag_su1, self.tag_su2)
+                return '{} {} {} {} {} {}'.format(self.id, self.music, self.age, self.link, self.tag_1, self.tag_2)
 
                 
 class Disgust(models.Model):
-        id = models.IntegerField(primary_key=True)
-        music_d = models.CharField(max_length=500)
-        age_d = models.IntegerField(default=0)
-        link_d = models.URLField()
-        tag_d1 = models.CharField(max_length=500, null=True)
-        tag_d2 = models.CharField(max_length=500, null=True)
+        id = models.AutoField(primary_key=True)
+        music = models.CharField(max_length=500)
+        age = models.IntegerField(default=0)
+        link = models.URLField()
+        tag_1 = models.CharField(max_length=500, null=True)
+        tag_2 = models.CharField(max_length=500, null=True)
         
         def __str__(self):
-                return '{} {} {} {} {} {}'.format(self.id, self.music_d, self.age_d, self.link_d, self.tag_d1, self.tag_d2)
+                return '{} {} {} {} {} {}'.format(self.id, self.music, self.age, self.link, self.tag_1, self.tag_2)
 
                 
 class Sadness(models.Model):
-        id = models.IntegerField(primary_key=True)
-        music_s = models.CharField(max_length=500)
-        age_s = models.IntegerField(default=0)
-        link_s = models.URLField()
-        subclass_s = models.IntegerField(Subclass_Sad, on_delete=models.CASCADE)
-        tag_s1 = models.CharField(max_length=500, null=True)
-        tag_s2 = models.CharField(max_length=500, null=True)
+        id = models.AutoField(primary_key=True)
+        music = models.CharField(max_length=500)
+        age = models.IntegerField(default=0)
+        link = models.URLField()
+        subclass_s = models.IntegerField(default=0)
+        tag_1 = models.CharField(max_length=500, null=True)
+        tag_2 = models.CharField(max_length=500, null=True)
         
         def __str__(self):
-                return '{} {} {} {} {} {} {}'.format(self.id, self.music_s, self.age_s, self.link_s, self.subclass_s, self.tag_s1, self.tag_s2)
+                return '{} {} {} {} {} {} {}'.format(self.id, self.music, self.age, self.link, self.subclass_s, self.tag_1, self.tag_2)
 
                 
 class Subclass_Sad(models.Model):
-        id = models.IntegerField(primary_key=True)
+        id = models.AutoField(primary_key=True)
         subclass = models.CharField(max_length=500)
 
         def __str__(self):
@@ -143,18 +98,19 @@ class Subclass_Sad(models.Model):
 
 
 class Lie(models.Model):
-        id = models.IntegerField(primary_key=True)
-        music_l = models.CharField(max_length=500)
-        link_l = models.URLField()
+        id = models.AutoField(primary_key=True)
+        music = models.CharField(max_length=500)
+        link = models.URLField()
 
         def __str__(self):
-                return '{} {} {}'.format(self.id, self.music_l, self.link_l)
+                return '{} {} {}'.format(self.id, self.music, self.link)
 
 
 class Child(models.Model):
-        id = models.IntegerField(primary_key=True)
-        music_c = models.CharField(max_length=500)
-        link_c = models.URLField()
+        id = models.AutoField(primary_key=True)
+        music = models.CharField(max_length=500)
+        link = models.URLField()
 
         def __str__(self):
-                return '{} {} {}'.format(self.id, self.music_c, self.link_c)      
+                return '{} {} {}'.format(self.id, self.music, self.link)      
+     

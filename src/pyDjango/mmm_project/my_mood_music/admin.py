@@ -12,31 +12,31 @@ class ResultAdmin(admin.ModelAdmin):
 	list_display = ('id', 'user_id','music_r1', 'music_r2', 'music_r3')
 	
 class HappinessAdmin(admin.ModelAdmin):
-	list_display = ('id','music_h','age_h', 'link_h', 'tag_h1', 'tag_h2')
+	list_display = ('id','music','age', 'link', 'tag_1', 'tag_2')
 
 class AngerAdmin(admin.ModelAdmin):
-	list_display = ('id','music_a','age_a', 'link_a', 'tag_a1', 'tag_a2')
+	list_display = ('id','music','age', 'link', 'tag_1', 'tag_2')
 
 class FearAdmin(admin.ModelAdmin):
-	list_display = ('id','music_f','age_f', 'link_f', 'tag_f1', 'tag_f2')
+	list_display = ('id','music','age', 'link', 'tag_1', 'tag_2')
 
 class SurpriseAdmin(admin.ModelAdmin):
-	list_display = ('id','music_su','age_su', 'link_su', 'tag_su1', 'tag_su2')
+	list_display = ('id','music','age', 'link', 'tag_1', 'tag_2')
 
 class DisgustAdmin(admin.ModelAdmin):
-	list_display = ('id','music_d','age_d', 'link_d', 'tag_d1', 'tag_d2')
+	list_display = ('id','music','age', 'link', 'tag_1', 'tag_2')
 
 class SadnessAdmin(admin.ModelAdmin):
-	list_display = ('id','music_s','age_s', 'link_s','subclass_s', 'tag_s1', 'tag_s2')
+	list_display = ('id','music','age', 'link','subclass_s', 'tag_1', 'tag_2')
 
 class SubclassAdmin(admin.ModelAdmin):
 	list_display = ('id','subclass')
 
 class LieAdmin(admin.ModelAdmin):
-	list_display = ('id','music_l', 'link_l')
+	list_display = ('id','music', 'link')
 
 class ChildAdmin(admin.ModelAdmin):
-	list_display = ('id','music_c', 'link_c')   
+	list_display = ('id','music', 'link')   
 	
 	
 #admin.site.register(User_Information,UserAdmin)
