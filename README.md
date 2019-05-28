@@ -12,10 +12,15 @@
   Therefore, the project aims to create an application that informs users of their emotional analysis results and recommends songs based on them.
   Emotional analysis results are derived by combining the results of emotional analysis through facial recognition and the analysis of intonation through voice recognition.
 
+
+<br/>
+
 ### 2. 소개 영상
 
 [![video](./image/video.png)](https://youtu.be/4S6KBMRbfgc)
 
+
+<br/>
 
 ### 3. 팀 소개
 
@@ -65,6 +70,7 @@
 ### 4. 사용법
 
 #### <b>API Key Setting
+  
 ```
 Microsoft Face API에서 ID/KEY 발급
 - pyDjango/api.py의 RequestFaceAPI의 key값 변경
@@ -83,36 +89,32 @@ pip3.6 install -r requirements.txt
 
 #### <b> Windows환경이라면 MySQL을 미리 설치
 
-```
 연동하는 것은 https://jamanbbo.tistory.com/28 이 링크를 참조한다.
 start project를 하고 나서 `settings.py`를 고쳐야 한다. 
 한국이라면 아래와 같다.
-```
+
 
 <br/>
 
 #### <b> Django를 이용해 프로젝트를 만드는 방법
 
-```
 다음 링크를 참고한다
 https://tutorial.djangogirls.org/ko/django_start_project/
-```
+
 
 <br/>
 
 #### <b> 음성 모델 다운
 
-```
-https://github.com/MITESHPUTHRANNEU/Speech-Emotion-Analyzer에서 `Emtion_Voice_Detection_Model.h5, model.json` 을 다운받아 실행파일 디렉토리에 둔다 .
-```
+https://github.com/MITESHPUTHRANNEU/Speech-Emotion-Analyzer 에서 `Emtion_Voice_Detection_Model.h5, model.json` 을 다운받아 실행파일 디렉토리에 둔다 .
+
 
 <br/>
 
 #### <b> Unity Setting
 
-```
 unity 폴더에 있는 폴더들을 다운받아 unity에 새 project를 생성하고 해당 파일들을 붙여넣고 실행을 시킨다. scene에 있는 start를 더블클릭 해서 실행한다.
-```
+
 
 ### 5. 기타
 
