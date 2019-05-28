@@ -1,0 +1,4 @@
+"""
+Package for DjangoWebProject1.
+"""
+
