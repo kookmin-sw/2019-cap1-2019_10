@@ -30,8 +30,8 @@ class call(APIView):
         #파일의 이름이 중복될때 다른이름으로 저장되지 않도록 기존의 file.wav를 삭제
         if os.path.isfile('./media/file.wav'):
           os.remove('./media/file.wav')
-        else :
-            path = default_storage.save('file.wav', ContentFile(audio_file.read()))
+     
+        path = default_storage.save('file.wav', ContentFile(audio_file.read()))
         #file.wav로 저장
 
         #b = numpy.array(audio_file, dtype=numpy.int32)///시도했지만 계속 typeError가 났음
