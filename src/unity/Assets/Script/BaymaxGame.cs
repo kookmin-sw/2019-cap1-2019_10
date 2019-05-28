@@ -32,6 +32,7 @@ public class BaymaxGame : BaseGame
     public static BaymaxGame instance;
     public bool photoCheck = false;
     public bool recodeCheck = false;
+    public bool resultCheck = false;
 
     protected override void Awake()
     {
@@ -46,6 +47,7 @@ public class BaymaxGame : BaseGame
 
         photoCheck = false;
         recodeCheck = false;
+        resultCheck = false;
 
         highscoreMenu.enabled = false;
 
@@ -58,12 +60,16 @@ public class BaymaxGame : BaseGame
         // Setup a delegate which will trigger when we succesfully posted a new highscore to the server.
         backendManager.OnPostScoreSucces += OnPostScoreSuccess;
 
+        backendManager.OnResultLoaded += OnResultLoaded;
+        backendManager.OnResultLoadedFailed += OnResultLoadedFailed;
+
         // Setup a delegate for when we close the highscore screen. This will reset the game and set it up for a new round of play
         //highscoreMenu.OnClose += ResetGame;
 
         dialogue.TakePhoto += TakePhoto;
         dialogue.OnRecorde += OnRecorde;
         dialogue.OffRecorde += OffRecorde;
+        dialogue.GetResult += GetResult;
         dialogue.ShowResult += ShowResult;
         dialogue.HideResult += HideResult;
         dialogue.Reset += OnReset;
@@ -75,7 +81,18 @@ public class BaymaxGame : BaseGame
         backendManager.GetAllScores();
     }
 
-    private void OnPostResultSuccess()
+    //private void OnPostResultSuccess()
+    //{
+    //    backendManager.GetResult();
+    //}
+
+    private void OnResultLoaded(Result result)
+    {
+        Debug.Log("baymaxgame");
+        resultCheck = true;
+    }
+
+    private void OnResultLoadedFailed()
     {
 
     }
@@ -105,6 +122,11 @@ public class BaymaxGame : BaseGame
     public void OffRecorde()
     {
         recorderToggle.SetActive(false);
+    }
+
+    public void GetResult()
+    {
+        backendManager.GetResult();
     }
 
     public void ShowResult()

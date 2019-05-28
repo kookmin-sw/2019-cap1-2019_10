@@ -59,8 +59,8 @@ public partial class BackendManager {
     public PostAudioSuccess OnPostAudioSuccess;
     public PostAudioFailed OnPostAudioFailed;
 
-    public delegate void ResultLoaded(List<Result> results);
-    public delegate void ResultLoadedFailed(string errorMsg);
+    public delegate void ResultLoaded(Result results);
+    public delegate void ResultLoadedFailed();
     public ResultLoaded OnResultLoaded;
     public ResultLoadedFailed OnResultLoadedFailed;
 
@@ -231,13 +231,14 @@ public partial class BackendManager {
         {
             if (OnResultLoaded != null)
             {
-                Result results = JsonConvert.DeserializeObject<Result>(responseJson.ToString());
-                Debug.Log(results.music_1);
-                Debug.Log(results.link_1);
-                Debug.Log(results.music_2);
-                Debug.Log(results.link_2);
-                Debug.Log(results.music_3);
-                Debug.Log(results.link_3);
+                //Result results = JsonConvert.DeserializeObject<Result>(responseJson.ToString());
+                //Debug.Log(results.music_1);
+                //Debug.Log(results.link_1);
+                //Debug.Log(results.music_2);
+                //Debug.Log(results.link_2);
+                //Debug.Log(results.music_3);
+                //Debug.Log(results.link_3);
+                OnResultLoaded(JsonConvert.DeserializeObject<Result>(responseJson.ToString()));
                 //OnResultLoaded(JsonConvert.DeserializeObject<List<Result>>(responseJson.ToString()));
             }
         }
@@ -245,7 +246,7 @@ public partial class BackendManager {
         {
             if (OnResultLoadedFailed != null)
             {
-                OnResultLoadedFailed("Could not reach the server. Please try again later.");
+                OnResultLoadedFailed();
             }
         }
     }

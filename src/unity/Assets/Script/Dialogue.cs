@@ -8,6 +8,7 @@ public class Dialogue : BaseMenu
 {
     public VoidDelegate TakePhoto;
     public VoidDelegate OnRecorde, OffRecorde, Recording;
+    public VoidDelegate GetResult, GetResultEnded;
     public VoidDelegate ShowResult, HideResult;
     public VoidDelegate Reset;
 
@@ -137,7 +138,9 @@ public class Dialogue : BaseMenu
 
     private IEnumerator TakeResult()
     {
-        yield return new WaitForSeconds(5f);
+        GetResult();
+        yield return new WaitUntil(() => BaymaxGame.instance.resultCheck);
+        yield return new WaitForSeconds(1f);
         ShowResult();
     }
 
@@ -198,6 +201,7 @@ public class Dialogue : BaseMenu
     public void OnPostAudioSuccess(string[] emotions)
     {
         Debug.Log("success");
+        Debug.Log(emotions[0]);
         BaymaxGame.instance.recodeCheck = true;
         retry = 0;
     }

@@ -261,6 +261,7 @@ public partial class BackendManager : MonoBehaviour {
 
         byte[] postData;
         string url = BackendUrl + command;
+        bool check;
 
         if (Secure)
         {
@@ -272,19 +273,21 @@ public partial class BackendManager : MonoBehaviour {
             wwwForm = new WWWForm();
             postData = new byte[] { 1 };
             request = UnityWebRequest.Get(url);
+            check = false;
         }
         else
         {
             postData = wwwForm.data;
             request = UnityWebRequest.Post(url, wwwForm);
+            check = true;
         }
 
         System.Diagnostics.StackTrace stackTrace = new System.Diagnostics.StackTrace();
         string callee = stackTrace.GetFrame(1).GetMethod().Name;
-        StartCoroutine(HandleFileRequest(request, onResponse, callee));
+        StartCoroutine(HandleFileRequest(request, onResponse, callee, check));
     }
 
-    private IEnumerator HandleFileRequest(UnityWebRequest request, FileRequestResponseDelegate onResponse, string callee)
+    private IEnumerator HandleFileRequest(UnityWebRequest request, FileRequestResponseDelegate onResponse, string callee, bool check)
     {
         request.SendWebRequest();
 
@@ -314,31 +317,40 @@ public partial class BackendManager : MonoBehaviour {
         bool responseSuccessful = (statusCode >= 200 && statusCode <= 206);
 
         string emotion = null;
+        string[] splitEmotion = { };
         JToken responseObj = null;
 
         try
         {
             //Debug.Log(request.downloadHandler.text);
-            emotion = request.downloadHandler.text;
-            string finalJsonStr = emotion.Replace("\\", "");
-            finalJsonStr = finalJsonStr.Replace("[", "");
-            finalJsonStr = finalJsonStr.Substring(1, finalJsonStr.Length - 3);
-
-            //Debug.Log(finalJsonStr);
-
-            if (finalJsonStr.StartsWith("["))
+            if (check)
             {
-                //Debug.Log("array");
-                responseObj = JArray.Parse(finalJsonStr);
+                emotion = request.downloadHandler.text;
+                if (emotion == "please try again") throw new Exception();
+
+                char[] delimiterChars = { ' ', ',', '[', ']', '\'', '\'', '\t', '\n', '\0' };
+                splitEmotion = emotion.Split(delimiterChars);
             }
             else
             {
-                //Debug.Log("object");
-                responseObj = JObject.Parse(finalJsonStr);
-                Debug.Log(responseObj);
-            }
+                string finalJsonStr = request.downloadHandler.text.Replace("\\", "");
+                finalJsonStr = finalJsonStr.Replace("[", "");
+                finalJsonStr = finalJsonStr.Substring(1, finalJsonStr.Length - 3);
 
-            if (emotion == "please try again") throw new Exception();
+                //Debug.Log(finalJsonStr);
+
+                if (finalJsonStr.StartsWith("["))
+                {
+                    //Debug.Log("array");
+                    responseObj = JArray.Parse(finalJsonStr);
+                }
+                else
+                {
+                    //Debug.Log("object");
+                    responseObj = JObject.Parse(finalJsonStr);
+                    Debug.Log(responseObj);
+                }
+            }
         }
         catch (Exception ex)
         {
@@ -375,9 +387,6 @@ public partial class BackendManager : MonoBehaviour {
             }
             yield break;
         }
-
-        char[] delimiterChars = { ' ', ',', '[', ']', '\'', '\'', '\t', '\n', '\0'};
-        string[] splitEmotion = emotion.Split(delimiterChars);
 
         //byte[] bytes = request.downloadHandler.data;
         //for (int i = 0; i < bytes.Length; i++) print(bytes[i]);
