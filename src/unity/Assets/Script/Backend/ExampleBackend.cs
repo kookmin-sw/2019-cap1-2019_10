@@ -27,8 +27,11 @@ using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 public partial class BackendManager {
+    public Text text;
+
     public delegate void LoginFailed(string errorMsg);
     public delegate void LoggedIn();
     public LoggedIn OnLoggedIn;
@@ -198,7 +201,7 @@ public partial class BackendManager {
 
     public void GetResult()
     {
-        SendFile(RequestType.Get, "test1", null, OnGetResultResponse, authenticationToken);
+        SendFile(RequestType.Get, "recommand/", null, OnGetResultResponse, authenticationToken);
     }
 
     private void OnGetResultResponse(ResponseType responseType, string[] responseData, JToken responseJson, string callee)
@@ -240,6 +243,7 @@ public partial class BackendManager {
         {
             if (OnPostPhotoSuccess != null)
             {
+                text.text = responseData[0];
                 OnPostPhotoSuccess(responseData);
             }
         }
@@ -247,6 +251,7 @@ public partial class BackendManager {
         {
             if (OnPostPhotoFailed != null)
             {
+                text.text = "failed";
                 //OnScoreLoadedFailed("Could not reach the server. Please try again later.");
                 OnPostPhotoFailed();
             }

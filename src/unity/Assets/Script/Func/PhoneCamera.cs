@@ -16,15 +16,16 @@ public class PhoneCamera : BaseMenu
 
     public byte[] imageData;
 
-    public float StayTime = 2f;
+    public float StayTime = 3f;
 
     //디버깅용
     private Texture defaultBackground;
     private string _SavePath = ".\\MyMoodMusic\\";
     private string path = "";
     int _CaptureCounter = 0;
-    //public RawImage background;
-    //public AspectRatioFitter fit;
+    public RawImage background;
+    public AspectRatioFitter fit;
+    public Quaternion baseRotation;
 
     private void Start()
     {
@@ -61,6 +62,7 @@ public class PhoneCamera : BaseMenu
         //background.texture = frontCam;
 
         Debug.Log("find front camera");
+        //baseRotation = transform.rotation;
         camAvailable = true;
 
         //StartCoroutine("TakePicture");        
@@ -71,8 +73,9 @@ public class PhoneCamera : BaseMenu
     {
         Texture2D snap = new Texture2D(frontCam.width, frontCam.height);
         snap.SetPixels(frontCam.GetPixels());
+        //Texture2D snap = background.texture as Texture2D;
         snap.Apply();
-
+        snap = RotateImage(snap, 90);
         //잘 찍히는지 사진으로 저장해보는 코드
         //_SavePath = pathForDocumentsFile("MyMoodMusic");
         //Debug.Log(_SavePath);
@@ -128,23 +131,84 @@ public class PhoneCamera : BaseMenu
     //    }
     //}
 
-    //private void Update()
-    //{
-    //    if (!camAvailable)
-    //        return;
+    private void Update()
+    {
+        //if (!camAvailable)
+        //    return;
 
-    //    // 카메라 스케일이랑 각도를 내가 핸드폰을 돌릴때마다 맞춰서 나올 수 있도록 조정
-    //    //float ratio = (float)frontCam.width / (float)frontCam.height;
-    //    //fit.aspectRatio = ratio;
+        //카메라 스케일이랑 각도를 내가 핸드폰을 돌릴때마다 맞춰서 나올 수 있도록 조정
+        //float ratio = (float)frontCam.width / (float)frontCam.height;
+        //fit.aspectRatio = ratio;
 
-    //    //float scaleY = frontCam.videoVerticallyMirrored ? -1f : 1f;
-    //    //background.rectTransform.localScale = new Vector3(1f, scaleY, 1f);
-    //    //localScale.Set(1f, scaleY, 1f);
-    //    //background.rectTransform.localScale = localScale;
+        //transform.rotation = baseRotation * Quaternion.AngleAxis(frontCam.videoRotationAngle, Vector3.up);
 
-    //    //int orient = -frontCam.videoRotationAngle;
-    //    //background.rectTransform.localEulerAngles = new Vector3(0, 0, orient);
-    //    //localOrient.Set(0, 0, orient);
-    //    //background.rectTransform.localEulerAngles = localOrient;
-    //}
+        //int rotAngle = -frontCam.videoRotationAngle;
+        //while (rotAngle < 0){ rotAngle += 360;
+        //while (rotAngle > 360) rotAngle -= 360;
+
+        //float scaleY = frontCam.videoVerticallyMirrored ? -1f : 1f;
+        //background.rectTransform.localScale = new Vector3(1f, scaleY, 1f);
+        //localScale.Set(1f, scaleY, 1f);
+        //background.rectTransform.localScale = localScale;
+
+        //int orient = -frontCam.videoRotationAngle;
+        //background.rectTransform.localEulerAngles = new Vector3(0, 0, orient);
+        //localOrient.Set(0, 0, orient);
+        //background.rectTransform.localEulerAngles = localOrient;
+    }
+
+
+    //이미지 회전시키기 
+    public static Texture2D RotateImage(Texture2D originTexture, int angle)
+    {
+        Texture2D result;
+        result = new Texture2D(originTexture.width, originTexture.height);
+        Color32[] pix1 = result.GetPixels32();
+        Color32[] pix2 = originTexture.GetPixels32();
+        int W = originTexture.width;
+        int H = originTexture.height;
+        int x = 0;
+        int y = 0;
+        Color32[] pix3 = rotateSquare(pix2, (Math.PI / 180 * (double)angle), originTexture);
+        for (int j = 0; j < H; j++)
+        {
+            for (var i = 0; i < W; i++)
+            {
+                //pix1[result.width/2 - originTexture.width/2 + x + i + result.width*(result.height/2-originTexture.height/2+j+y)] = pix2[i + j*originTexture.width];
+                pix1[result.width / 2 - W / 2 + x + i + result.width * (result.height / 2 - H / 2 + j + y)] = pix3[i + j * W];
+            }
+        }
+        result.SetPixels32(pix1);
+        result.Apply();
+        return result;
+    }
+
+    static Color32[] rotateSquare(Color32[] arr, double phi, Texture2D originTexture)
+    {
+        int x;
+        int y;
+        int i;
+        int j;
+        double sn = Math.Sin(phi);
+        double cs = Math.Cos(phi);
+        Color32[] arr2 = originTexture.GetPixels32();
+        int W = originTexture.width;
+        int H = originTexture.height;
+        int xc = W / 2;
+        int yc = H / 2;
+        for (j = 0; j < H; j++)
+        {
+            for (i = 0; i < W; i++)
+            {
+                arr2[j * W + i] = new Color32(0, 0, 0, 0);
+                x = (int)(cs * (i - xc) + sn * (j - yc) + xc);
+                y = (int)(-sn * (i - xc) + cs * (j - yc) + yc);
+                if ((x > -1) && (x < W) && (y > -1) && (y < H))
+                {
+                    arr2[j * W + i] = arr[y * W + x];
+                }
+            }
+        }
+        return arr2;
+    }
 }
