@@ -13,44 +13,38 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+import os
+import sys
 
-
-from django.conf.urls import url, include
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# 'C:/Users/Oh YJ/Documents/GitHub/2019-cap1-2019_10/src/pyDjango/mmm_project/my_mood_music'
+from django.urls import path, include
 from rest_framework import routers
 
-router = routers.DefaultRouter()
-'''
-from my_mood_music import views
-
-router = routers.DefaultRouter()
-router.register(r'users', views.UserViewSet)
-router.register(r'groups', views.GroupViewSet)
-'''
+router = routers.DefaultRouter(trailing_slash=False)
+# router = routers.DefaultRouter()
+# router.register(r'users', views.UserViewSet)
+# router.register(r'emotions', views.EmotionViewSet)
 
 from django.contrib import admin
+from rest_framework_swagger.views import get_swagger_view
+from rest_framework.authtoken import views
 
-from bookmark.views import BookmarkLV, BookmarkDV
-from my_mood_music import views
+schema_view = get_swagger_view(title='My_Mood_Music API Manual')
+# url(r'^$', schema_view),
 
 urlpatterns = [
-	url(r'^admin/', admin.site.urls),
 
-	# Class-based views for Bookmark app
-	# url(regex, view, kwargs=None, name=None, prefex='')
-	
-	url(r'^bookmark/$', BookmarkLV.as_view(), name='index'),
-	url(r'^bookmark/(?P<pk>\d+)/$', BookmarkDV.as_view(), name='detail'),
-	
-	# 우리가 만든 API를 자동으로 라우팅합니다.
-	# 그리고 API 탐색을 위해 로그인 URL을 추가했습니다.
+    path('admin/', admin.site.urls),
 
+    # my_mood_music app
+    path('api/', include(router.urls)),
+    path('', include('my_mood_music.urls')),
+    path('api/doc', schema_view),
+    path('api/get_token', views.obtain_auth_token),
 
-	url(r'^', include(router.urls)),
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    
-    # Class-vased views for my_mood_music app
-	
-	
 ]
-#url(r'^my_mood_music/$', views.index, name='index'),
- #url(r'^', include('My_Mood_Music.urls')),
+
+# url(r'^my_mood_music/', include('my_mood_music.urls', namespace ="my_mood_music")),
+#    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+#  url(r'^my_mood_music/', include("my_mood_music.urls"), name = 'my_mood_music'),

@@ -1,0 +1,1 @@
+{"faceId": "23218ad0-3f9a-40e7-981b-2a2c3527a40e", "faceRectangle": {"top": 112, "left": 130, "width": 96, "height": 96}, "faceAttributes": {"age": 19.0, "emotion": {"anger": 0.0, "contempt": 0.0, "disgust": 0.0, "fear": 0.0, "happiness": 1.0, "neutral": 0.0, "sadness": 0.0, "surprise": 0.0}}}
