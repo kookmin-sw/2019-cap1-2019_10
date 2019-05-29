@@ -1,22 +1,37 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class NoticeInformation : MonoBehaviour
 {
-    private bool clicked = true;
+    public bool clicked = true;
 
     public GameObject noticeInformation;
+    public RectTransform panelRectTransform;
+    public Toggle loginToggle;
+    public Toggle noticeToggle;
+
+    private void Start()
+    {
+        clicked = true;
+    }
 
     public void onClicked()
     {
-        clicked = !clicked;
-
-        if (clicked)
+        if (loginToggle.isOn == true)
         {
+            noticeToggle.isOn = false;
+            return;
+        }
+        //clicked = !clicked;
+
+        if (noticeToggle.isOn == true)
+        {
+            panelRectTransform.SetAsLastSibling();
             noticeInformation.SetActive(true);
         }
-        else if (!clicked)
+        else if (noticeToggle.isOn == false)
         {
             noticeInformation.SetActive(false);
         }

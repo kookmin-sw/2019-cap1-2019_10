@@ -5,25 +5,46 @@ using UnityEngine.UI;
 
 public class LoginInformation : MonoBehaviour
 {
-    private bool clicked = false;
+    public bool clicked = false;
 
     public GameObject loginInformation;
+    public RectTransform panelRectTransform;
     public Text idText;
+    public Toggle noticeToggle;
+    public Toggle loginToggle;
 
     private string username = "";
 
+    private void Start()
+    {
+        clicked = false;
+        username = PlayerPrefs.GetString("x2").FromBase64();
+        if (username == "")
+        {
+            idText.text = "Not login";
+        }
+        else
+        {
+            idText.text = username;
+        }
+    }
+
     public void onClicked()
     {
-        clicked = !clicked;
-
-        if (clicked)
+        if (noticeToggle.isOn == true)
         {
-            username = PlayerPrefs.GetString("x2").FromBase64();
-            idText.text = username;
+            loginToggle.isOn = false;
+            return;
+        }
 
+        //clicked = !clicked;
+
+        if (loginToggle.isOn == true)
+        {
+            panelRectTransform.SetAsLastSibling();
             loginInformation.SetActive(true);
         }
-        else if (!clicked)
+        else if (loginToggle.isOn == false)
         {
             loginInformation.SetActive(false);
         }

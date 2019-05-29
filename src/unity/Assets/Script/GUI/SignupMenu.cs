@@ -27,6 +27,7 @@ using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using UnityEngine.UI;
 
 public class SignupMenu : BaseMenu {
     public VoidDelegate OnSignedUp;
@@ -40,20 +41,29 @@ public class SignupMenu : BaseMenu {
     private float nextStatusChange;
     private string status = "";
     private string username = "", email = "", password = "", password_confirm = "";
+
+    public GameObject signupObject;
+    public InputField usernameInput;
+    public InputField emailInput;
+    public InputField passwordInput;
+    public InputField repeatInput;
+    public Text statusText;
     
     private void Start() {
-        windowRect = new Rect(Screen.width / 2 - 150, Screen.height / 2 - 75, 300, 210);
+        //windowRect = new Rect(Screen.width / 2 - 150, Screen.height / 2 - 75, 300, 210);
         backendManager.OnSignupSuccess += OnSignupSuccess;
         backendManager.OnSignupFailed += OnSignupFailed;
     }
 
     private void OnSignupFailed(string error) {
-        status = "Signup error: \n\n" + error;
+        //status = "Signup error: \n\n" + error;
+        statusText.text = "Signup error: \n\n" + error;
         signingUp = false;
     }
 
     private void OnSignupSuccess() {
-        status = "Signup successful!";
+        //status = "Signup successful!";
+        statusText.text = "Signup successful!";
         signingUp = false;
 
         Invoke("FinishSignup", 1.5f);
@@ -64,9 +74,40 @@ public class SignupMenu : BaseMenu {
             OnSignedUp();
         }
         enabled = false;
+        signupObject.SetActive(false);
     }
 
-    private void DoSignup() {
+    public void DoSignup() {
+        if(usernameInput.text == "")
+        {
+            statusText.text = "username is empty";
+            return;
+        }
+        if (emailInput.text == "")
+        {
+            statusText.text = "email is empty";
+            return;
+        }
+        if(passwordInput.text == "")
+        {
+            statusText.text = "password is empty";
+            return;
+        }
+        if (repeatInput.text == "")
+        {
+            statusText.text = "please check repeat password";
+            return;
+        }
+        if (passwordInput.text != repeatInput.text)
+        {
+            statusText.text = "password is not sample";
+            return;
+        }
+
+        username = usernameInput.text;
+        email = emailInput.text;
+        password = passwordInput.text;
+
         if (signingUp) {
             Debug.LogWarning("Already signing up, returning.");
             return;
@@ -75,58 +116,11 @@ public class SignupMenu : BaseMenu {
         signingUp = true;
     }
 
-    private void ShowWindow(int id) {
-        GUILayout.BeginVertical();
-        GUILayout.Label("Please enter your details and signup");
-        bool filledIn = (username != "" && email != "" && password != "" && password_confirm != "");
-
-        GUILayout.BeginHorizontal();
-        GUI.SetNextControlName("usernameField");
-        GUILayout.Label("Username", GUILayout.Width(LABEL_WIDTH));
-        username = GUILayout.TextField(username, 30);
-        GUILayout.EndHorizontal();
-
-        GUILayout.BeginHorizontal();
-        GUILayout.Label("Email", GUILayout.Width(LABEL_WIDTH));
-        email = GUILayout.TextField(email, 50);
-        GUILayout.EndHorizontal();
-
-        GUILayout.BeginHorizontal();
-        GUILayout.Label("Password", GUILayout.Width(LABEL_WIDTH));
-        password = GUILayout.PasswordField(password, '*', 30);
-        GUILayout.EndHorizontal();
-
-        GUILayout.BeginHorizontal();
-        GUILayout.Label("Repeat password", GUILayout.Width(LABEL_WIDTH));
-        password_confirm = GUILayout.PasswordField(password_confirm, '*', 30);
-        GUILayout.EndHorizontal();
-
-        GUILayout.Label("Status: " + status);
-        GUI.enabled = filledIn;
-        Event e = Event.current;
-        if (filledIn && e.isKey && e.keyCode == KeyCode.Return) {
-            DoSignup();
-        }
-
-        GUILayout.FlexibleSpace();
-        GUILayout.BeginHorizontal();
-        if (GUILayout.Button("Signup")) {
-            DoSignup();
-        }
-        GUI.enabled = true;
-        if (GUILayout.Button("Cancel")) {
-            enabled = false;
-            if (OnCancel != null) {
-                OnCancel();
-            }
-        }
-        GUILayout.EndHorizontal();
-        GUILayout.EndVertical();
-
-        if (!hasFocussed) {
-            GUI.FocusControl("usernameField");
-            hasFocussed = true;
-        }
+    public void DoCancel()
+    {
+        enabled = false;
+        signupObject.SetActive(false);
+        OnCancel();
     }
 
     private void Update() {
@@ -136,18 +130,15 @@ public class SignupMenu : BaseMenu {
 
         if (Time.time > nextStatusChange) {
             nextStatusChange = Time.time + 0.5f;
-            status = "Signing up";
+            //status = "Signing up";
+            statusText.text = "Signing up";
             for (int i = 0; i < dotNumber; i++) {
-                status += ".";
+                //status += ".";
+                statusText.text += ".";
             }
             if (++dotNumber > 3) {
                 dotNumber = 1;
             }
         }
-    }
-
-    private void OnGUI() {
-        GUI.skin = Skin;
-        windowRect = GUILayout.Window(4, windowRect, ShowWindow, "Signup menu");
     }
 }

@@ -38,6 +38,7 @@ public abstract class BaseGame : MonoBehaviour
     protected AudioRecorder audioRecorder;
     protected PhoneCamera phoneCamera;
 
+    public GameObject loginObject;
     public GameObject startButton;
     public GameObject SideMenu;
     public GameObject noticeImage;
@@ -82,6 +83,7 @@ public abstract class BaseGame : MonoBehaviour
     }
 
     protected virtual void DisableLoginMenu() {
+        loginObject.SetActive(false);
         loginMenu.enabled = false;
         startButton.SetActive(true);
         SideMenu.SetActive(true);
@@ -89,6 +91,22 @@ public abstract class BaseGame : MonoBehaviour
         audioRecorder.enabled = true;
         phoneCamera.enabled = true;
         isLoggedIn = true;
+    }
+
+    public void ExitLogin()
+    {
+        if (PlayerPrefs.HasKey("x1"))
+        {
+            PlayerPrefs.DeleteAll();
+        }
+        loginObject.SetActive(false);
+        loginMenu.enabled = false;
+        startButton.SetActive(true);
+        SideMenu.SetActive(true);
+        noticeImage.SetActive(true);
+        audioRecorder.enabled = true;
+        phoneCamera.enabled = true;
+        isLoggedIn = false;
     }
 
     protected virtual bool IsMouseOverMenu() {
