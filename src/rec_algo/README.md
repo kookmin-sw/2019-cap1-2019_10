@@ -27,7 +27,7 @@
 결과물은 **'pseudo rec algo.cpp'**이다. 추천알고리즘_설계 ver4에서 설계한 내용에 따라 pseudo code를 작성했다. 
 
 ##### (4) c++로 추천 알고리즘 구현
-작성한 pseudo code에 따라서 c++로 추천 알고리즘을 작성한 후 dll파일로 만들기로 한다. 입력으로 들어오는 .json 파일을 parsing하기 위해 jsoncpp parser를 이용한다. jsoncpp 라이브러리 테스트 결과물은 **jsonWriterAndReader**와 **'ConsoleApplication5.zip'**이다. 
+작성한 pseudo code에 따라서 c++로 추천 알고리즘을 작성한 후 dll파일로 만들기로 한다. 입력으로 들어오는 .json 파일을 parsing하기 위해 jsoncpp parser를 이용한다. jsoncpp 라이브러리 테스트 결과물은 **jsonWriterAndReader**와 **'ConsoleApplication5ip'**이다. 
 -> reference1 : https://github.com/open-source-parsers/jsoncpp/releases/tag/1.8.2
 -> reference2 : https://s-engineer.tistory.com/21
 
