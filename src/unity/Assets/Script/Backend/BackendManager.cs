@@ -323,22 +323,23 @@ public partial class BackendManager : MonoBehaviour {
 
         try
         {
+            emotion = request.downloadHandler.text;
+            Debug.Log(emotion);
+            if (emotion == "please try again") throw new Exception();
+
             //Debug.Log(request.downloadHandler.text);
             if (check)
             {
-                emotion = request.downloadHandler.text;
-                if (emotion == "please try again") throw new Exception();
-
                 char[] delimiterChars = { ' ', ',', '[', ']', '\'', '\'', '\t', '\n', '\0' };
                 splitEmotion = emotion.Split(delimiterChars);
             }
             else
             {
-                string finalJsonStr = request.downloadHandler.text.Replace("\\", "");
+                string finalJsonStr = emotion.Replace("\\", "");
                 finalJsonStr = finalJsonStr.Replace("[", "");
                 finalJsonStr = finalJsonStr.Substring(1, finalJsonStr.Length - 3);
 
-                //Debug.Log(finalJsonStr);
+                Debug.Log(finalJsonStr);
 
                 if (finalJsonStr.StartsWith("["))
                 {

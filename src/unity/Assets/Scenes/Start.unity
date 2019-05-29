@@ -927,6 +927,16 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1617825673}
+    - target: {fileID: 1465392157866936506, guid: a3751fbeb1f37ef44a74aca6d1b6f76a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1465392157417314445, guid: a3751fbeb1f37ef44a74aca6d1b6f76a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1465392157417314447, guid: a3751fbeb1f37ef44a74aca6d1b6f76a,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -1051,6 +1061,11 @@ PrefabInstance:
       propertyPath: resultImage
       value: 
       objectReference: {fileID: 1721410862}
+    - target: {fileID: 1571159256670781017, guid: 822272f804c63374c8960cff4c5578de,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 822272f804c63374c8960cff4c5578de, type: 3}
 --- !u!1001 &3362546985916130523
@@ -1125,6 +1140,11 @@ PrefabInstance:
       propertyPath: text
       value: 
       objectReference: {fileID: 1354239503}
+    - target: {fileID: 3362546987533167448, guid: 2a54400bfa010ca45be5c1d0572f8cec,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3362546987533167453, guid: 2a54400bfa010ca45be5c1d0572f8cec,
         type: 3}
       propertyPath: audioSource
@@ -1165,5 +1185,10 @@ PrefabInstance:
       propertyPath: txt
       value: 
       objectReference: {fileID: 1870375601}
+    - target: {fileID: 3362546987533167443, guid: 2a54400bfa010ca45be5c1d0572f8cec,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2a54400bfa010ca45be5c1d0572f8cec, type: 3}

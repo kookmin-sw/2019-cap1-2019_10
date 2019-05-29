@@ -23,6 +23,7 @@
 
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class LoginMenu : BaseMenu {
     public delegate void LoggedIn();
@@ -37,6 +38,9 @@ public class LoginMenu : BaseMenu {
     private string status = "";
     private string username = "", password = "";
     private SignupMenu signupMenu;
+
+    public Text usernameText;
+    public Text passwordText;
 
     private void Start() {
         windowRect = new Rect(Screen.width / 2 - 150, Screen.height / 2 - 75, 300, 150);
@@ -113,7 +117,7 @@ public class LoginMenu : BaseMenu {
         GUILayout.Label("Username", GUILayout.Width(LABEL_WIDTH));
         username = GUILayout.TextField(username, 30);
         GUILayout.EndHorizontal();
-        
+
         GUILayout.BeginHorizontal();
         GUILayout.Label("Password", GUILayout.Width(LABEL_WIDTH));
         password = GUILayout.PasswordField(password, '*', 30);
