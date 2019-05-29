@@ -1,0 +1,14 @@
+﻿  pch.cpp
+  ConsoleApplication5.cpp
+c:\users\7호관\jsoncpp-1.8.2\include\json\writer.h(159): error C4996: 'Json::Writer': Use StreamWriter instead
+  c:\users\7호관\jsoncpp-1.8.2\include\json\writer.h(143): note: 'Json::Writer' 선언을 참조하십시오.
+c:\users\7호관\jsoncpp-1.8.2\include\json\writer.h(163): error C4996: 'Json::Writer::~Writer': Use StreamWriter instead
+  c:\users\7호관\jsoncpp-1.8.2\include\json\writer.h(145): note: 'Json::Writer::~Writer' 선언을 참조하십시오.
+c:\users\7호관\jsoncpp-1.8.2\include\json\writer.h(177): error C4996: 'Json::Writer::write': Use StreamWriter instead
+  c:\users\7호관\jsoncpp-1.8.2\include\json\writer.h(147): note: 'Json::Writer::write' 선언을 참조하십시오.
+c:\users\7호관\jsoncpp-1.8.2\include\json\writer.h(212): error C4996: 'Json::Writer': Use StreamWriter instead
+  c:\users\7호관\jsoncpp-1.8.2\include\json\writer.h(143): note: 'Json::Writer' 선언을 참조하십시오.
+c:\users\7호관\jsoncpp-1.8.2\include\json\writer.h(215): error C4996: 'Json::Writer::~Writer': Use StreamWriter instead
+  c:\users\7호관\jsoncpp-1.8.2\include\json\writer.h(145): note: 'Json::Writer::~Writer' 선언을 참조하십시오.
+c:\users\7호관\jsoncpp-1.8.2\include\json\writer.h(222): error C4996: 'Json::Writer::write': Use StreamWriter instead
+  c:\users\7호관\jsoncpp-1.8.2\include\json\writer.h(147): note: 'Json::Writer::write' 선언을 참조하십시오.

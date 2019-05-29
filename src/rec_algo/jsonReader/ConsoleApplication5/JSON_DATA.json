@@ -1,0 +1,8 @@
+{
+	"CPU" : "i7",
+	"Computer" :
+	{
+		"Cable" : ["Power", "Mouse"],
+		"Number" : 12
+	}
+}
