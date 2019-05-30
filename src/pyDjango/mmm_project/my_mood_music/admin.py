@@ -50,3 +50,4 @@ admin.site.register(Sadness,SadnessAdmin)
 admin.site.register(Subclass_Sad,SubclassAdmin)
 admin.site.register(Lie, LieAdmin)
 admin.site.register(Child, ChildAdmin)
+
