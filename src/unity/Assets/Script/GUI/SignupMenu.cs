@@ -37,6 +37,7 @@ public class SignupMenu : BaseMenu {
 
     private bool hasFocussed = false;
     private bool signingUp = false;
+    public float checkStartTime;
     private int dotNumber = 1;
     private float nextStatusChange;
     private string status = "";
@@ -57,7 +58,7 @@ public class SignupMenu : BaseMenu {
 
     private void OnSignupFailed(string error) {
         //status = "Signup error: \n\n" + error;
-        statusText.text = "Signup error: \n\n" + error;
+        statusText.text = "Signup error: " + error;
         signingUp = false;
     }
 
@@ -108,6 +109,7 @@ public class SignupMenu : BaseMenu {
         email = emailInput.text;
         password = passwordInput.text;
 
+        Debug.Log(username + " " + email + " " + password);
         if (signingUp) {
             Debug.LogWarning("Already signing up, returning.");
             return;
@@ -130,6 +132,7 @@ public class SignupMenu : BaseMenu {
 
         if (Time.time > nextStatusChange) {
             nextStatusChange = Time.time + 0.5f;
+            checkStartTime = Time.time;
             //status = "Signing up";
             statusText.text = "Signing up";
             for (int i = 0; i < dotNumber; i++) {
@@ -138,6 +141,11 @@ public class SignupMenu : BaseMenu {
             }
             if (++dotNumber > 3) {
                 dotNumber = 1;
+            }
+            if ((float)Time.time - checkStartTime > 5.0f)
+            {
+                signingUp = false;
+                statusText.text = "try again please";
             }
         }
     }

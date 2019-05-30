@@ -23,6 +23,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 using UnityEngine;
 
@@ -42,6 +43,9 @@ public abstract class BaseGame : MonoBehaviour
     public GameObject startButton;
     public GameObject SideMenu;
     public GameObject noticeImage;
+
+    public List<Result> results;
+    public int checkAllReusltResquestTime;
 
     protected virtual void Awake() {
         if (loginMenu == null) {
@@ -69,6 +73,8 @@ public abstract class BaseGame : MonoBehaviour
         //audioRecorder.enabled = false;
 
         backendManager.OnLoggedIn += OnLoggedIn;
+        backendManager.OnAllResultLoaded += OnAllResultLoaded;
+        backendManager.OnAllResultLoadedFailed += OnAllResultLoadedFailed;
         //saveMenu.OnSaveButtonPressed += OnSaveButtonPressed;
         //saveMenu.OnLoadButtonPressed += OnLoadButtonPressed;
     }
@@ -91,6 +97,8 @@ public abstract class BaseGame : MonoBehaviour
         audioRecorder.enabled = true;
         phoneCamera.enabled = true;
         isLoggedIn = true;
+
+        if (!loginMenu.isSignup) GetAllResult();
     }
 
     public void ExitLogin()
@@ -115,5 +123,26 @@ public abstract class BaseGame : MonoBehaviour
 
     private void OnLoggedIn() {
         Invoke("DisableLoginMenu", 1.0f);
+    }
+
+    public void GetAllResult()
+    {
+        backendManager.GetAllResult(PlayerPrefs.GetString("x2").FromBase64());
+    }
+
+    private void OnAllResultLoaded(List<Result> results)
+    {
+        this.results = results;
+    }
+
+    private void OnAllResultLoadedFailed()
+    {
+        checkAllReusltResquestTime++;
+        if(checkAllReusltResquestTime < 3)
+        {
+            GetAllResult();
+        }
+
+        Debug.Log("Get All Result Failed" + checkAllReusltResquestTime);
     }
 }

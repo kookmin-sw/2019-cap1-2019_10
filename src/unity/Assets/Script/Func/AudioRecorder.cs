@@ -72,7 +72,7 @@ public class AudioRecorder : BaseMenu
 
                 filepath = SavWav.Save("myfile", audioSource.clip);
                 audioData = File.ReadAllBytes(filepath);
-                backendManager.PostAudio(audioData);
+                backendManager.PostAudio(audioData, PlayerPrefs.GetString("x2").FromBase64());
 
                 audioData = null;
                 File.Delete(filepath);

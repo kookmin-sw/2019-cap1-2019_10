@@ -6,7 +6,6 @@ public class ListView : MonoBehaviour
 {
     public GameObject ItemObject;
     public Transform Content;
-
     public List<Item> ItemList;
 
     // Start is called before the first frame update

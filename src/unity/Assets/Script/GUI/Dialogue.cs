@@ -13,6 +13,7 @@ public class Dialogue : BaseMenu
     public VoidDelegate Reset;
 
     public static Dialogue instance;
+    public Toggle ResultToggle;
 
     public Text txt;
     public List<string> content = new List<string>();
@@ -146,7 +147,15 @@ public class Dialogue : BaseMenu
 
     public void OnExit()
     {
-        HideResult();
+        if (ResultToggle.isOn)
+        {
+            ShowResult();
+        }
+        else
+        {
+            HideResult();
+        }
+        
     }
 
     private IEnumerator Restart()

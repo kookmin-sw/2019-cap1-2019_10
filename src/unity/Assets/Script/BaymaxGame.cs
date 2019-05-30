@@ -21,6 +21,8 @@ public class BaymaxGame : BaseGame
     public GameObject loadingImage;
     public GameObject resultImage;
 
+    private int checkReusltResquestTime;
+
     //[SerializeField]
     //private GUIText turnText;
 
@@ -48,6 +50,8 @@ public class BaymaxGame : BaseGame
         photoCheck = false;
         recodeCheck = false;
         resultCheck = false;
+
+        checkReusltResquestTime = 0;
 
         highscoreMenu.enabled = false;
 
@@ -86,7 +90,7 @@ public class BaymaxGame : BaseGame
     //    backendManager.GetResult();
     //}
 
-    private void OnResultLoaded(Result result)
+    private void OnResultLoaded(List<Result> result)
     {
         Debug.Log("baymaxgame");
         resultCheck = true;
@@ -94,7 +98,13 @@ public class BaymaxGame : BaseGame
 
     private void OnResultLoadedFailed()
     {
+        checkReusltResquestTime++;
+        if(checkReusltResquestTime < 3)
+        {
+            GetResult();
+        }
 
+        Debug.Log("Get Result Failed" + checkReusltResquestTime);
     }
 
     public void ResetGame()
@@ -126,7 +136,7 @@ public class BaymaxGame : BaseGame
 
     public void GetResult()
     {
-        backendManager.GetResult();
+        backendManager.GetResult(PlayerPrefs.GetString("x2").FromBase64());
     }
 
     public void ShowResult()
