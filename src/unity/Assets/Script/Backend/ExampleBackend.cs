@@ -62,14 +62,25 @@ public partial class BackendManager {
     public PostAudioSuccess OnPostAudioSuccess;
     public PostAudioFailed OnPostAudioFailed;
 
-    public delegate void ResultLoaded(Result results);
+    public delegate void ResultLoaded(List<Result> results);
     public delegate void ResultLoadedFailed();
     public ResultLoaded OnResultLoaded;
     public ResultLoadedFailed OnResultLoadedFailed;
 
+    public delegate void AllResultLoaded(List<Result> results);
+    public delegate void AllResultLoadedFailed();
+    public AllResultLoaded OnAllResultLoaded;
+    public AllResultLoadedFailed OnAllResultLoadedFailed;
 
     // the authentication token will be set when a user has logged in
     private string authenticationToken = "";
+
+    static JsonSerializerSettings settings = new JsonSerializerSettings()
+    {
+
+        NullValueHandling = NullValueHandling.Ignore,
+        MissingMemberHandling = MissingMemberHandling.Ignore
+    };
 
     /// <summary>
     /// Does a POST request to the backend, trying to get an authentication token. On succes, it will save the auth token for further use. On success, the OnLoggedIn
@@ -121,7 +132,8 @@ public partial class BackendManager {
     /// <param name="username"></param>
     /// <param name="email"></param>
     /// <param name="password"></param>
-    public void Signup(string username, string email, string password) {
+    public void Signup(string username, string email, string password)
+    {
         WWWForm form = new WWWForm();
         form.AddField("username", username);
         form.AddField("email", email);
@@ -129,26 +141,44 @@ public partial class BackendManager {
         Send(RequestType.Post, "user/", form, OnSignupResponse);
     }
 
-    private void OnSignupResponse(ResponseType responseType, JToken responseData, string callee) {
-        if (responseType == ResponseType.Success) {
-            if (OnSignupSuccess != null) {
+    private void OnSignupResponse(ResponseType responseType, JToken responseData, string callee)
+    {
+        if (responseType == ResponseType.Success)
+        {
+            if (OnSignupSuccess != null)
+            {
                 OnSignupSuccess();
             }
-        } else if (responseType == ResponseType.ClientError) {
-            if (OnSignupFailed != null) {
-                OnSignupFailed("Could not reach the server. Please try again later.");
+        }
+        else if (responseType == ResponseType.ClientError)
+        {
+            if (OnSignupFailed != null)
+            {
+                if(responseData != null)
+                {
+                    OnSignupFailed("username already exist");
+                }
+                else
+                {
+                    OnSignupFailed("Could not reach the server. Please try again later.");
+                }
             }
-        } else if (responseType == ResponseType.RequestError) {
+        }
+        else if (responseType == ResponseType.RequestError)
+        {
             string errors = "";
             JObject obj = (JObject)responseData;
-            foreach (KeyValuePair<string, JToken> pair in obj) {
+            foreach (KeyValuePair<string, JToken> pair in obj)
+            {
                 errors += "[" + pair.Key + "] ";
-                foreach (string errStr in pair.Value) {
+                foreach (string errStr in pair.Value)
+                {
                     errors += errStr;
                 }
                 errors += '\n';
             }
-            if (OnSignupFailed != null) {
+            if (OnSignupFailed != null)
+            {
                 OnSignupFailed(errors);
             }
         }
@@ -199,9 +229,13 @@ public partial class BackendManager {
         }
     }
 
-    public void GetResult()
+    public void GetResult(string id)
     {
-        SendFile(RequestType.Get, "recommand/", null, OnGetResultResponse, authenticationToken);
+        WWWForm form = new WWWForm();
+        form.AddField("recommand", id);
+        byte[] postData = { 1 };
+        form.AddBinaryData("recommand", postData);
+        SendFile(RequestType.Post, "recommand/", form, OnGetResultResponse, authenticationToken, false);
     }
 
     private void OnGetResultResponse(ResponseType responseType, string[] responseData, JToken responseJson, string callee)
@@ -211,13 +245,9 @@ public partial class BackendManager {
             if (OnResultLoaded != null)
             {
                 //Result results = JsonConvert.DeserializeObject<Result>(responseJson.ToString());
-                //Debug.Log(results.music_1);
-                //Debug.Log(results.link_1);
-                //Debug.Log(results.music_2);
-                //Debug.Log(results.link_2);
-                //Debug.Log(results.music_3);
-                //Debug.Log(results.link_3);
-                OnResultLoaded(JsonConvert.DeserializeObject<Result>(responseJson.ToString()));
+                //Debug.Log(responseJson);
+                //Debug.Log(JsonConvert.DeserializeObject<List<Result>>(responseJson.ToString(), settings));
+                OnResultLoaded(JsonConvert.DeserializeObject<List<Result>>(responseJson.ToString(), settings));
                 //OnResultLoaded(JsonConvert.DeserializeObject<List<Result>>(responseJson.ToString()));
             }
         }
@@ -230,11 +260,40 @@ public partial class BackendManager {
         }
     }
 
-    public void PostPhoto(byte[] imageData)
+    public void GetAllResult(string id)
     {
         WWWForm form = new WWWForm();
+        form.AddField("result", id);
+        byte[] postData = { 1 };
+        form.AddBinaryData("result", postData);
+        SendFile(RequestType.Post, "result/", form, OnGetAllResultResponse, authenticationToken, false);
+    }
+    private void OnGetAllResultResponse(ResponseType responseType, string[] responseData, JToken responseJson, string callee)
+    {
+        if (responseType == ResponseType.Success)
+        {
+            if (OnAllResultLoaded != null)
+            {
+                //Result results = JsonConvert.DeserializeObject<Result>(responseJson.ToString());
+                OnAllResultLoaded(JsonConvert.DeserializeObject<List<Result>>(responseJson.ToString(), settings));
+                //OnResultLoaded(JsonConvert.DeserializeObject<List<Result>>(responseJson.ToString()));
+            }
+        }
+        else
+        {
+            if (OnAllResultLoadedFailed != null)
+            {
+                OnAllResultLoadedFailed();
+            }
+        }
+    }
+
+    public void PostPhoto(byte[] imageData, string id)
+    {
+        WWWForm form = new WWWForm();
+        form.AddField("photo", id);
         form.AddBinaryData("photo", imageData, "photo.png", "image/png");
-        SendFile(RequestType.Post, "face/", form, OnPostPhotoResponse, authenticationToken);
+        SendFile(RequestType.Post, "face/", form, OnPostPhotoResponse, authenticationToken, true);
     }
 
     private void OnPostPhotoResponse(ResponseType responseType, string[] responseData, JToken responseJson, string callee)
@@ -258,11 +317,12 @@ public partial class BackendManager {
         }
     }
 
-    public void PostAudio(byte[] audioData)
+    public void PostAudio(byte[] audioData, string id)
     {
         WWWForm form = new WWWForm();
+        form.AddField("audio", id);
         form.AddBinaryData("audio", audioData, "myfile.wav", "audio/wav");
-        SendFile(RequestType.Post, "speech/", form, OnPostAudioResponse, authenticationToken);
+        SendFile(RequestType.Post, "speech/", form, OnPostAudioResponse, authenticationToken, true);
     }
 
     private void OnPostAudioResponse(ResponseType responseType, string[] responseData, JToken responseJson, string callee)

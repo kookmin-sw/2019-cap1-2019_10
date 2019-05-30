@@ -39,6 +39,7 @@ public class LoginMenu : BaseMenu {
     public int checkTry;
     private string status = "";
     public string username = "", password = "";
+    public bool isSignup;
     private SignupMenu signupMenu;
 
     public GameObject loginMenu;
@@ -67,6 +68,8 @@ public class LoginMenu : BaseMenu {
         signupMenu.OnCancel += OnSignupCancelOrSuccess;
         signupMenu.OnSignedUp += OnSignupCancelOrSuccess;
 
+        isSignup = false;
+
         if (PlayerPrefs.HasKey("x1")) {
             username = PlayerPrefs.GetString("x2").FromBase64();
             password = PlayerPrefs.GetString("x1").FromBase64();
@@ -81,6 +84,7 @@ public class LoginMenu : BaseMenu {
 
     private void OnSignupCancelOrSuccess() {
         enabled = true;
+        isSignup = true;
         loginObject.SetActive(true);
     }
     
@@ -153,6 +157,7 @@ public class LoginMenu : BaseMenu {
     {
         loginObject.SetActive(false);
         signupObject.SetActive(true);
+        signupMenu.enabled = true;
     }
 
     private void Update() {

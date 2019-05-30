@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class ResultMenu : BaseMenu
 {
     private bool loading;
-    private Result results;
+    private List<Result> results;
     private Score newestResult;
 
     public Text MusicButton1, MusicButton2, MusicButton3;
@@ -21,12 +21,13 @@ public class ResultMenu : BaseMenu
 
     public void OnResult()
     {
-        backendManager.GetResult();
+        backendManager.GetResult(PlayerPrefs.GetString("x2").FromBase64());
     }
 
-    private void OnResultLoaded(Result results)
+    private void OnResultLoaded(List<Result> results)
     {
         Debug.Log("result menu");
+        Debug.Log(results[0].music + " "  + results[0].link + " " + results[0].tag_1 + " " + results[0].tag_2);
         //results = newResults.ToList();
 
         //foreach (Result result in results)
@@ -35,9 +36,9 @@ public class ResultMenu : BaseMenu
         //}
         this.results = results;
 
-        MusicButton1.text = results.music_1;
-        MusicButton2.text = results.music_2;
-        MusicButton3.text = results.music_3;
+        MusicButton1.text = results[0].music;
+        MusicButton2.text = results[1].music;
+        MusicButton3.text = results[2].music;
 
         loading = false;
         //newestScore = scores.OrderByDescending(s => s.Updated).FirstOrDefault(s => s.Amount == (int)CurrentScore);
@@ -56,15 +57,15 @@ public class ResultMenu : BaseMenu
 
     public void OnClickMusicButton1()
     {
-        Application.OpenURL(results.link_1);
+        Application.OpenURL(results[0].link);
     }
     public void OnClickMusicButton2()
     {
-        Application.OpenURL(results.link_2);
+        Application.OpenURL(results[1].link);
     }
     public void OnClickMusicButton3()
     {
-        Application.OpenURL(results.link_3);
+        Application.OpenURL(results[2].link);
     }
 
     private string[] Happiness = { "#기쁨", "#신남", "#흥폭팔", "#댄스댄스", "#환희", "#희열", "#스마일", "#행복" };

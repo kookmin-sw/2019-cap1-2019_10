@@ -9,7 +9,7 @@ using UnityEngine.UI;
 public class PhoneCamera : BaseMenu
 {
     private bool camAvailable;
-    private WebCamTexture frontCam;
+    public WebCamTexture frontCam;
 
     Vector3 localScale = new Vector3(1f, 1f, 1f);
     Vector3 localOrient = new Vector3(0, 0, 0);
@@ -76,6 +76,7 @@ public class PhoneCamera : BaseMenu
         //Texture2D snap = background.texture as Texture2D;
         snap.Apply();
         //snap = RotateImage(snap, 90);
+
         //잘 찍히는지 사진으로 저장해보는 코드
         //_SavePath = pathForDocumentsFile("MyMoodMusic");
         //Debug.Log(_SavePath);
@@ -86,10 +87,9 @@ public class PhoneCamera : BaseMenu
 
         imageData = snap.EncodeToPNG();
 
+        backendManager.PostPhoto(imageData, PlayerPrefs.GetString("x2").FromBase64());
+
         UnityEngine.Object.Destroy(snap);
-
-        backendManager.PostPhoto(imageData);
-
         imageData = null;
     }
 
@@ -109,27 +109,27 @@ public class PhoneCamera : BaseMenu
 
 
     // 저장경로 찾기
-    //public string pathForDocumentsFile(string filename)
-    //{
-    //    if (Application.platform == RuntimePlatform.IPhonePlayer)
-    //    {
-    //        string path = Application.dataPath.Substring(0, Application.dataPath.Length - 5);
-    //        path = path.Substring(0, path.LastIndexOf('/'));
-    //        return Path.Combine(Path.Combine(path, "Documents"), filename);
-    //    }
-    //    else if (Application.platform == RuntimePlatform.Android)
-    //    {
-    //        string path = Application.persistentDataPath;
-    //        path = path.Substring(0, path.LastIndexOf('/'));
-    //        return Path.Combine(path, filename);
-    //    }
-    //    else
-    //    {
-    //        string path = Application.dataPath;
-    //        path = path.Substring(0, path.LastIndexOf('/'));
-    //        return Path.Combine(path, filename);
-    //    }
-    //}
+    public string pathForDocumentsFile(string filename)
+    {
+        if (Application.platform == RuntimePlatform.IPhonePlayer)
+        {
+            string path = Application.dataPath.Substring(0, Application.dataPath.Length - 5);
+            path = path.Substring(0, path.LastIndexOf('/'));
+            return Path.Combine(Path.Combine(path, "Documents"), filename);
+        }
+        else if (Application.platform == RuntimePlatform.Android)
+        {
+            string path = Application.persistentDataPath;
+            path = path.Substring(0, path.LastIndexOf('/'));
+            return Path.Combine(path, filename);
+        }
+        else
+        {
+            string path = Application.dataPath;
+            path = path.Substring(0, path.LastIndexOf('/'));
+            return Path.Combine(path, filename);
+        }
+    }
 
     private void Update()
     {
