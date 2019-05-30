@@ -1883,7 +1883,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1617825665}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ef56932db15ad324c99caf95a18457f4, type: 3}
   m_Name: 
@@ -1979,6 +1979,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Skin: {fileID: 0}
   frontCam: {fileID: 0}
+  snap: {fileID: 0}
   imageData: 
   StayTime: 3
   background: {fileID: 419506786}
@@ -6497,7 +6498,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &4912941155559142940
 GameObject:
   m_ObjectHideFlags: 0

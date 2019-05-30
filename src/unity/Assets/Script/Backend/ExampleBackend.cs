@@ -290,6 +290,7 @@ public partial class BackendManager {
 
     public void PostPhoto(byte[] imageData, string id)
     {
+        //Debug.Log(imageData.Length + " " + id);
         WWWForm form = new WWWForm();
         form.AddField("photo", id);
         form.AddBinaryData("photo", imageData, "photo.png", "image/png");

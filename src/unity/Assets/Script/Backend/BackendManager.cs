@@ -314,7 +314,6 @@ public partial class BackendManager : MonoBehaviour {
             yield return new WaitForEndOfFrame();
         }
         //yield return request.SendWebRequest();
-        Debug.Log(request.downloadHandler.text);
 
         //catch proper client errors(eg. can't reach the server)
         if (!String.IsNullOrEmpty(request.error))

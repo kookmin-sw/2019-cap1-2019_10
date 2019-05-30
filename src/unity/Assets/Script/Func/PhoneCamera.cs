@@ -10,6 +10,7 @@ public class PhoneCamera : BaseMenu
 {
     private bool camAvailable;
     public WebCamTexture frontCam;
+    public Texture2D snap;
 
     Vector3 localScale = new Vector3(1f, 1f, 1f);
     Vector3 localOrient = new Vector3(0, 0, 0);
@@ -71,7 +72,7 @@ public class PhoneCamera : BaseMenu
     // 사진찍기
     private void TakeSnapshot()
     {
-        Texture2D snap = new Texture2D(frontCam.width, frontCam.height);
+        snap = new Texture2D(frontCam.width, frontCam.height);
         snap.SetPixels(frontCam.GetPixels());
         //Texture2D snap = background.texture as Texture2D;
         snap.Apply();
