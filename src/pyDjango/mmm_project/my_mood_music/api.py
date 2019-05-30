@@ -1,4 +1,4 @@
-"""
+﻿"""
 
 어플의 전체적인 흐름에 관여하는 코드입니다.
 
@@ -8,6 +8,7 @@ from django.http import Http404, HttpResponseNotFound
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.renderers import JSONRenderer
 
 from django.http.response import HttpResponse
 from django.db.models import Max
@@ -21,6 +22,7 @@ import pandas as pd
 from keras.models import model_from_json
 from .models import *
 
+
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from .permissions import IsOwnerOrReadOnly
@@ -30,6 +32,9 @@ from django.core.files.base import ContentFile
 
 import operator
 import json
+import time
+
+
 
 '''
 어플 시나리오 
@@ -47,163 +52,142 @@ from django.contrib.auth.models import User
 # face_api_age = 0.0
 # speech_api_emotion = ''
 
-# # 이미지, 음성 감정분석 결과를 파일에 저장하거나 읽어온다.
-# def process_file(self, filename, mode):
-#     f = open(filename, mode)
-#     if mode == 'r':
-#         result = f.read()
-#         return result
-#     elif mode == 'w':
-#         f.write()
-#         f.close()
-
+class Result(APIView):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.user_id = ''
+        
+    def post(self, request, format=None):
+        start_time = time.time()
+        try:
+            
+            #print(request.POST)
+            print(request.POST.get('result'))
+            self.user_id = request.POST.get('result')
+            if not self.user_id :
+                return HttpResponse('please try again')
+             
+            queryset = Analysis_Result.objects.filter(user_id = self.user_id).order_by('-id')
+            print(queryset)
+            '''
+            if not queryset :
+                return HttpResponse('please try again')
+            '''
+            print('serializer start')
+            serializer = Analysis_ResultSerializer(queryset, many=True)
+            print('serializer end')
+              
+            print("TIME Result.get() = {t}".format(t = (time.time() - start_time)))
+            
+            return Response(serializer.data)
+            
+        except Exception as e :
+            print(e, type(e))
+            return HttpResponse('please try again')
+        
 
 # 최종적으로 음악을 추천해주는 클래스 뷰
 class RecommendationMusic(APIView):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.table_idx = ["anger", "disgust", "fear", "happiness", "sadness", "surprise"]
-        self.tone_res = ''
-        self.music_list = [] # 리스트 안의 dictionary 형태로 들어온다. (music, url)
         self.age = random.randint(0, 150)
-        # self.age = 10
-
-        self.face = '{"faceId": "c8a2f7ff-316b-4440-a051-f1bdebe7bebf", "faceRectangle": {"top": 0, "left": 35, "width": 245, "height": 199}, "faceAttributes": {"age": 25.0, "emotion": {"anger": 0.0, "contempt": 0.099, "disgust": 0.073, "fear": 0.0, "happiness": 0.0, "neutral": 0.012, "sadness": 0.816, "surprise": 0.0}}}'
-        self.speech = 'angry'
+        self.user_id = ''
 
     # GET request
-    def get(self, request, format=None):
-        # global face_api_age
-        # print('face_api_age : ', face_api_age)
-
-        # self.age = process_file('face_api_age', 'r')
+    def post(self, request, format=None):
+        start_time = time.time()
         try:
-            f = open('face_api_age.txt', 'r')
-            self.age = f.read()
-            if not self.age : self.age = 24
+
+            self.user_id = request.POST.get('recommand','')
+            
+            print(self.user_id)
+            if not self.user_id : 
+                print('user id is none')
+                return HttpResponse('please try again')
+            
+            filename = './api_result/face_api_age_{id}.txt'.format(id = self.user_id)
+            f = open(filename, 'r') # need user_id 
+            self.age = float(f.read())
+            print(self.age)
+            if not self.age : self.age = random.randint(0,150)
             f.close()
-            self.music_list = self.get_random3_test(Child)
-            #self.music_list = self.recommand_music(self.age)
-
-            print('self.music_list is : ', self.music_list)
-
-            result = json.dumps(self.music_list, ensure_ascii=False)
+            
+            result = self.recommand_music(self.age) #serializer.data
+            print('recommand_music finish')
+            
+            print('result is : ', result)
+            
+            if not result:
+                print("TIME RecommendationMusic.post() = {}".format((time.time() - start_time)))
+                return HttpResponse('please try again')
+            
+            
+            '''
+            analysis_result = Analysis_Result.objects.filter(user_id=self.use_id).last()
+            serializer = Analysis_ResultSerializer(analysis_result)
+            return Response(serializer.data)
+            '''
+            print("TIME RecommendationMusic.get() = {}".format((time.time() - start_time)))
             return Response(result)
 
         except Exception as e:
+            #print(e, type(e))
+            print("TIME RecommendationMusic.post() = {}".format((time.time() - start_time)))
             return HttpResponse('please try again')
 
     # 어플에서 받은 id값과 데이터베이스에서 받은 값(music list)을 INSERT 한다.
-    # 근데 이게 여기에 있으면 안 되잖아.
-    def create_Analysis_Result(self, music_list):
+    def create_Analysis_Result(self, serializer_data):
+        start_time = time.time()
+        # should get the user id
         try:
+            print('create_Analysis_Result start')
             max_id = Analysis_Result.objects.all().aggregate(max_id=Max("id"))['max_id']
+            print('max_id' , max_id)
             if max_id:
                 queryset = Analysis_Result.objects.create(id=max_id + 1, user_id=self.user_id,
-                                                          music_r1=music_list[0],
-                                                          music_r2=music_list[1], music_r3=music_list[2])
+                                                          music =serializer_data['music'],
+                                                          link = serializer_data['link'],
+                                                          tag_1 = serializer_data['tag_1'], tag_2 = serializer_data['tag_2'])
             else:
-                queryset = Analysis_Result.objects.create(id=1, user_id=self.user_id, music_r1=music_list[0],
-                                                          music_r2=music_list[1], music_r3=music_list[2])
+                queryset = Analysis_Result.objects.create(id=1, user_id=self.user_id,
+                                                          music =serializer_data['music'],
+                                                          link = serializer_data['link'],
+                                                          tag_1 = serializer_data['tag_1'], tag_2 = serializer_data['tag_2'])
+            
             queryset.save()
+            print('create_Analysis_Result end')
 
             print(connection.queries[-1])  # 디버깅 용
             # 모델 클래스의 오브젝트 갯수확인
             print(Analysis_Result.objects.all().count())
-
+            print("TIME RecommendationMusic.create_Analysis_result() = {}".format((time.time() - start_time)))
         except Exception as e:
+            #print("TIME RecommendationMusic.create_Analysis_result() = {}".format((time.time() - start_time)))
+            print(e, type(e))
             return HttpResponse('please try again')
 
-    # 하나의 데이터베이스에서 랜덤으로 레코드 3개를 받아온다.
-    def get_random3(self, table):
-        try:
-            Music = {}
-            max_id = table.objects.all().aggregate(max_id=Max("id"))['max_id']
-            dictionary_list = []
-            music_list = []
-            link_list = []
-            tag_list = []
-            pk_list = []
-            count = 0
-            while True:
-                # print('loop start')
-                if count == 3:
-                    break
-                # print('pk before')
-                pk = random.randint(1, max_id)  # pk can equal, have to correct
-                # print('pk after')
-                # print(pk)
-                if pk in pk_list : continue
-                pk_list.append(pk)
-                # print(pk_list)
-                music = table.objects.filter(id=pk).first()
-                print('music.music : ', music.music)
-                print('music.link : ', music.link)
-                if music:
-                    music_list.append(music.music)
-                    link_list.append(music.link)
-                    tag_list.append((music.tag1, music.tag2))
-                    count += 1
-
-            self.create_Analysis_Result(music_list)
-
-            Music['music'] = music_list
-            Music['link'] = link_list
-            Music['tag'] = tag_list
-            dictionary_list.append(Music)  # list of dictionary
-            print(dictionary_list)
-            return dictionary_list
-        except Exception as e:
-            return HttpResponse('please try again')
-
-    # randomly get three music of DB (test)
-    def get_random3_test(self, table):
-        try:
-            Music = {}
-            max_id = table.objects.all().aggregate(max_id=Max("id"))['max_id']
-            dictionary_list = []
-            pk_list = []
-            count = 0
-            while True:
-                print('loop start')
-                if count == 3:
-                    break
-                print('pk before')
-                pk = random.randint(1, max_id)  # pk can equal, have to correct
-                print('pk after')
-                print(pk)
-                if pk in pk_list : continue
-                pk_list.append(pk)
-                print(pk_list)
-                music = table.objects.filter(id=pk).first()
-                print('music.music : ', music.music)
-                print('music.link : ', music.link)
-                if music:
-                    Music['music_{}'.format(len(pk_list))] = music.music
-                    Music['link_{}'.format(len(pk_list))] = music.link
-                    count += 1
-            
-            dictionary_list.append(Music)  # list of dictionary
-            print(dictionary_list)
-            return dictionary_list
-        except Exception as e:
-            return HttpResponse('please try again')
 
     # 추천 알고리즘을 통해 얻은 3개의 레코드를 받아온다.
     def recommand_music(self, age):
+        start_time = time.time()
         try:
-            # global face_api_emotion
-            # global speech_api_emotion
-            # print('face_api_emotion : ', face_api_emotion)
-            # print('speech_api_emotion : ', speech_api_emotion)
+            print('recommand_music_start')
 
-            dictionary_list = []
-            music_list = []
             # 10세 미만이면 어린이 테이블로 가서 랜덤으로 3개의 동요를 뽑고 바로 종료한다.
-            if age < 10:
-                print('get_random3 function before')
-                dictionary_list = self.get_random3(Child)
-                print('get_random3 function finish')
+            if age < 10.0:
+                #dictionary_list = self.get_random3(Child)
+                queryset = Child.objects.order_by('?')[0:3]
+                serializer =Analisys_ResultSerializer(queryset, many = True)
+                print('create table entry start')
+                self.create_Analysis_Result(serializer.data[0])
+                print('first queryset save')
+                self.create_Analysis_Result(serializer.data[1])
+                print('second queryset save')
+                self.create_Analysis_Result(serializer.data[2])
+                print("TIME RecommendationMusic.recommand_music() = {}".format((time.time() - start_time)))
+                return serializer.data
+
 
             # 어린이 나이가 아니라면, 추천 알고리즘에 의해 감정까지 고려한 노래 3개를 뽑는다.
             else:
@@ -214,72 +198,113 @@ class RecommendationMusic(APIView):
                     age = 30
                 else:
                     age = 40
-
+            
                 # 추천알고리즘에서 리턴하는 테이블 인덱스를 리스트 인덱스로 접근할 수 있도록 table_index 리스트 생성
                 table_index = [Anger, Disgust, Fear, Happiness, Sadness, Surprise, Lie]
 
-                # self.face = process_file('face_api_emotion', 'r')
-                # self.speech = process_file('speech_api_emotion', 'r')
-
-                f = open('face_api_emotion.txt', 'r')
+                filename = './api_result/face_api_emotion_{id}.txt'.format(id = self.user_id)
+                f = open(filename, 'r')
                 self.face = f.read()
-
+                self.face = json.loads(self.face)
                 f.close()
-
-                f = open('speech_api_emotion.txt', 'r')
-                self.speech = f.read()
+                
+                if not self.face :
+                    print("TIME RecommendationMusic.recommand_music() = {}".format((time.time() - start_time)))
+                    return HttpResponse('please try again')
+                
+                filename = './api_result/speech_api_emotion_{id}.txt'.format(id = self.user_id)
+                f = open(filename, 'r')
+                self.speech = ''.join(f.read().split('\"')[1])
+                #print(self.speech)
                 f.close()
+                
+                if not self.speech : 
+                    print("TIME RecommendationMusic.recommand_music() = {}".format((time.time() - start_time)))
+                    return HttpResponse('please try again')
 
                 # 추천알고리즘에서 리턴하는 테이블에 대한 정보 (노래 3개->3개의 요소)
                 print('get_table_name function before')
                 t_info = list(self.get_table_name(self.face, self.speech))  # should modify
                 print('get_table_name function finish')
                 print('t_info is : ', t_info)
-
+                
+                music_list = []
+                
                 for tableN in t_info:
                     print('loop start')
                     if tableN in [41, 42, 43]:  # Sad테이블에 접근해야하는 경우
                         table = table_index[4]  # Sad
+                        print('selected table is :', table)
                         subclass_sad = tableN % 40  # subclass : 1 or 2 or 3
                         music = table.objects.filter(subclass_s=subclass_sad).order_by(
                             '?').first()  # Sad테이블 중 subclass_s가 subclass인 노래들 중 랜덤 선택
+                        serializer = Analysis_ResultSerializer(music)
+                        self.create_Analysis_Result(serializer.data)
+                        music_list.append(serializer.data)
 
                     else:  # Sad테이블 이외의 테이블에 접근해야하는 경우
                         table = table_index[tableN]
-
-                    music = table.objects.filter(age=age).order_by('?').first()  # 해당 연령 범위의 노래로 추림
+                        print('selected table is :', table)
+                    
+                    if(table==Lie):
+                        print('selected table is :', table)
+                        music = table.objects.order_by('?').first() 
+                        serializer = Analysis_ResultSerializer(music)
+                        self.create_Analysis_Result(serializer.data)
+                        music_list.append(serializer.data)
+                        #music_list.append(music)
+                        #sereailizer = Analysis_ResultSerializer(music)
+                    else:
+                        print('selected table is :', table)
+                        music = table.objects.filter(age=age).order_by('?').first()
+                        serializer = Analysis_ResultSerializer(music)
+                        self.create_Analysis_Result(serializer.data)
+                        music_list.append(serializer.data)
+                        #music_list.append(music)
+                        #serializer = Analisys)ResultSerializer(music)
                     print('music is: ', music)
-                    print('music.music is : ', music.music)
-                    music_list.append(music.music)
-                    dictionary_list.append(music)
+                    
+                print('music_list is : ', music_list) #serializer.data
+                
+                #queryset = music_list[0] | music_list[1] | music_list[2]
+                #queryset = music_list[0]
+                #queryset.union(music_list[1])
+                #print('queryset is : ', queryset)
 
-            self.create_Analysis_Result(music_list)
+                #serializer = Analysis_ResultSerializer(queryset)
 
-            return dictionary_list
+                
+
+                #self.create_Analysis_Result(music_list)
+                #self.create_Analysis_Result(serializer.data) 
+            print("TIME RecommendationMusic.recommand_music() = {}".format((time.time() - start_time)))
+            return music_list
         except Exception as e:
+            print(type(e))            
             return HttpResponse('please try again')
 
     # 이미지, 음성 감정 분석 결과를 이용해 접근할 테이블을 결정한다.
     def get_table_name(self, face, tone):
+        start_time = time.time()
         try:
             # 테이블 인덱스를 리스트에 저장한다.
             table1 = 100
             table2 = 100
             table3 = 100
-
-            # tone 결과를 face 결과형식와 맞춰줌 : angry->anger / calm->neutral / fearful->fear / happy->happiness / sad->sadness
+            # tone 결과를 face 결과형식와 맞춰줌 : angry->anger / calm->neutral / fearful->fear / happy->happiness / sad->sadnes
+            
             if tone == "angry":
-                self.tone_res = "anger"
+                tone_res = "anger"
             elif tone == "calm":
-                self.tone_res = "neutral"
+                tone_res = "neutral"
             elif tone == "fearful":
-                self.tone_res = "fear"
+                tone_res = "fear"
             elif tone == "happy":
-                self.tone_res = "happiness"
+                tone_res = "happiness"
             elif tone == "sad":
-                self.tone_res = "sadness"
+                tone_res = "sadness"
             else:
-                return HttpResponse("tone_res err")
+                print("tone_res err")
 
             # parse json data (input format : .json file)
             json_string = str(face).replace("\'", "\"")
@@ -307,6 +332,7 @@ class RecommendationMusic(APIView):
                 table1 = random.randint(0, 6)
                 table2 = random.randint(0, 6)
                 table3 = random.randint(0, 6)
+                print("TIME RecommendationMusic.get_table_name() = {}".format((time.time() - start_time)))
                 return table1, table2, table3
 
             # 전처리 - 0.05미만인 값은 0.0으로 스무딩한다.
@@ -317,18 +343,20 @@ class RecommendationMusic(APIView):
                         # print('smoothing dictionary : ', dic)
 
             # 전처리 - 거짓말인 경우, 거짓말 테이블 선택
-            if self.tone_res == "sadness" and happiness > 0:
+            if tone_res == "sadness" and happiness > 0:
                 print("행복 얼굴로 슬픈 목소리를 내는 거짓말쟁이1")
                 table1 = 6
                 table2 = 6
                 table3 = 6
+                print("TIME RecommendationMusic.get_table_name() = {}".format((time.time() - start_time)))
                 return table1, table2, table3
 
-            elif self.tone_res == "happiness" and sadness > 0:
+            elif tone_res == "happiness" and sadness > 0:
                 print("슬픈 얼굴로 행복 목소리를 내는 거짓말쟁이2")
                 table1 = 6
                 table2 = 6
                 table3 = 6
+                print("TIME RecommendationMusic.get_table_name() = {}".format((time.time() - start_time)))
                 return table1, table2, table3
 
             # 전처리 (1) 중립에 의한 랜덤 테이블 (2) 거짓말테이블 -> 둘 다 해당하지 않으면 1,2,3순위 감정에 따른 알고리즘 처리 적용
@@ -425,21 +453,26 @@ class RecommendationMusic(APIView):
                         table3 = self.table_idx.index(rank_emotion[2])
                         if table3 == 4:
                             table3 = 41
-
+            print("TIME RecommendationMusic.get_table_name() = {}".format((time.time() - start_time)))
             return table1, table2, table3
         except Exception as e:
+            print("TIME RecommendationMusic.get_table_name() = {}".format((time.time() - start_time)))
             return HttpResponse('please try again')
 
 
 # Serializer를 이용한 Json 데이터 Response
 class TestJson(APIView):
     def get_object(self, pk):
+        start_time = time.time()
         try:
+            print("TIME TestJson.get_object() = {}".format((time.time() - start_time)))
             return Analysis_Result.objects.get(pk=pk)
         except Exception as e:
-            raise Http404
+            print("TIME TestJson.get_object() = {}".format((time.time() - start_time)))
+            return HttpResponse('please try again')
 
     def get(self, request, format=None):
+        start_time = time.time()
         try:
             '''
             child_1 = self.get_object(24)
@@ -447,11 +480,21 @@ class TestJson(APIView):
             serializer = ChildSerializer(child_1)
             serializer = ChildSerializer(child_2)
             '''
-            analysis_result = self.get_object(1)
-            serializer = Analysis_ResultSerializer(analysis_result)
+            Dict = {}
+            analysis_result = Child.objects.order_by('?')[0:3]
+            #Dict.update(json.loads(analysis_result[0]))
+            print(analysis_result)
+            serializer = Analysis_ResultSerializer(analysis_result, many=True)
+            #json = JSONRenderer().render(serializer.data)
+            print(serializer.data)
+            print(serializer.data[0]['music'])
+            print("TIME TestJson.get() = {}".format((time.time() - start_time)))
             return Response(serializer.data)
+            #return Response(json)
 
         except Exception as e:
+            print(e, type(e))
+            print("TIME TestJson.get() = {}".format((time.time() - start_time)))
             return HttpResponse('please try again')
 
 
@@ -465,6 +508,7 @@ class RequestFaceAPI(APIView):
         self.user_id = ''
 
     def get_data_from_faces(self, faces):
+        start_time = time.time()
         #global face_api_age
 
         json_string = str(faces).replace("\'", "\"")
@@ -482,15 +526,21 @@ class RequestFaceAPI(APIView):
         # self.result_age = result_age
 
         #face_api_age = result_age
-        f = open('face_api_age.txt', 'w')
+        filename = './api_result/face_api_age_{id}.txt'.format(id = self.user_id)
+        f = open(filename, 'w')
         json_val = json.dumps(result_age)
         f.write(json_val)
         f.close()
+        print("TIME RequestFaceAPI.get_data_from_faces() = {}".format((time.time() - start_time)))
 
     # 어플에서 이미지를 받았을 때
     def post(self, request, format=None):
+        start_time = time.time()
         # global face_api_emotion
-        #self.user_name = request.POST.get('username', '') id 받아서 Analysis_Result에 넣어줘야 함.
+        self.user_id = request.POST.get('photo', '') 
+        print(self.user_id)
+        if not self.user_id :
+            return HttpResponse('please try again')
         try:
             KEY = '86ad6a50a2af46189c45fc51819f4d9b'
             CF.Key.set(KEY)
@@ -515,8 +565,9 @@ class RequestFaceAPI(APIView):
             faces = CF.face.detect(data_test)
             print(faces)
             #face_api_emotion = faces
-
-            f = open('face_api_emotion.txt','w')
+            
+            filename = './api_result/face_api_emotion_{id}.txt'.format(id = self.user_id)
+            f = open(filename,'w')
             json_val = json.dumps(faces[0])
             f.write(json_val)
             f.close()
@@ -525,73 +576,96 @@ class RequestFaceAPI(APIView):
             # process_file('face_api_emotion','w')
 
             if not faces:
+                print("TIME RequestFaceAPI.post() = {}".format((time.time() - start_time)))
                 return HttpResponse('please try again')
             else:
                 self.get_data_from_faces(faces[0])
                 print('self.result_emotion : ', str(self.result_emotion))
+                print("TIME RequestFaceAPI.post() = {}".format((time.time() - start_time)))
                 return HttpResponse(str(self.result_emotion))
 
         except Exception as e:
             print(e)
+            print("TIME RequestFaceAPI.post() = {}".format((time.time() - start_time)))
             return HttpResponse('please try again')
 
     def get(self, request, format=None):
+        start_time = time.time()
+        print("TIME RequestFaceAPI.get() = {}".format((time.time() - start_time)))
         return HttpResponse("Using Microsoft Face API")
 
-
+import os
 class Call(APIView):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.label = ["angry", "calm", "fearful", "happy", "sad", "angry", "calm", "fearful", "happy", "sad"]
+        self.user_id = ''
 
     def post(self, request, format=None):
+        start_time = time.time()
         try:
+            self.user_id = request.POST.get('audio', '')
+            if not self.user_id :
+                return HttpResponse('please try again')
             audio_file = request.FILES.get('audio', '')
-            path = default_storage.save('file.wav', ContentFile(audio_file.read()))
-            print(path)
+            if os.path.isfile('./media/file.wav'):
+                os.remove('./media/file.wav')
+     
+            path = default_storage.save('file.wav', ContentFile(audio_file.read())) 
             print(self.labelfrommodel('./media/{}'.format(path)))
         except Exception as e:
+            print("TIME Call.post() = {}".format((time.time() - start_time)))
             return HttpResponse('please try again')
+        print("TIME Call.post() = {}".format((time.time() - start_time)))
         return HttpResponse(self.labelfrommodel('./media/{}'.format(path)))
 
     def get(self, request, format=None):
+        start_time = time.time()
+        print("TIME Call.get() = {}".format((time.time() - start_time)))
         return HttpResponse("Using Speech-Emotion-Model")
 
     def labelfrommodel(self, filename):
-        #global speech_api_emotion
-        json_file = open('model.json', 'r')
-        loaded_model_json = json_file.read()
-        json_file.close()
-        loaded_model = model_from_json(loaded_model_json)
-        # load weights into new model
         try:
-            loaded_model.load_weights("Emotion_Voice_Detection_Model.h5")
+            start_time = time.time()
+            #global speech_api_emotion
+
+            json_file = open('model.json', 'r')
+            loaded_model_json = json_file.read()
+            json_file.close()
+            loaded_model = model_from_json(loaded_model_json)
+            # load weights into new model
+            try:
+                loaded_model.load_weights("Emotion_Voice_Detection_Model.h5")
+            except Exception as e:
+                pass
+
+            X, sample_rate = librosa.load(filename, res_type='kaiser_fast', duration=2.5,
+                                          sr=22050 * 2, offset=0.5)
+            #print('labelformmodel start')
+            sample_rate = np.array(sample_rate)
+            mfccs = np.mean(librosa.feature.mfcc(y=X, sr=sample_rate, n_mfcc=13), axis=0)
+
+            featurelive = mfccs
+            livedf2 = featurelive
+            livedf2 = pd.DataFrame(data=livedf2)
+            livedf2 = livedf2.stack().to_frame().T
+            twodim = np.expand_dims(livedf2, axis=2)
+            livepreds = loaded_model.predict(twodim, batch_size=32, verbose=1)
+            livepreds1 = livepreds.argmax(axis=1)
+            liveabc = livepreds1.astype(int).flatten()
+
+            #speech_api_emotion = self.label[int(liveabc)]
+            filename = './api_result/speech_api_emotion_{id}.txt'.format(id = self.user_id)
+            f=open(filename, 'w')
+            json_val = json.dumps(self.label[int(liveabc)])
+            f.write(json_val)
+            f.close()
+            print("TIME Call.labelfrommodel() = {}".format((time.time() - start_time)))
+            print(self.label[int(liveabc)])
+            return self.label[int(liveabc)]
         except Exception as e:
-            pass
-
-        X, sample_rate = librosa.load(filename, res_type='kaiser_fast', duration=2.5,
-                                      sr=22050 * 2, offset=0.5)
-        sample_rate = np.array(sample_rate)
-        mfccs = np.mean(librosa.feature.mfcc(y=X, sr=sample_rate, n_mfcc=13), axis=0)
-
-        featurelive = mfccs
-        livedf2 = featurelive
-        livedf2 = pd.DataFrame(data=livedf2)
-        livedf2 = livedf2.stack().to_frame().T
-        twodim = np.expand_dims(livedf2, axis=2)
-        livepreds = loaded_model.predict(twodim, batch_size=32, verbose=1)
-        livepreds1 = livepreds.argmax(axis=1)
-        liveabc = livepreds1.astype(int).flatten()
-
-        #speech_api_emotion = self.label[int(liveabc)]
-        
-        f=open('speech_api_emotion.txt', 'w')
-        json_val = json.dumps(self.label[int(liveabc)])
-        f.write(json_val)
-        f.close()
-
-        return self.label[int(liveabc)]
+            print(e, type(e))
 
 
 '''
