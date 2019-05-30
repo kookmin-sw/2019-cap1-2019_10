@@ -7,6 +7,7 @@ public class ClickCountDetector : MonoBehaviour, IPointerClickHandler
 {
     public GameObject DialogueImage;
     public GameObject start;
+    public GameObject LoginToggle;
 
     public void OnPointerClick(PointerEventData eventData)
     {
@@ -38,6 +39,7 @@ public class ClickCountDetector : MonoBehaviour, IPointerClickHandler
                 start.SetActive(false);
                 //깨어나기
                 Debug.Log("깨어나기");
+                LoginToggle.SetActive(true);
                 DialogueImage.SetActive(true);
                 Dialogue.instance.DialogueStart();
                 break;

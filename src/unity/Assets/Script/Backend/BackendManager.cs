@@ -342,6 +342,7 @@ public partial class BackendManager : MonoBehaviour {
             //Debug.Log(request.downloadHandler.text);
             if (check)
             {
+                //emotion = emotion.Replace("", "\n");
                 char[] delimiterChars = { ' ', ',', '[', ']', '\'', '\'', '\t', '\n', '\0' };
                 splitEmotion = emotion.Split(delimiterChars);
             }

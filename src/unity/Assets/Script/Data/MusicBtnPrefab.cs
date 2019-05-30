@@ -34,7 +34,15 @@ public class MusicBtnPrefab : MonoBehaviour
 
             musicBtnObject.music.text = result.music;
             musicBtnObject.link = result.link;
-            musicBtnObject.tag.text = "#" + result.tag_1 + " " + "#" + result.tag_2;
+
+            if (result.tag_1 != "")
+            {
+                musicBtnObject.tag.text = "#" + result.tag_1;
+            }
+            if(result.tag_2 != "")
+            {
+                musicBtnObject.tag.text  += " " + "#" + result.tag_2;
+            }
 
             ////추가할 오브젝트 생성
             //btnItemTemp = Instantiate(this.ItemObject) as GameObject;

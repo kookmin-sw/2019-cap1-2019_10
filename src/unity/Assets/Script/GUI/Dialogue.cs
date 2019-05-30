@@ -44,13 +44,13 @@ public class Dialogue : BaseMenu
         retry = 0;
         state = State.Start;
 
-        content.Add("시작합니다");
-        content.Add("사진");
-        content.Add("다찍음");
-        content.Add("질문");
-        content.Add("녹음끝");
-        content.Add("기다려봐");
-        content.Add("다시할래");
+        content.Add("나한테 집중해줘");
+        content.Add("너의 하루를 표정으로 표현해줘!\n" + "조금 오래 걸릴 수 있어");
+        content.Add("고마워, 이제 내 질문에 대답해줘");
+        content.Add("오늘 하루는 어땠어?");
+        content.Add("대답해줘서 고마워");
+        content.Add("기다려봐, 결과를 보여줄게");
+        content.Add("다시할래?");
 
         //backendManager.OnPhotoLoaded += SettingTag;
         backendManager.OnPostPhotoSuccess += OnPostPhotoSuccess;
@@ -196,14 +196,14 @@ public class Dialogue : BaseMenu
     {
         if (retry < 3)
         {
-            txt.text = "다시찍을게 기다려보ㅏ";
+            txt.text = "잘 안보여서.. 잠시만 기다려봐";
             Debug.Log("다시");
             TakePhoto();
             retry++;
         }
         else
         {
-            txt.text = "서버 상태가 안좋아서 더이상 진행할 수 없어 미아내";
+            txt.text = "서버 상태가 안좋아서 더이상 진행할 수 없어.. 미안해";
         }
     }
 
@@ -219,12 +219,12 @@ public class Dialogue : BaseMenu
     {
         if (retry < 3)
         {
-            txt.text = "다시녹음해봐 기다려보ㅏ";
+            txt.text = "다시 들려줄 수 있어?";
             retry++;
         }
         else
         {
-            txt.text = "서버 상태가 안좋아서 더이상 진행할 수 없어 미아내";
+            txt.text = "서버 상태가 안좋아서 더이상 진행할 수 없어, 미안해..";
         }
     }
 }
