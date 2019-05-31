@@ -20,6 +20,8 @@ public class ResultMenu : BaseMenu
     Vector2 vec2;
     public float textureWidth, textureHeight;
 
+    int[] tag_ = { 0, 0, 0, 0, 0, 0, 0, 0 };
+
     // Start is called before the first frame update
     void Start()
     {
@@ -42,17 +44,7 @@ public class ResultMenu : BaseMenu
         //Debug.Log(n);
         string[] emotions = { "Happiness", "Sadness", "Surprise", "Fear", "Disgust", "Anger", "Lie" };
         string[] check = { Tag1.text, Tag2.text, Tag3.text, Tag4.text, Tag5.text, Tag6.text, Tag7.text, Tag8.text };
-        //for(int i = 0; i != check.Length; i++)
-        //{
-        //    System.Random random = new System.Random();
-        //    int tag_ = random.Next(1, 8);
-        //    Debug.Log(photos.Length);
-        //    int emotion_ = random.Next(1, n + 1);
 
-        //    Debug.Log(i + "  : " + emotion_ + " " + tag_);
-
-        //    check[i] = emotions[--emotion_][--tag_];
-        //}
 
         //System.Random random = new System.Random();
         //int emotion = random.Next(0, 6);
@@ -69,7 +61,31 @@ public class ResultMenu : BaseMenu
         //Tag1.text = arr[tag];
         //int num = 0;
 
+        //int cnt = 0;
+        //for (int i = 0; i < 8;)
+        //{
+        //    if (photos[i] == "" | photos[i] == null) return;
+        //    int tag_ = UnityEngine.Random.Range(0, 7);
 
+
+        //    Debug.Log(i + "  : " + emotion_ + " " + tag_);
+
+        //    check[i] = emotions[--emotion_][--tag_];
+        //}
+
+        for (int i = 0; i < 8; i++)
+        {
+            tag_[i] = UnityEngine.Random.Range(0, random.Length);
+            Debug.Log(tag_[i]);
+        }
+        Tag1.text = random[tag_[0]];
+        Tag2.text = random[tag_[1]];
+        Tag3.text = random[tag_[2]];
+        Tag4.text = random[tag_[3]];
+        Tag5.text = random[tag_[4]];
+        Tag6.text = random[tag_[5]];
+        Tag7.text = random[tag_[6]];
+        Tag8.text = random[tag_[7]];
     }
 
     public void OnResult()
@@ -101,23 +117,8 @@ public class ResultMenu : BaseMenu
         findThumbnail(results[1].link, image2);
         findThumbnail(results[2].link, image3);
 
-        //int[] tag_ = { };
 
-        //for (int i = 0; i < 8; i++)
-        //{
-        //    System.Random num = new System.Random();
-        //    tag_[i] = num.Next(0, random.Length);
-        //    Debug.Log(tag_[i]);
-        //}
 
-        //Tag1.text = random[tag_[0]];
-        //Tag2.text = random[tag_[1]];
-        //Tag3.text = random[tag_[2]];
-        //Tag4.text = random[tag_[3]];
-        //Tag5.text = random[tag_[4]];
-        //Tag6.text = random[tag_[5]];
-        //Tag7.text = random[tag_[6]];
-        //Tag8.text = random[tag_[7]];
 
         loading = false;
         //newestScore = scores.OrderByDescending(s => s.Updated).FirstOrDefault(s => s.Amount == (int)CurrentScore);
