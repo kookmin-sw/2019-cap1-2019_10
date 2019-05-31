@@ -15,6 +15,8 @@ public class Dialogue : BaseMenu
     public static Dialogue instance;
     public Toggle ResultToggle;
 
+    public Text debug;
+
     public Text txt;
     public List<string> content = new List<string>();
     public int cnt = 0;
@@ -140,13 +142,16 @@ public class Dialogue : BaseMenu
     private IEnumerator TakeResult()
     {
         GetResult();
+        debug.text = "get";
         yield return new WaitUntil(() => BaymaxGame.instance.resultCheck);
+        debug.text = "result end";
         yield return new WaitForSeconds(1f);
         ShowResult();
     }
 
     public void OnExit()
     {
+        
         if (ResultToggle.isOn)
         {
             ShowResult();
