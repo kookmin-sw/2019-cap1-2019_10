@@ -40,7 +40,7 @@ public class ResultMenu : BaseMenu
         //    }
         //}
         //Debug.Log(n);
-        string[][] emotions = { Happiness, Sadness, Surprise, Fear, Disgust, Anger, Lie };
+        string[] emotions = { "Happiness", "Sadness", "Surprise", "Fear", "Disgust", "Anger", "Lie" };
         string[] check = { Tag1.text, Tag2.text, Tag3.text, Tag4.text, Tag5.text, Tag6.text, Tag7.text, Tag8.text };
         //for(int i = 0; i != check.Length; i++)
         //{
@@ -53,16 +53,23 @@ public class ResultMenu : BaseMenu
 
         //    check[i] = emotions[--emotion_][--tag_];
         //}
-        string emotion = photos[1];
-        Tag1.text = emotion;
-        int num = 0;
 
-        //for (int i = 0; i<8; i++)
+        //System.Random random = new System.Random();
+        //int emotion = random.Next(0, 6);
+        //int tag = random.Next(0, 7);
+        //Debug.Log(emotion);
+
+        //switch (emotion)
         //{
-        //    System.Random random = new System.Random();
-        //    int tag_ = random.Next(1, 8);
-
+        //    case 0:
+        //        Happiness[t
         //}
+
+        //string emotion = photos[1];
+        //Tag1.text = arr[tag];
+        //int num = 0;
+
+
     }
 
     public void OnResult()
@@ -93,6 +100,24 @@ public class ResultMenu : BaseMenu
         findThumbnail(results[0].link, image1);
         findThumbnail(results[1].link, image2);
         findThumbnail(results[2].link, image3);
+
+        //int[] tag_ = { };
+
+        //for (int i = 0; i < 8; i++)
+        //{
+        //    System.Random num = new System.Random();
+        //    tag_[i] = num.Next(0, random.Length);
+        //    Debug.Log(tag_[i]);
+        //}
+
+        //Tag1.text = random[tag_[0]];
+        //Tag2.text = random[tag_[1]];
+        //Tag3.text = random[tag_[2]];
+        //Tag4.text = random[tag_[3]];
+        //Tag5.text = random[tag_[4]];
+        //Tag6.text = random[tag_[5]];
+        //Tag7.text = random[tag_[6]];
+        //Tag8.text = random[tag_[7]];
 
         loading = false;
         //newestScore = scores.OrderByDescending(s => s.Updated).FirstOrDefault(s => s.Amount == (int)CurrentScore);
@@ -156,6 +181,13 @@ public class ResultMenu : BaseMenu
 
     }
 
+    private string[] random = { "#기쁨", "#신남", "#흥폭팔", "#댄스댄스", "#환희", "#희열", "#스마일", "#행복" ,
+    "#슬픔", "#눈물뚝뚝", "#쓸쓸함", "#우울", "#서러움", "#애통", "#애처로움", "#힘듦",
+    "#깜짝", "#놀람", "#화들짝", "#멘붕", "#당황", "#깜놀", "#봉변", "#혼비백산",
+     "#무서움", "#공포", "#겁", "#두려움", "#불안", "#섬뜩함", "#아찔함", "#살벌" ,
+    "#역겨움", "#불쾌", "#우웩", "#진짜싫음", "#메스꺼움", "#역함", "#넌더리남", "#혐오",
+    "#화남", "#폭발", "#짜증", "#스트레스", "#분노", "#역정", "#심통", "#울화",
+    "#거짓말", "#뻥", "#다시해보세요", "#거짓말쟁이", "#거짓", "#한번더", "#다시", "#아니야"};
 
     private string[] Happiness = { "#기쁨", "#신남", "#흥폭팔", "#댄스댄스", "#환희", "#희열", "#스마일", "#행복" };
     private string[] Sadness = {"#슬픔", "#눈물뚝뚝", "#쓸쓸함", "#우울", "#서러움", "#애통", "#애처로움", "#힘듦" };

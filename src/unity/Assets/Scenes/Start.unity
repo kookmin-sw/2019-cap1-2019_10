@@ -228,7 +228,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: "#\uB304\uC2A4\uB304\uC2A4"
+  m_Text: 
 --- !u!222 &97560924
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -684,7 +684,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: "#\uADF8\uB9C8\uB0B4.."
+  m_Text: 
 --- !u!222 &383350353
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1195,7 +1195,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -1537,7 +1537,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: "#\uAC1C\uD53C\uACE4\uD568"
+  m_Text: 
 --- !u!222 &860111032
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2136,7 +2136,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: "#\uD3B8\uC548"
+  m_Text: 
 --- !u!222 &1278378178
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3636,7 +3636,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: "#\uADF8\uB9C8\uB0B4.."
+  m_Text: 
 --- !u!222 &1846343937
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3715,7 +3715,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: "#\u314E\u314B.."
+  m_Text: 
 --- !u!222 &1868596723
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3828,7 +3828,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: "#\uC790\uACE0\uC2F6\uB2E4"
+  m_Text: 
 --- !u!222 &2000634906
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3971,7 +3971,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: "#\uADF8\uB9C8\uB0B4.."
+  m_Text: 
 --- !u!222 &2128455935
 CanvasRenderer:
   m_ObjectHideFlags: 0
