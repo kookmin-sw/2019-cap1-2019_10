@@ -27,7 +27,7 @@ public class ResultMenu : BaseMenu
     {
         loading = true;
         backendManager.OnResultLoaded += OnResultLoaded;
-        backendManager.OnPostPhotoSuccess += SettingTag;
+        //backendManager.OnPostPhotoSuccess += SettingTag;
     }
 
     public void SettingTag(string[] photos)
@@ -73,19 +73,7 @@ public class ResultMenu : BaseMenu
         //    check[i] = emotions[--emotion_][--tag_];
         //}
 
-        for (int i = 0; i < 8; i++)
-        {
-            tag_[i] = UnityEngine.Random.Range(0, random.Length);
-            Debug.Log(tag_[i]);
-        }
-        Tag1.text = random[tag_[0]];
-        Tag2.text = random[tag_[1]];
-        Tag3.text = random[tag_[2]];
-        Tag4.text = random[tag_[3]];
-        Tag5.text = random[tag_[4]];
-        Tag6.text = random[tag_[5]];
-        Tag7.text = random[tag_[6]];
-        Tag8.text = random[tag_[7]];
+
     }
 
     public void OnResult()
@@ -118,7 +106,19 @@ public class ResultMenu : BaseMenu
         findThumbnail(results[2].link, image3);
 
 
-
+        for (int i = 0; i < 8; i++)
+        {
+            tag_[i] = UnityEngine.Random.Range(0, random.Length);
+            Debug.Log(tag_[i]);
+        }
+        Tag1.text = random[tag_[0]];
+        Tag2.text = random[tag_[1]];
+        Tag3.text = random[tag_[2]];
+        Tag4.text = random[tag_[3]];
+        Tag5.text = random[tag_[4]];
+        Tag6.text = random[tag_[5]];
+        Tag7.text = random[tag_[6]];
+        Tag8.text = random[tag_[7]];
 
         loading = false;
         //newestScore = scores.OrderByDescending(s => s.Updated).FirstOrDefault(s => s.Amount == (int)CurrentScore);
