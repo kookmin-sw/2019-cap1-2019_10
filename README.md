@@ -39,7 +39,7 @@
 <h4> - 원수빈 </h4>  
 <p>` 20153196   <br>
   ` dnjstnqls@kookmin.ac.kr  <br>
-  ` 데이터베이스설계, API서버 개발    </p>
+  ` 데이터베이스설계  </p>
    <br>
   
 <img src="./image/강은채.jpg" width="200">
@@ -118,4 +118,9 @@ unity 폴더에 있는 폴더들을 다운받아 unity에 새 project를 생성�
 
 ### 5. 기타
 
-추가적인 내용은 자유롭게 작성하세요.
+서버는 시연을 위해 개인용 컴퓨터에 따로 돌려놓았기 때문에 현재는 runserver가 되고 있지 않다. 
+그러므로 로컬에서 돌려볼 것을 권장하며, 로컬에서 돌려볼 시에 Unity에서의 파일 전송 코드의 url을 "localhost:port # "을 기본으로 바꾸어야 한다.
+
+그리고 createsuperuser 명령어를 통하여 admin 사이트에 로그인 할 수 있는 계정을 만들어야 한다. 
+데이터베이스 세팅은 settings.py 의 DATABASES를 참고하고, 
+시연시켜보려면 pyDjango/mmm_project/my_mood_music/csv_data/ 에 있는 csv 파일들을 DB 테이블에 추가해야 한다. 
