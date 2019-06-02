@@ -30,6 +30,7 @@ public class BaymaxGame : BaseGame
     //private GUIText scoreText;
 
     private float Score;
+    public Text debug;
 
     public static BaymaxGame instance;
     public bool photoCheck = false;
@@ -141,6 +142,7 @@ public class BaymaxGame : BaseGame
 
     public void ShowResult()
     {
+        debug.text = "show";
         resultImage.SetActive(true);
         resetButton.SetActive(true);
     }

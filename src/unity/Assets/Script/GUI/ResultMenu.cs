@@ -93,6 +93,9 @@ public class ResultMenu : BaseMenu
         //}
         this.results = results;
 
+        string str = "th";
+        String.IsNullOrEmpty(str);
+
         MusicButton1.text = results[0].music;
         MusicButton2.text = results[1].music;
         MusicButton3.text = results[2].music;

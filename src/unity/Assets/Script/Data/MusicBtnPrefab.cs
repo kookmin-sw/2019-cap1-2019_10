@@ -23,10 +23,10 @@ public class MusicBtnPrefab : MonoBehaviour
 
     public void SettingClone(List<Result> results)
     {
-        this.results = results;
+        //this.results = results;
 
         //list에 있는 내용 btnItem으로 변환 후 content에 추가
-        foreach (Result result in this.results)
+        foreach (Result result in results)
         {
             BtnPrefabClone = Instantiate(BtnPrefab, transform.position, Quaternion.identity) as GameObject;
             BtnPrefabClone.transform.localScale = one;

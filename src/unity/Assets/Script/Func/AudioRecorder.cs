@@ -17,6 +17,8 @@ public class AudioRecorder : BaseMenu
     private bool clicked = false;
     public byte[] audioData;
 
+    public Text debug;
+
     public GameObject RecorderError;
 
     //Get the audiosource here to save resources
@@ -38,12 +40,13 @@ public class AudioRecorder : BaseMenu
             int minFreq;
             int maxFreq;
             int freq = 44100;
-            Microphone.GetDeviceCaps("", out minFreq, out maxFreq);
+            Microphone.GetDeviceCaps(Microphone.devices[0], out minFreq, out maxFreq);
             if (maxFreq < 44100)
                 freq = maxFreq;
 
             //Start the recording, the length of 300 gives it a cap of 5 minutes
-            recording = Microphone.Start("", false, 300, 44100);
+            recording = Microphone.Start(Microphone.devices[0], false, 300, 44100);
+            //debug.text = recording.ToString();
             startRecordingTime = Time.time;
         }
 
@@ -71,7 +74,9 @@ public class AudioRecorder : BaseMenu
                 //audioSource.Play();
 
                 filepath = SavWav.Save("myfile", audioSource.clip);
+                debug.text = filepath;
                 audioData = File.ReadAllBytes(filepath);
+                debug.text = audioData.ToString();
                 backendManager.PostAudio(audioData, PlayerPrefs.GetString("x2").FromBase64());
 
                 audioData = null;
