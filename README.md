@@ -102,25 +102,26 @@ start project를 하고 나서 `settings.py`를 고쳐야 한다.
     
 <br/>
 
-#### <b> Django를 이용해 프로젝트를 만드는 방법
+#### Django를 이용해 프로젝트를 만드는 방법
 
 다음 링크를 참고한다.    
 https://tutorial.djangogirls.org/ko/django_start_project/
 
     
 
-#### <b> 음성 모델 다운
+#### 음성 모델 다운
 
 https://github.com/MITESHPUTHRANNEU/Speech-Emotion-Analyzer 에서 `Emtion_Voice_Detection_Model.h5, model.json` 을 다운받아 실행파일 디렉토리에 둔다.    
 
     
 
-#### <b> Unity Setting
+#### Unity Setting
 ```
 unity 폴더에 있는 폴더들을 다운받아 unity에 새 project를 생성하고 해당 파일들을 붙여넣고 실행을 시킨다.     
 scene에 있는 start를 더블클릭 해서 실행한다.    
 ```
     
+<br/>
     
 ### 5. 기타
 
@@ -132,7 +133,8 @@ Unity의 Menu의 Backend Manager의 Use Production의 체크를 해제하면 된
 데이터베이스 세팅은 settings.py 의 DATABASES를 참고하고, 
 시연시켜보려면 pyDjango/mmm_project/my_mood_music/csv_data/ 에 있는 csv 파일들을 DB 테이블에 추가해야 한다. 
     
-    
+<br/>    
+
 ### 6. 실행 화면
     
 
