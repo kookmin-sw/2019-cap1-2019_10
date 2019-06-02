@@ -1,33 +1,36 @@
  
-À¯´ÏÆ¼·Î ½ÇÇà : 
+### ìœ ë‹ˆí‹°ë¡œ ì‹¤í–‰í•˜ëŠ” ë²•
 ```
-1. À¯´ÏÆ¼¿¡¼­ New ÆÄÀÏÀ» ÇÏ³ª »ý¼º
-2. cloneÇÑ unityÆú´õÀÇ Asset, Packages, ProjectSettings Æú´õµéÀ» µ¤¾î¾²±â
-3. Scene¿¡¼­ Start Scene ´õºíÅ¬¸¯
-4. Àç»ý¹öÆ°À» ´­·¯º¸¸é ÇØ´ç ³ëÆ®ºÏ¿¡¼­ ½ÇÇàÇØº¼ ¼ö ÀÖÀ½
+1. ìœ ë‹ˆí‹° ì‹¤í–‰ í›„ New íŒŒì¼ì„ í•˜ë‚˜ ìƒì„±
+2. cloneí•œ unityí´ë”ì˜ Asset, Packages, ProjectSettings í´ë”ë“¤ì„ ë®ì–´ì“°ê¸°
+3. Sceneì—ì„œ Start Scene ë”ë¸”í´ë¦­
+4. ìž¬ìƒë²„íŠ¼ì„ ëˆŒëŸ¬ë³´ë©´ í•´ë‹¹ ë…¸íŠ¸ë¶ì—ì„œ ì‹¤í–‰í•´ë³¼ ìˆ˜ ìžˆìŒ
 ```
 <br/>
 
-À¯´ÏÆ¼¿¡¼­ ¾Èµå·ÎÀÌµå·Î ºôµåÇÏ·Á¸é
-1. Edit > Perferences > External Tools ¿¡¼­ SDK ¼¼ÆÃ
-2. File > Build Settings ¿¡¼­ Android Build·Î
+### ìœ ë‹ˆí‹°ì—ì„œ ì•ˆë“œë¡œì´ë“œë¡œ ë¹Œë“œí•˜ë ¤ë©´
+```
+1. Edit > Perferences > External Tools ì—ì„œ SDK, NDK ì„¸íŒ…
+2. File > Build Settings ì—ì„œ Android Buildë¥¼ í•˜ë©´ .apk íŒŒì¼ì´ ìƒì„±ë¨
+```
+
+ë¹Œë“œê°€ ì•ˆë˜ë©´ Build Settingsì—ì„œ Player Settingsì—
+Other Settingsì—ì„œ Package Nameì„ ë‹¤ë¥¸ ê±°ë¡œ ë°”ê¿”ì¤€ë‹¤
+<br/>
+<br/>
 <br/>
 
-ºôµå°¡ ¾ÈµÇ¸é Build Settings¿¡¼­ Player Settings¿¡
-Other Settings¿¡¼­ Package NameÀ» ´Ù¸¥ °Å·Î ¹Ù²ãÁØ´Ù
+### ì¶”ê°€ ì„¤ëª…ë“¤
+
+- publicìœ¼ë¡œ ì„ ì–¸í•´ ë†“ì€ ë³€ìˆ˜ê°’ì€ inspectorì°½ì—ì„œ ì‹¤ì‹œê°„ìœ¼ë¡œ ë³¼ ìˆ˜ ìžˆìŒ    
 <br/>
-<br/>
+    
+- ìŒì„±ì€ ë²„íŠ¼ì„ ëˆ„ë¥´ë©´ ë…¹ìŒì´ ë˜ê³  í•œ ë²ˆ ë” ëˆ„ë¥´ë©´ ë…¹ìŒì´ ë©ˆì¶¤.    
+ë…¹ìŒì´ ë©ˆì¶”ë©´ .wavíŒŒì¼ë¡œ ì €ìž¥ì„ í•˜ê³  byte[] í˜•ì‹ìœ¼ë¡œ ì„œë²„ë¡œ ë³´ë‚´ê³  íŒŒì¼ì„ ì‚­ì œí•¨
 <br/>
 
-¼­¹ö ÁÖ¼Ò ¹Ù²Ù´Â ¹æ¹ý
-À½¼º : Canvas > ButtonÀÇ inspector¿¡ url¿¡ ÁÖ¼Ò ³Ö¾îÁÖ¸é ¾Ë¾Æ¼­ ±× ÁÖ¼Ò·Î º¯°æµÊ    
-»çÁø : Manager¿¡ phonecamera script¿¡ url ÁÖ¼Ò º¯°æ    
+- ì‚¬ì§„ì€ backì—ì„œ ì¹´ë©”ë¼ë¥¼ ì¼œì„œ ì‚¬ì§„ì„ ì°ê³  ì €ìž¥í•˜ì§€ ì•Šê³  byte[]ë¡œ ì„œë²„ë¡œ ë³´ëƒ„
 <br/>
-publicÀ¸·Î ¼±¾ðÇØ ³õÀº º¯¼ö°ªÀº inspectorÃ¢¿¡¼­ ½Ç½Ã°£À¸·Î º¼ ¼ö ÀÖÀ½     
-<br/>
-À½¼ºÀº ¹öÆ°À» ´©¸£¸é ³ìÀ½ÀÌ µÇ°í ÇÑ ¹ø ´õ ´©¸£¸é ³ìÀ½ÀÌ ¸ØÃã
-³ìÀ½ÀÌ ¸ØÃß¸é .wavÆÄÀÏ·Î ÀúÀåÀ» ÇÏ°í byte[] Çü½ÄÀ¸·Î ¼­¹ö·Î º¸³»°í ÆÄÀÏÀ» »èÁ¦ÇÔ
-<br/>
-»çÁøÀº ÀúÀåÇÏÁö ¾Ê°í byte[]·Î ¼­¹ö·Î º¸³¿ ÃÑ µÎ¹ø º¸³¿
-manager > phonecamera script inspector¿¡¼­ timeÀ» ¼öÁ¤ÇÏ¸é º¸³»´Â ½Ã°£ º¯°æ°¡´É
+
+- ì¶”ì²œ ê²°ê³¼ê°’ë“¤ì€ ì„œë²„ì—ì„œ json í˜•íƒœë¡œ ë°›ì•„ì™€ì„œ UI ìƒì— ë¿Œë ¤ì¤Œ
 <br/>
