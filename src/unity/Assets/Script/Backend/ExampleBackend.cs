@@ -92,7 +92,7 @@ public partial class BackendManager {
         WWWForm form = new WWWForm();
         form.AddField("username", username);
         form.AddField("password", password);
-        Send(RequestType.Post, "getauthtoken/", form, OnLoginResponse);
+        Send(RequestType.Post, "getauthtoken", form, OnLoginResponse);
     }
 
     private void OnLoginResponse(ResponseType responseType, JToken responseData, string callee) {
@@ -138,7 +138,7 @@ public partial class BackendManager {
         form.AddField("username", username);
         form.AddField("email", email);
         form.AddField("password", password);
-        Send(RequestType.Post, "user/", form, OnSignupResponse);
+        Send(RequestType.Post, "user", form, OnSignupResponse);
     }
 
     private void OnSignupResponse(ResponseType responseType, JToken responseData, string callee)
@@ -235,7 +235,7 @@ public partial class BackendManager {
         form.AddField("recommand", id);
         byte[] postData = { 1 };
         form.AddBinaryData("recommand", postData);
-        SendFile(RequestType.Post, "recommand/", form, OnGetResultResponse, authenticationToken, false);
+        SendFile(RequestType.Post, "recommand", form, OnGetResultResponse, authenticationToken, false);
     }
 
     private void OnGetResultResponse(ResponseType responseType, string[] responseData, JToken responseJson, string callee)
@@ -266,7 +266,7 @@ public partial class BackendManager {
         form.AddField("result", id);
         byte[] postData = { 1 };
         form.AddBinaryData("result", postData);
-        SendFile(RequestType.Post, "result/", form, OnGetAllResultResponse, authenticationToken, false);
+        SendFile(RequestType.Post, "result", form, OnGetAllResultResponse, authenticationToken, false);
     }
     private void OnGetAllResultResponse(ResponseType responseType, string[] responseData, JToken responseJson, string callee)
     {
@@ -294,7 +294,7 @@ public partial class BackendManager {
         WWWForm form = new WWWForm();
         form.AddField("photo", id);
         form.AddBinaryData("photo", imageData, "photo.png", "image/png");
-        SendFile(RequestType.Post, "face/", form, OnPostPhotoResponse, authenticationToken, true);
+        SendFile(RequestType.Post, "face", form, OnPostPhotoResponse, authenticationToken, true);
     }
 
     private void OnPostPhotoResponse(ResponseType responseType, string[] responseData, JToken responseJson, string callee)
@@ -320,11 +320,10 @@ public partial class BackendManager {
 
     public void PostAudio(byte[] audioData, string id)
     {
-        Debug.Log("dd");
         WWWForm form = new WWWForm();
         form.AddField("audio", id);
         form.AddBinaryData("audio", audioData, "myfile.wav", "audio/wav");
-        SendFile(RequestType.Post, "speech/", form, OnPostAudioResponse, authenticationToken, true);
+        SendFile(RequestType.Post, "speech", form, OnPostAudioResponse, authenticationToken, true);
     }
 
     private void OnPostAudioResponse(ResponseType responseType, string[] responseData, JToken responseJson, string callee)

@@ -12,7 +12,6 @@ public class ResultMenu : BaseMenu
     private Score newestResult;
 
     public Text MusicButton1, MusicButton2, MusicButton3;
-    public Text TagButton1, TagButton2, TagButton3;
     public Text Tag1, Tag2, Tag3, Tag4, Tag5, Tag6, Tag7, Tag8;
 
     public RawImage image1, image2, image3;
@@ -20,59 +19,68 @@ public class ResultMenu : BaseMenu
     Vector2 vec2;
     public float textureWidth, textureHeight;
 
-    int[] tag_ = { 0, 0, 0, 0, 0, 0, 0, 0 };
+    int[] tag_ = { 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
     // Start is called before the first frame update
     void Start()
     {
         loading = true;
         backendManager.OnResultLoaded += OnResultLoaded;
-        //backendManager.OnPostPhotoSuccess += SettingTag;
+        backendManager.OnPostPhotoSuccess += SettingTag;
     }
 
     public void SettingTag(string[] photos)
     {
-        //int n;
-        //for (n = 0; n < photos.Length;)
-        //{
-        //    if (photos[n] != "")
-        //    {
-        //        n++;
-        //        Debug.Log(photos[n]);
-        //    }
-        //}
-        //Debug.Log(n);
+
         string[] emotions = { "Happiness", "Sadness", "Surprise", "Fear", "Disgust", "Anger", "Lie" };
         string[] check = { Tag1.text, Tag2.text, Tag3.text, Tag4.text, Tag5.text, Tag6.text, Tag7.text, Tag8.text };
 
+        string[] photo = { "", "", "", "", "", "", "", };
 
-        //System.Random random = new System.Random();
-        //int emotion = random.Next(0, 6);
-        //int tag = random.Next(0, 7);
-        //Debug.Log(emotion);
+        int cnt = 0;
+        for (int i = 0; i<photos.Length; i++)
+        {
+            if (!String.IsNullOrEmpty(photos[i]))
+            {
+                photo[cnt++] = photos[i];
+            }
+        }
+        Debug.Log(photo[0]);
 
-        //switch (emotion)
-        //{
-        //    case 0:
-        //        Happiness[t
-        //}
+        int rand1 = UnityEngine.Random.Range(0, Happiness.Length);
+        int rand2 = UnityEngine.Random.Range(0, Happiness.Length);
 
-        //string emotion = photos[1];
-        //Tag1.text = arr[tag];
-        //int num = 0;
-
-        //int cnt = 0;
-        //for (int i = 0; i < 8;)
-        //{
-        //    if (photos[i] == "" | photos[i] == null) return;
-        //    int tag_ = UnityEngine.Random.Range(0, 7);
-
-
-        //    Debug.Log(i + "  : " + emotion_ + " " + tag_);
-
-        //    check[i] = emotions[--emotion_][--tag_];
-        //}
-
+        switch (photo[0])
+        {
+            case "Happiness":
+                Tag7.text = Happiness[rand1];
+                Tag8.text = Happiness[rand2];
+                break;
+            case "Sadness":
+                Tag7.text = Sadness[rand1];
+                Tag8.text = Sadness[rand2];
+                break;
+            case "Surprise":
+                Tag7.text = Surprise[rand1];
+                Tag8.text = Surprise[rand2];
+                break;
+            case "Fear":
+                Tag7.text = Fear[rand1];
+                Tag8.text = Fear[rand2];
+                break;
+            case "Disgust":
+                Tag7.text = Disgust[rand1];
+                Tag8.text = Disgust[rand2];
+                break;
+            case "Anger":
+                Tag7.text = Anger[rand1];
+                Tag8.text = Anger[rand2];
+                break;
+            case "Lie":
+                Tag7.text = Lie[rand1];
+                Tag8.text = Lie[rand2];
+                break;
+        }
 
     }
 
@@ -93,16 +101,9 @@ public class ResultMenu : BaseMenu
         //}
         this.results = results;
 
-        string str = "th";
-        String.IsNullOrEmpty(str);
-
         MusicButton1.text = results[0].music;
         MusicButton2.text = results[1].music;
         MusicButton3.text = results[2].music;
-
-        TagButton1.text = "#" + results[0].tag_1 + "  " + "#" + results[0].tag_2;
-        TagButton2.text = "#" + results[1].tag_1 + "  " + "#" + results[1].tag_2;
-        TagButton3.text = "#" + results[2].tag_1 + "  " + "#" + results[2].tag_2;
 
         findThumbnail(results[0].link, image1);
         findThumbnail(results[1].link, image2);
@@ -112,16 +113,43 @@ public class ResultMenu : BaseMenu
         for (int i = 0; i < 8; i++)
         {
             tag_[i] = UnityEngine.Random.Range(0, random.Length);
-            Debug.Log(tag_[i]);
         }
-        Tag1.text = random[tag_[0]];
-        Tag2.text = random[tag_[1]];
-        Tag3.text = random[tag_[2]];
-        Tag4.text = random[tag_[3]];
-        Tag5.text = random[tag_[4]];
-        Tag6.text = random[tag_[5]];
-        Tag7.text = random[tag_[6]];
-        Tag8.text = random[tag_[7]];
+
+        //string str = "th";
+        //String.IsNullOrEmpty(str);
+
+        if (!String.IsNullOrEmpty(results[0].tag_1))
+        {
+            Tag1.text = "#" + results[0].tag_1;
+            Tag2.text = "#" + results[0].tag_2;
+        }
+        else
+        {
+            Tag1.text = random[tag_[0]];
+            Tag2.text = random[tag_[1]];
+        }
+
+        if (!String.IsNullOrEmpty(results[1].tag_1))
+        {
+            Tag3.text = "#" + results[1].tag_1;
+            Tag4.text = "#" + results[1].tag_2;
+        }
+        else
+        {
+            Tag3.text = random[tag_[2]];
+            Tag4.text = random[tag_[3]];
+        }
+
+        if (!String.IsNullOrEmpty(results[2].tag_1))
+        {
+            Tag5.text = "#" + results[2].tag_1;
+            Tag6.text = "#" + results[2].tag_2;
+        }
+        else
+        {
+            Tag5.text = random[tag_[4]];
+            Tag6.text = random[tag_[5]];
+        }
 
         loading = false;
         //newestScore = scores.OrderByDescending(s => s.Updated).FirstOrDefault(s => s.Amount == (int)CurrentScore);

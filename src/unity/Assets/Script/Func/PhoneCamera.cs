@@ -76,7 +76,11 @@ public class PhoneCamera : BaseMenu
         snap.SetPixels(frontCam.GetPixels());
         //Texture2D snap = background.texture as Texture2D;
         snap.Apply();
-        snap = RotateImage(snap, 90);
+
+        if(Application.platform == RuntimePlatform.Android)
+        {
+            snap = RotateImage(snap, 90);
+        }
 
         //잘 찍히는지 사진으로 저장해보는 코드
         //_SavePath = pathForDocumentsFile("MyMoodMusic");

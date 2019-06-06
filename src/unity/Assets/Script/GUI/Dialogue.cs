@@ -151,15 +151,15 @@ public class Dialogue : BaseMenu
 
     public void OnExit()
     {
-        
-        if (ResultToggle.isOn)
-        {
-            ShowResult();
-        }
-        else
-        {
-            HideResult();
-        }
+        HideResult();
+        //if (ResultToggle.isOn)
+        //{
+        //    ShowResult();
+        //}
+        //else
+        //{
+        //    HideResult();
+        //}
         
     }
 
