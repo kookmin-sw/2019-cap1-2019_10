@@ -107,13 +107,13 @@ start project를 하고 나서 `settings.py`를 고쳐야 한다.
 다음 링크를 참고한다.    
 https://tutorial.djangogirls.org/ko/django_start_project/
 
-    
+<br/>  
 
 #### 음성 모델 다운
 
 https://github.com/MITESHPUTHRANNEU/Speech-Emotion-Analyzer 에서 `Emtion_Voice_Detection_Model.h5, model.json` 을 다운받아 실행파일 디렉토리에 둔다.    
 
-    
+<br/>
 
 #### Unity Setting
 ```
@@ -138,8 +138,10 @@ Unity의 Menu의 Backend Manager의 Use Production의 체크를 해제하면 된
 ### 6. 실행 화면
     
 
-<img src="./image/id.png" width="200"> <img src="./image/start.png" width="200">
-<img src="./image/notice.png" width="200"> <img src="./image/result.PNG" width="200">
+<img src="./image/id.png" width="240"> <img src="./image/notice.png" width="240"> <img src="./image/menu.PNG" width="240">
+<img src="./image/start.png" width="240"> <img src="./image/audio.PNG" width="240"> <img src="./image/result.PNG" width="240">
+
+
     
     
 <br/>
