@@ -145,26 +145,4 @@ Unity의 Menu의 Backend Manager의 Use Production의 체크를 해제하면 된
     
     
 <br/>
-
-### 7. 시행 착오
-
-
-### 3D model
-    
-<img src="./image/baymax_model.PNG"> 
-    
-<br/>
-
-### blend shape & version2 (suit of armor)
-    
-<img src="./image/versions_and_blendshape.PNG">
-    
-<br/>
-    
-### 설문조사 진행
-    
-감정에 따라 어떤 노래를 추천해줄지 정하기 위해 진행한 설문조사
-    
-<img src="./image/research.PNG">
-    
     
