@@ -3,3 +3,10 @@
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
+
+# VSCode
+.vscode
+
+# virtual env
+myenv/
+__pycache__/
