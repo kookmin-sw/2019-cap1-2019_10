@@ -28,35 +28,34 @@ DEBUG = True
 # logging
 LOGGING = {
     'version': 1,
-    'disable_existing_loggers': False,
-
+    'diable_existing_loggers': False,
     'formatters': {
-        'format1': {
-            'format': '[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s',
-            'datefmt': '%d/%b/%Y %H:%M:%S'
-        },
-        'format2': {
-            'format': '%(levelname)s %(message)s'
+        'standard': {
+            'format': '%(asctime)s [%(levelname)8s] %(message)s'
         },
     },
-
-
     'handlers': {
         'console': {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
-            'formatter': 'format2',
-        }
-    },
-
-    'loggers': {
-        'my_mood_music.django.request': {
-            'handlers': ['console'],
-            'propagate': False,
-            'level': 'DEBUG',
+            'formatter': 'standard'
+        },
+        'logfile': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'maxBytes': 1024 * 1024 * 10,   # 로그 파일 당 10M 까지
+            'backupCount': 10,              # 로그 파일을 최대 10개까지 유지
+            # 'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs/logfile'),
+            'formatter': 'standard'
         },
     },
-
+    'loggers': {
+        'default': {
+            'level': 'DEBUG',               # 로거의 기본 레벨. 이 레벨이 우선시 된다.
+            'handlers': ['console', 'logfile']
+        },
+    },
 }
 
 ALLOWED_HOSTS = [

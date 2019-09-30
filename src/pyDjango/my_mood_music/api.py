@@ -12,46 +12,194 @@
 """
 
 import logging
-from django.db import connection
-from rest_framework.views import APIView
-from rest_framework.response import Response
+import random
+import operator
+import json
 
 from django.http.response import HttpResponse
 from django.db.models import Max
-import random
-import cognitive_face as CF
-from .serializers import *
+from django.db import connection
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
 
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
+import cognitive_face as CF
 import librosa
 import numpy as np
 import pandas as pd
 from keras.models import model_from_json
+
+from .serializers import *
 from .models import *
 
+from mmm_project.core import httpResponse, httpError
+from mmm_project.core import fileIO
 
-from django.core.files.storage import default_storage
-from django.core.files.base import ContentFile
-
-import operator
-import json
-
-# face_api_emotion = ''
-# face_api_age = 0.0
-# speech_api_emotion = ''
-
-# # 이미지, 음성 감정분석 결과를 파일에 저장하거나 읽어온다.
-# def process_file(self, filename, mode):
-#     f = open(filename, mode)
-#     if mode == 'r':
-#         result = f.read()
-#         return result
-#     elif mode == 'w':
-#         f.write()
-#         f.close()
+logger = logging.getLogger('default')
 
 
-# 최종적으로 음악을 추천해주는 클래스 뷰
+class RequestFaceAPI(APIView):
+    """
+    Microsoft Face API를 이용한 감정분석
+    """
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.result_age = 0.0
+        self.result_emotion = []
+        self.user_id = ''
+
+    # api로부터 받은 결과로부터 데이터 추출
+    def get_data_from_faces(self, request, faces):
+        json_string = str(faces).replace("\'", "\"")
+
+        dict_data = json.loads(json_string)  # Unicode decode Error
+        emotions = dict_data['faceAttributes']['emotion']
+        sorted_emotions = sorted(
+            emotions.items(), key=operator.itemgetter(1), reverse=True)
+
+        # 결과값이 0.0 이상인 tuple 만 list 에 저장
+        result_emotion = [emotion for emotion,
+                          value in sorted_emotions if value > 0]
+        self.result_emotion = result_emotion
+
+        # 추천 알고리즘에 적용할 age 추출
+        result_age = dict_data['faceAttributes']['age']
+        # self.result_age = result_age
+
+        # if (!result_emotion || !result_age):
+        #     return httpError
+
+        # 과연 할 수 있을까..
+        # f = open('face_api_age.txt', 'w')
+        # json_val = json.dumps(result_age)
+        # f.write(json_val)
+        # f.close()
+
+        fileIO.write_file(request, 'face_api_age.txt', result_age)
+
+    def post(self, request):
+        """
+        어플에서 이미지를 받았을 때
+        """
+        try:
+            KEY = '86ad6a50a2af46189c45fc51819f4d9b'  # API_KEY
+            CF.Key.set(KEY)
+
+            BASE_URL = 'https://koreacentral.api.cognitive.microsoft.com/face/v1.0/detect?returnFaceId=true&returnFaceLandmarks=false&returnFaceAttributes=age,emotion&recognitionModel=recognition_01&returnRecognitionModel=false '  # Replace with your regional Base URL
+            CF.BaseUrl.set(BASE_URL)
+
+            # 디버깅 용
+            print('get the data')
+            # print('request.POST: ', request.POST)
+            # print('request.FILES: ', request.FILES)
+            # print('request.headers: ', request.headers)
+
+            data_test = request.FILES.get('photo', '')
+
+            # 디버깅 용
+            print('data test is : ', data_test)
+            print('type of data_test is : ', type(data_test))
+            print('length of data_test is : ', len(data_test))
+            print('finish to get ')
+            try:
+                faces = CF.face.detect(data_test)
+                logger.debug(faces)
+            except Exception as e:
+                logger.error(e)
+                return httpError.serverError(request, "FaceAPI Connection Error")
+
+            # f = open('face_api_emotion.txt', 'w')
+            # json_val = json.dumps(faces[0])
+            # f.write(json_val)
+            # f.close()
+
+            fileIO.write_file(request, 'face_api_emotion.txt', faces[0])
+
+            if not faces:
+                return httpResponse.noContent(request, 'Face is not detected')
+            else:
+                self.get_data_from_faces(request, faces[0])
+                return httpResponse.ok(request, str(self.result_emotion))
+
+        except Exception as e:
+            logger.error(e)
+            return httpError.serverError('please try again')
+
+    def get(self, request):
+        return httpResponse.ok(request, "Using Microsoft Face API")
+
+
+class Call(APIView):
+    """
+    Speech-Emotion-Analyzer 를 이용한 감정분석
+    """
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.label = ["angry", "calm", "fearful", "happy",
+                      "sad", "angry", "calm", "fearful", "happy", "sad"]  # 감정 분류
+
+    def post(self, request):
+        try:
+            audio_file = request.FILES.get('audio', '')
+            path = default_storage.save(
+                'file.wav', ContentFile(audio_file.read()))
+            logger.debug(path)
+            label = self.labelfrommodel(request, './media/{}'.format(path))
+        except Exception as e:
+            logger.error(e)
+            return httpError.serverError(request, 'SEA getting label Error')
+        return httpResponse.created(request, label)
+
+    def get(self, request):
+        return httpResponse.ok(request, "Using Speech-Emotion-Model")
+
+    def labelfrommodel(self, request, filename):
+        json_file = open('model.json', 'r')
+        loaded_model_json = json_file.read()
+        json_file.close()
+        loaded_model = model_from_json(loaded_model_json)
+        # load weights into new model
+        try:
+            loaded_model.load_weights("Emotion_Voice_Detection_Model.h5")
+        except Exception as e:
+            logger.error(e)
+            return httpError.serverError(request, "SEA Model Error")
+
+        X, sample_rate = librosa.load(filename, res_type='kaiser_fast', duration=2.5,
+                                      sr=22050 * 2, offset=0.5)
+        sample_rate = np.array(sample_rate)
+        mfccs = np.mean(librosa.feature.mfcc(
+            y=X, sr=sample_rate, n_mfcc=13), axis=0)
+
+        featurelive = mfccs
+        livedf2 = featurelive
+        livedf2 = pd.DataFrame(data=livedf2)
+        livedf2 = livedf2.stack().to_frame().T
+        twodim = np.expand_dims(livedf2, axis=2)
+        livepreds = loaded_model.predict(twodim, batch_size=32, verbose=1)
+        livepreds1 = livepreds.argmax(axis=1)
+        liveabc = livepreds1.astype(int).flatten()
+
+        # f = open('speech_api_emotion.txt', 'w')
+        # json_val = json.dumps(self.label[int(liveabc)])
+        # f.write(json_val)
+        # f.close()
+
+        fileIO.write_file(request, 'speech_api_emotion.txt',
+                          self.label[int(liveabc)])
+
+        return self.label[int(liveabc)]
+
+
 class RecommendationMusic(APIView):
+    """
+    최종적으로 음악을 추천
+    """
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.table_idx = ["anger", "disgust", "fear",
@@ -59,37 +207,35 @@ class RecommendationMusic(APIView):
         self.tone_res = ''
         self.music_list = []  # 리스트 안의 dictionary 형태로 들어온다. (music, url)
         self.age = random.randint(0, 150)
-        # self.age = 10
 
         self.face = '{"faceId": "c8a2f7ff-316b-4440-a051-f1bdebe7bebf", "faceRectangle": {"top": 0, "left": 35, "width": 245, "height": 199}, "faceAttributes": {"age": 25.0, "emotion": {"anger": 0.0, "contempt": 0.099, "disgust": 0.073, "fear": 0.0, "happiness": 0.0, "neutral": 0.012, "sadness": 0.816, "surprise": 0.0}}}'
         self.speech = 'angry'
 
-    # GET request
-    def get(self, request, format=None):
-        # global face_api_age
-        # print('face_api_age : ', face_api_age)
-
-        # self.age = process_file('face_api_age', 'r')
+    def post(self, request):
+        """
+        recommand_music 함수를 호출해 추천받은 노래를 Response 해주는 함수
+        """
         try:
-            f = open('face_api_age.txt', 'r')
-            self.age = f.read()
-            if not self.age:
-                self.age = 24
-            f.close()
-            self.music_list = self.get_random3_test(Child)
-            #self.music_list = self.recommand_music(self.age)
+            # f = open('face_api_age.txt', 'r')
+            # self.age = f.read()
+            self.age = fileIO.read_file(request, 'face_api_age.txt')
 
-            print('self.music_list is : ', self.music_list)
+            # self.music_list = self.get_random3_test(Child)
+            self.music_list = self.recommand_music(request, self.age)
+
+            logger.debug(self.music_list)
 
             result = json.dumps(self.music_list, ensure_ascii=False)
-            return Response(result)
+            return httpResponse.ok(result)
 
         except Exception as e:
-            logging.exception(e)
-            return HttpResponse('please try again')
+            logging.error(e)
+            return httpError.serverError('Recommandation Error')
 
-    # 어플에서 받은 id값과 데이터베이스에서 받은 값(music list)을 INSERT 한다.
     def create_Analysis_Result(self, music_list):
+        """
+        어플에서 받은 id값과 데이터베이스에서 받은 값(music list)을 INSERT 한다.
+        """
         try:
             max_id = Analysis_Result.objects.all().aggregate(
                 max_id=Max("id"))['max_id']
@@ -102,40 +248,42 @@ class RecommendationMusic(APIView):
                                                           music_r2=music_list[1], music_r3=music_list[2])
             queryset.save()
 
-            print(connection.queries[-1])  # 디버깅 용
+            logger.debug(connection.queries[-1])
             # 모델 클래스의 오브젝트 갯수확인
-            print(Analysis_Result.objects.all().count())
+            logger.debug(Analysis_Result.objects.all().count())
 
         except Exception as e:
-            print(e)
+            logger.error(e)
             return HttpResponse('please try again')
 
-    # 하나의 데이터베이스에서 랜덤으로 레코드 3개를 받아온다.
-    def get_random3(self, table):
+    def get_random3(self, request, table):
+        """
+        하나의 데이터베이스에서 랜덤으로 레코드 3개를 받아온다.
+        """
         try:
             Music = {}
             max_id = table.objects.all().aggregate(max_id=Max("id"))['max_id']
             dictionary_list = []
-            music_list = []
-            link_list = []
-            tag_list = []
+            music_list = []  # 노래제목-가수 리스트
+            link_list = []  # Youtub 링크 리스트
+            tag_list = []  # 노래에 해당하는 태그 리스트
+            # pk를 랜덤으로 가져오면 겹칠 수 있으므로, 뽑은 pk를 list에 저장하고 그 list에 없는 값만 append한다.
             pk_list = []
             count = 0
             while True:
-                # print('loop start')
                 if count == 3:
                     break
-                # print('pk before')
-                pk = random.randint(1, max_id)  # pk can equal, have to correct
-                # print('pk after')
-                # print(pk)
+
+                pk = random.randint(1, max_id)
                 if pk in pk_list:
                     continue
                 pk_list.append(pk)
-                # print(pk_list)
+
                 music = table.objects.filter(id=pk).first()
-                print('music.music : ', music.music)
-                print('music.link : ', music.link)
+                logger.debug('music.music : {}'.format(music.music))  # 노래제목-가수
+                logger.debug('music.link : {}'.format(
+                    music.link))  # Youtube 링크
+
                 if music:
                     music_list.append(music.music)
                     link_list.append(music.link)
@@ -189,20 +337,17 @@ class RecommendationMusic(APIView):
             print(e)
             return HttpResponse('please try again')
 
-    # 추천 알고리즘을 통해 얻은 3개의 레코드를 받아온다.
-    def recommand_music(self, age):
+    def recommand_music(self, request, age):
+        """
+        추천 알고리즘을 통해 얻은 3개의 레코드를 받아온다.
+        """
         try:
-            # global face_api_emotion
-            # global speech_api_emotion
-            # print('face_api_emotion : ', face_api_emotion)
-            # print('speech_api_emotion : ', speech_api_emotion)
-
             dictionary_list = []
             music_list = []
             # 10세 미만이면 어린이 테이블로 가서 랜덤으로 3개의 동요를 뽑고 바로 종료한다.
             if age < 10:
                 print('get_random3 function before')
-                dictionary_list = self.get_random3(Child)
+                dictionary_list = self.get_random3(request, Child)
                 print('get_random3 function finish')
 
             # 어린이 나이가 아니라면, 추천 알고리즘에 의해 감정까지 고려한 노래 3개를 뽑는다.
@@ -435,149 +580,6 @@ class RecommendationMusic(APIView):
         except Exception as e:
             print(e)
             return HttpResponse('please try again')
-
-
-# Microsoft Face API를 이용한 감정분석
-class RequestFaceAPI(APIView):
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.result_age = 0.0
-        self.result_emotion = []
-        self.user_id = ''
-
-    def get_data_from_faces(self, faces):
-        #global face_api_age
-
-        json_string = str(faces).replace("\'", "\"")
-
-        dict_data = json.loads(json_string)  # Unicode decode Error
-        emotions = dict_data['faceAttributes']['emotion']
-        sorted_emotions = sorted(
-            emotions.items(), key=operator.itemgetter(1), reverse=True)
-
-        # 결과값이 0.0 이상인 tuple 만 list 에 저장한다.
-        result_emotion = [emotion for emotion,
-                          value in sorted_emotions if value > 0]
-        self.result_emotion = result_emotion
-
-        # 추천 알고리즘에 적용할 age 추출
-        result_age = dict_data['faceAttributes']['age']
-        # self.result_age = result_age
-
-        #face_api_age = result_age
-        f = open('face_api_age.txt', 'w')
-        json_val = json.dumps(result_age)
-        f.write(json_val)
-        f.close()
-
-    # 어플에서 이미지를 받았을 때
-    def post(self, request, format=None):
-        # global face_api_emotion
-        # self.user_name = request.POST.get('username', '') id 받아서 Analysis_Result에 넣어줘야 함.
-        try:
-            KEY = '86ad6a50a2af46189c45fc51819f4d9b'
-            CF.Key.set(KEY)
-
-            BASE_URL = 'https://koreacentral.api.cognitive.microsoft.com/face/v1.0/detect?returnFaceId=true&returnFaceLandmarks=false&returnFaceAttributes=age,emotion&recognitionModel=recognition_01&returnRecognitionModel=false '  # Replace with your regional Base URL
-            CF.BaseUrl.set(BASE_URL)
-
-            print('get the data')
-
-            # 디버깅 용
-            # print('request.POST: ', request.POST)
-            # print('request.FILES: ', request.FILES)
-            # print('request.headers: ', request.headers)
-
-            data_test = request.FILES.get('photo', '')
-
-            print('data test is : ', data_test)
-            print('type of data_test is : ', type(data_test))
-            print('length of data_test is : ', len(data_test))
-            print('finish to get ')
-
-            faces = CF.face.detect(data_test)
-            print(faces)
-            #face_api_emotion = faces
-
-            f = open('face_api_emotion.txt', 'w')
-            json_val = json.dumps(faces[0])
-            f.write(json_val)
-            f.close()
-
-            # process_file('face_api_emotion','w')
-
-            if not faces:
-                return HttpResponse('please try again')
-            else:
-                self.get_data_from_faces(faces[0])
-                print('self.result_emotion : ', str(self.result_emotion))
-                return HttpResponse(str(self.result_emotion))
-
-        except Exception as e:
-            print(e)
-            return HttpResponse('please try again')
-
-    def get(self, request, format=None):
-        return HttpResponse("Using Microsoft Face API")
-
-
-class Call(APIView):
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.label = ["angry", "calm", "fearful", "happy",
-                      "sad", "angry", "calm", "fearful", "happy", "sad"]
-
-    def post(self, request, format=None):
-        try:
-            audio_file = request.FILES.get('audio', '')
-            path = default_storage.save(
-                'file.wav', ContentFile(audio_file.read()))
-            print(path)
-            print(self.labelfrommodel('./media/{}'.format(path)))
-        except Exception as e:
-            return HttpResponse('please try again')
-        return HttpResponse(self.labelfrommodel('./media/{}'.format(path)))
-
-    def get(self, request, format=None):
-        return HttpResponse("Using Speech-Emotion-Model")
-
-    def labelfrommodel(self, filename):
-        #global speech_api_emotion
-        json_file = open('model.json', 'r')
-        loaded_model_json = json_file.read()
-        json_file.close()
-        loaded_model = model_from_json(loaded_model_json)
-        # load weights into new model
-        try:
-            loaded_model.load_weights("Emotion_Voice_Detection_Model.h5")
-        except Exception as e:
-            pass
-
-        X, sample_rate = librosa.load(filename, res_type='kaiser_fast', duration=2.5,
-                                      sr=22050 * 2, offset=0.5)
-        sample_rate = np.array(sample_rate)
-        mfccs = np.mean(librosa.feature.mfcc(
-            y=X, sr=sample_rate, n_mfcc=13), axis=0)
-
-        featurelive = mfccs
-        livedf2 = featurelive
-        livedf2 = pd.DataFrame(data=livedf2)
-        livedf2 = livedf2.stack().to_frame().T
-        twodim = np.expand_dims(livedf2, axis=2)
-        livepreds = loaded_model.predict(twodim, batch_size=32, verbose=1)
-        livepreds1 = livepreds.argmax(axis=1)
-        liveabc = livepreds1.astype(int).flatten()
-
-        #speech_api_emotion = self.label[int(liveabc)]
-
-        f = open('speech_api_emotion.txt', 'w')
-        json_val = json.dumps(self.label[int(liveabc)])
-        f.write(json_val)
-        f.close()
-
-        return self.label[int(liveabc)]
 
 
 '''

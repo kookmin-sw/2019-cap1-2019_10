@@ -44,8 +44,7 @@ class Unity3DMiddleware(object):
 
         if request.method in self.METHOD and any(valid_urls):
             response_format = {
-                # 'success': is_success(response.status_code),
-                'status': response.status,  # 수정 필요
+                'success': is_success(response.status_code),
                 'result': {},
                 'message': None
             }
