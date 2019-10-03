@@ -21,6 +21,7 @@ from django.db.models import Max
 from django.db import connection
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
+from django.conf.urls import *
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -72,12 +73,6 @@ class RequestFaceAPI(APIView):
         # if (!result_emotion || !result_age):
         #     return httpError
 
-        # 과연 할 수 있을까..
-        # f = open('face_api_age.txt', 'w')
-        # json_val = json.dumps(result_age)
-        # f.write(json_val)
-        # f.close()
-
         fileIO.write_file(request, 'face_api_age.txt', result_age)
 
     def post(self, request):
@@ -91,19 +86,12 @@ class RequestFaceAPI(APIView):
             BASE_URL = 'https://koreacentral.api.cognitive.microsoft.com/face/v1.0/detect?returnFaceId=true&returnFaceLandmarks=false&returnFaceAttributes=age,emotion&recognitionModel=recognition_01&returnRecognitionModel=false '  # Replace with your regional Base URL
             CF.BaseUrl.set(BASE_URL)
 
-            # 디버깅 용
-            print('get the data')
-            # print('request.POST: ', request.POST)
-            # print('request.FILES: ', request.FILES)
-            # print('request.headers: ', request.headers)
-
             data_test = request.FILES.get('photo', '')
 
-            # 디버깅 용
             print('data test is : ', data_test)
             print('type of data_test is : ', type(data_test))
             print('length of data_test is : ', len(data_test))
-            print('finish to get ')
+
             try:
                 faces = CF.face.detect(data_test)
                 logger.debug(faces)
@@ -121,7 +109,7 @@ class RequestFaceAPI(APIView):
 
         except Exception as e:
             logger.error(e)
-            return httpError.serverError('please try again')
+            return httpError.serverError(request, 'Face API Error')
 
     def get(self, request):
         return httpResponse.ok(request, "Using Microsoft Face API")
@@ -181,16 +169,11 @@ class Call(APIView):
         livepreds1 = livepreds.argmax(axis=1)
         liveabc = livepreds1.astype(int).flatten()
 
-        # f = open('speech_api_emotion.txt', 'w')
-        # json_val = json.dumps(self.label[int(liveabc)])
-        # f.write(json_val)
-        # f.close()
-
         fileIO.write_file(request, 'speech_api_emotion.txt',
                           self.label[int(liveabc)])
 
         return self.label[int(liveabc)]
-
+from rest_framework.response import Response
 
 class RecommendationMusic(APIView):
     """
@@ -204,6 +187,7 @@ class RecommendationMusic(APIView):
         self.tone_res = ''
         self.music_list = []  # 리스트 안의 dictionary 형태로 들어온다. (music, url)
         self.age = random.randint(0, 150)
+        self.user_id = ''
 
         # self.face = '{"faceId": "c8a2f7ff-316b-4440-a051-f1bdebe7bebf", "faceRectangle": {"top": 0, "left": 35, "width": 245, "height": 199}, "faceAttributes": {"age": 25.0, "emotion": {"anger": 0.0, "contempt": 0.099, "disgust": 0.073, "fear": 0.0, "happiness": 0.0, "neutral": 0.012, "sadness": 0.816, "surprise": 0.0}}}'
         # self.speech = 'angry'
@@ -213,17 +197,20 @@ class RecommendationMusic(APIView):
         recommand_music 함수를 호출해 추천받은 노래를 Response 해주는 함수
         """
         try:
+            self.user_id = request.POST.get('result','')
             self.age = fileIO.read_file(request, 'face_api_age.txt')
             self.music_list = self.recommand_music(request, int(float(self.age)))
 
             logger.debug(self.music_list)
+            print(type(self.music_list[0]))
 
-            result = json.dumps(self.music_list, ensure_ascii=False)
-            return httpResponse.ok(result)
+            # result = json.dumps(self.music_list, ensure_ascii=False)
+            # logger.debug(result)
+            return httpResponse.ok(request, self.music_list[0])
 
         except Exception as e:
             logging.error(e)
-            return httpError.serverError('Recommandation Error')
+            return httpError.serverError(request, 'Recommandation Error')
 
     def create_Analysis_Result(self, music_list):
         """
@@ -247,7 +234,7 @@ class RecommendationMusic(APIView):
 
         except Exception as e:
             logger.error(e)
-            return HttpResponse('please try again')
+            return httpError.serverError(request, "Can't Create Analysis_Result")
 
     def get_random3(self, request, table):
         """
@@ -293,7 +280,7 @@ class RecommendationMusic(APIView):
             return dictionary_list
         except Exception as e:
             print(e)
-            return HttpResponse('please try again')
+            return httpError.serverError(request, "Can't Get Randomly 3 Music")
 
     # randomly get three music of DB (test)
     def get_random3_test(self, table):
@@ -380,8 +367,6 @@ class RecommendationMusic(APIView):
                         table = table_index[tableN]
 
                     music = table.objects.filter(age=age).order_by('?').first()  # 해당 연령 범위의 노래로 추림
-                    print('music is: ', music)
-                    print('music.music is : ', music.music)
                     music_list.append(music.music)
                     dictionary_list.append(music)
 
@@ -390,7 +375,7 @@ class RecommendationMusic(APIView):
             return dictionary_list
         except Exception as e:
             print(e)
-            return httpError(request, "Can't Recommand music")
+            return httpError.serverError(request, "Can't Recommand music")
 
     # 이미지, 음성 감정 분석 결과를 이용해 접근할 테이블을 결정한다.
     def get_table_name(self, face, tone):
@@ -435,9 +420,9 @@ class RecommendationMusic(APIView):
 
             # 중립이 0.8 이상이면 3개의 랜덤 테이블을 선택한다. (0에서 5까지 중 랜덤 정수)
             if neutral > 0.8:
-                table1 = random.randint(0, 6)
-                table2 = random.randint(0, 6)
-                table3 = random.randint(0, 6)
+                table1 = random.randint(0, 5)
+                table2 = random.randint(0, 5)
+                table3 = random.randint(0, 5)
                 return table1, table2, table3
 
             # 전처리 - 0.05미만인 값은 0.0으로 스무딩한다.
@@ -445,7 +430,16 @@ class RecommendationMusic(APIView):
                 for emotion, rate in dic.items():
                     if rate < 0.05:
                         dic[emotion] = 0.0
-                        # print('smoothing dictionary : ', dic)
+                        print('smoothing dictionary : ', dic)
+                
+                anger = dic['anger']
+                contempt = dic['contempt']
+                disgust = dic['disgust']
+                fear = dic['fear']
+                happiness = dic['happiness']
+                neutral = dic['neutral']
+                sadness = dic['sadness']
+                surprise = dic['surprise']
 
             # 전처리 - 거짓말인 경우, 거짓말 테이블 선택
             if self.tone_res == "sadness" and happiness > 0:
@@ -469,8 +463,8 @@ class RecommendationMusic(APIView):
 
                 emotion_res = sorted(dic.items(), key=operator.itemgetter(
                     1), reverse=True)  # value 기준 내림차순 정렬
-                # print("정렬후")
-                # print('sorted dictionary to list of tuple : ', emotion_res)
+                print("정렬후")
+                print('sorted dictionary to list of tuple : ', emotion_res)
 
                 rank_emotion = []  # 인덱스 순서대로 높은 순위 감정이다. 3순위 감정까지 저장한다.
                 rank_emotion_cnt = 0
@@ -481,14 +475,14 @@ class RecommendationMusic(APIView):
                         if rank_emotion_cnt > 3:
                             break
 
-                # print(rank_emotion)
+                print(rank_emotion)
                 if rank_emotion_cnt == 1:
                     rank_emotion.append(rank_emotion[0])
                     rank_emotion.append(rank_emotion[0])
                 elif rank_emotion_cnt == 2:
                     rank_emotion.append(rank_emotion[0])
 
-                # print(rank_emotion)
+                print(rank_emotion)
 
                 if rank_emotion[0] == "anger":
                     table1 = 41  # 4:슬픔테이블 41:슬픔(1)음악(잔잔)
