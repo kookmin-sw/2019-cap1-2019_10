@@ -34,7 +34,7 @@ public class PhoneCamera : BaseMenu
         WebCamDevice[] devices = WebCamTexture.devices;
 
         // 사용할 수 있는 카메라를 못찾음
-        if(devices.Length == 0)
+        if (devices.Length == 0)
         {
             Debug.Log("No camera detected");
             camAvailable = false;
@@ -42,15 +42,15 @@ public class PhoneCamera : BaseMenu
         }
 
         // 사용할 수 있는 카메라 중에 전면 카메라를 사용하고 싶다
-        for(int i = 0; i < devices.Length; i++)
+        for (int i = 0; i < devices.Length; i++)
         {
-            if(devices[i].isFrontFacing)
+            if (devices[i].isFrontFacing)
             {
                 frontCam = new WebCamTexture(devices[i].name, Screen.width, Screen.height);
             }
         }
 
-        if(frontCam == null)
+        if (frontCam == null)
         {
             Debug.Log("Unable to find front camera");
             return;
@@ -77,7 +77,7 @@ public class PhoneCamera : BaseMenu
         //Texture2D snap = background.texture as Texture2D;
         snap.Apply();
 
-        if(Application.platform == RuntimePlatform.Android)
+        if (Application.platform == RuntimePlatform.Android)
         {
             snap = RotateImage(snap, 90);
         }

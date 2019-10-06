@@ -14,6 +14,8 @@ public class Dialogue : BaseMenu
 
     public static Dialogue instance;
     public Toggle ResultToggle;
+    public GameObject LoadingImg;
+    public Text Clicktxt;
 
     public Text debug;
 
@@ -27,8 +29,8 @@ public class Dialogue : BaseMenu
     public int retry = 0;
 
     //public Button.ButtonClickedEvent OnItemClick;
-    public const int STATE_MAX = 6;
-    enum State { Start, Photo, PhotoFin, Question, RecordeFin, Loading, Reset};
+    public const int STATE_MAX = 7;
+    enum State { First, Start, Photo, PhotoFin, Question, RecordeFin, Loading, Reset };
 
     protected void Awake()
     {
@@ -38,14 +40,18 @@ public class Dialogue : BaseMenu
     }
 
     // Start is called before the first frame update
+    // 초기화
     void Start()
     {
         locked = true;
         clicked = false;
         cnt = 0;
         retry = 0;
-        state = State.Start;
+        state = State.First;
+        Clicktxt.enabled = false;
+        LoadingImg.SetActive(false);
 
+        content.Add("안녕, 나는 양양이야");
         content.Add("나한테 집중해줘");
         content.Add("너의 하루를 표정으로 표현해줘!\n" + "조금 오래 걸릴 수 있어");
         content.Add("고마워, 이제 내 질문에 대답해줘");
@@ -64,16 +70,19 @@ public class Dialogue : BaseMenu
     // Update is called once per frame
     void Update()
     {
+        // 다른 기능 수행중일땐 lock이 걸려있어서 다음으로 넘어가지 못하게
         if (clicked && !locked)
         {
             clicked = false;
             locked = true;
-            StartCoroutine("Printing");
+            Clicktxt.enabled = false;
+            
             if (cnt < STATE_MAX)
             {
                 cnt++;
                 state++;
             }
+            StartCoroutine("Printing");
         }
     }
 
@@ -87,9 +96,14 @@ public class Dialogue : BaseMenu
 
     public void DialogueStart()
     {
+        Debug.Log(cnt + " : " + state);
+        txt.text = content[cnt];
         locked = false;
+        Clicktxt.enabled = true;
     }
 
+    // 어플 흐름
+    // 해당 state에 맞는 기능 수행
     private IEnumerator Printing()
     {
         txt.text = content[cnt];
@@ -98,55 +112,82 @@ public class Dialogue : BaseMenu
         {
             case State.Photo:
                 yield return StartCoroutine("TakePicture");
+                EndPrinting();
                 txt.text = content[cnt];
                 break;
             case State.Question:
                 yield return StartCoroutine("TakeRecorde");
+                EndPrinting();
                 txt.text = content[cnt];
                 OffRecorde();
                 break;
             case State.Loading:
                 yield return StartCoroutine("TakeResult");
+                EndPrinting();
                 locked = false;
                 break;
             case State.Reset:
                 break;
         }
 
-        locked = false;
+        EndState();
+
+    }
+
+    private void EndPrinting()
+    {
+        ++state;
+        ++cnt;
     }
 
     private void EndState()
     {
-        ++state;
-        ++cnt;
+        //++state;
+        //++cnt;
         txt.text = content[cnt];
+        locked = false;
+        Clicktxt.enabled = true;
     }
 
+    // 얼굴 인식 요청
+    // 결과를 수신할 때까지 대기
     private IEnumerator TakePicture()
     {
         TakePhoto();
+        LoadingImg.SetActive(true);
         yield return new WaitUntil(() => BaymaxGame.instance.photoCheck);
         yield return new WaitForSeconds(1f);
+        LoadingImg.SetActive(false);
         BaymaxGame.instance.photoCheck = false;
     }
 
+    // 음성 인식 요청
     private IEnumerator TakeRecorde()
     {
         OnRecorde();
         yield return new WaitUntil(() => BaymaxGame.instance.recodeCheck);
         yield return new WaitForSeconds(1f);
+        LoadingImg.SetActive(false);
         BaymaxGame.instance.recodeCheck = false;
     }
 
+    // 결과 요청
     private IEnumerator TakeResult()
     {
         GetResult();
+        LoadingImg.SetActive(true);
         debug.text = "get";
         yield return new WaitUntil(() => BaymaxGame.instance.resultCheck);
         debug.text = "result end";
         yield return new WaitForSeconds(1f);
+        LoadingImg.SetActive(false);
         ShowResult();
+    }
+
+    public void ResultError()
+    {
+        LoadingImg.SetActive(false);
+        txt.text = "서버 상태가 안좋아서 더이상 진행할 수 없어.. 다음에 다시 해줘";
     }
 
     public void OnExit()
@@ -160,7 +201,7 @@ public class Dialogue : BaseMenu
         //{
         //    HideResult();
         //}
-        
+
     }
 
     private IEnumerator Restart()
@@ -189,10 +230,10 @@ public class Dialogue : BaseMenu
     public void OnPostPhotoSuccess(string[] emotions)
     {
         Debug.Log("success");
-        for (int i = 0; i < emotions.Length; i++)
-        {
-            if (emotions[i] != "") Debug.Log(emotions[i]);
-        }
+        //for (int i = 0; i < emotions.Length; i++)
+        //{
+        //    if (emotions[i] != "") Debug.Log(emotions[i]);
+        //}
         BaymaxGame.instance.photoCheck = true;
         retry = 0;
     }

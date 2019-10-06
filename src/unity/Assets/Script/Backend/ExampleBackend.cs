@@ -67,7 +67,8 @@ public partial class BackendManager {
     public ResultLoaded OnResultLoaded;
     public ResultLoadedFailed OnResultLoadedFailed;
 
-    public delegate void AllResultLoaded(List<Result> results);
+    //public delegate void AllResultLoaded(List<Result> results);
+    public delegate void AllResultLoaded(List<LoginResult> results);
     public delegate void AllResultLoadedFailed();
     public AllResultLoaded OnAllResultLoaded;
     public AllResultLoadedFailed OnAllResultLoadedFailed;
@@ -265,7 +266,7 @@ public partial class BackendManager {
         WWWForm form = new WWWForm();
         form.AddField("result", id);
         byte[] postData = { 1 };
-        form.AddBinaryData("result", postData);
+        form.AddBinaryData("temp", postData);
         SendFile(RequestType.Post, "result", form, OnGetAllResultResponse, authenticationToken, false);
     }
     private void OnGetAllResultResponse(ResponseType responseType, string[] responseData, JToken responseJson, string callee)
@@ -275,7 +276,7 @@ public partial class BackendManager {
             if (OnAllResultLoaded != null)
             {
                 //Result results = JsonConvert.DeserializeObject<Result>(responseJson.ToString());
-                OnAllResultLoaded(JsonConvert.DeserializeObject<List<Result>>(responseJson.ToString(), settings));
+                OnAllResultLoaded(JsonConvert.DeserializeObject<List<LoginResult>>(responseJson.ToString(), settings));
                 //OnResultLoaded(JsonConvert.DeserializeObject<List<Result>>(responseJson.ToString()));
             }
         }

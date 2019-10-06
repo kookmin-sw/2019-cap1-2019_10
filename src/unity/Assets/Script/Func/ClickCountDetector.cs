@@ -24,6 +24,8 @@ public class ClickCountDetector : MonoBehaviour, IPointerClickHandler
     }
 
     public int tapCount = 0;
+
+    // 더블클릭 인식하기
     public void OnTap()
     {
         if (tapCount >= 2) return;
@@ -31,6 +33,7 @@ public class ClickCountDetector : MonoBehaviour, IPointerClickHandler
         tapCount++;
     }
 
+    // 더블클릭시 다음으로 진행하기
     void TapCheck()
     {
         switch (tapCount)

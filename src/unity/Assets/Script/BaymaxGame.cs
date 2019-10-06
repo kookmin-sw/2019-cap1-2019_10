@@ -21,7 +21,8 @@ public class BaymaxGame : BaseGame
     public GameObject loadingImage;
     public GameObject resultImage;
 
-    private int checkReusltResquestTime;
+    public int checkReusltResquestTime;
+    public float checkStartTime;
 
     //[SerializeField]
     //private GUIText turnText;
@@ -43,7 +44,8 @@ public class BaymaxGame : BaseGame
 
         instance = this;
     }
-
+    
+    // 초기화
     protected override void Start()
     {
         base.Start();
@@ -80,6 +82,11 @@ public class BaymaxGame : BaseGame
         dialogue.Reset += OnReset;
     }
 
+    private void Update()
+    {
+
+    }
+
     private void OnPostScoreSuccess()
     {
         // Do a GET request on the server for all the highscores. Whenever this is successfull, the highscore menu will automatticlly be triggered and opened
@@ -93,16 +100,19 @@ public class BaymaxGame : BaseGame
 
     private void OnResultLoaded(List<Result> result)
     {
-        Debug.Log("baymaxgame");
         resultCheck = true;
     }
 
     private void OnResultLoadedFailed()
     {
         checkReusltResquestTime++;
-        if(checkReusltResquestTime < 3)
+        if (checkReusltResquestTime < 3)
         {
             GetResult();
+        }
+        else
+        {
+            dialogue.ResultError();
         }
 
         Debug.Log("Get Result Failed" + checkReusltResquestTime);
@@ -118,28 +128,35 @@ public class BaymaxGame : BaseGame
     {
         resetButton.SetActive(false);
         HideResult();
+        
     }
 
+    // 얼굴인식
     public void TakePhoto()
     {
         phoneCamera.OnCamera();
     }
 
+
+    // 녹음 토글 on
     public void OnRecorde()
     {
         recorderToggle.SetActive(true);
     }
 
+    // 녹음 토글 버튼 off
     public void OffRecorde()
     {
         recorderToggle.SetActive(false);
     }
 
+    // 서버에 결과 요청
     public void GetResult()
     {
         backendManager.GetResult(PlayerPrefs.GetString("x2").FromBase64());
     }
 
+    // 결과 display
     public void ShowResult()
     {
         debug.text = "show";

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// 사용자의 이전 노래 결과에 대한 전체 데이터 display 
 public class ListView : MonoBehaviour
 {
     public GameObject ItemObject;
@@ -20,6 +21,7 @@ public class ListView : MonoBehaviour
         
     }
 
+    // 수신한 노래 정보 데이터를 버튼 형태로 복제
     private void Binding()
     {
         GameObject btnItemTemp;

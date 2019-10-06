@@ -44,9 +44,10 @@ public abstract class BaseGame : MonoBehaviour
     public GameObject SideMenu;
     public GameObject noticeImage;
 
-    public List<Result> results;
+    public List<LoginResult> results;
     public int checkAllReusltResquestTime;
 
+    // setting
     protected virtual void Awake() {
         if (loginMenu == null) {
             loginMenu = gameObject.GetOrCreateComponent<LoginMenu>();
@@ -69,14 +70,11 @@ public abstract class BaseGame : MonoBehaviour
         isStarted = false;
         startButton.SetActive(false);
 
-        //saveMenu.enabled = false;
         //audioRecorder.enabled = false;
 
         backendManager.OnLoggedIn += OnLoggedIn;
         backendManager.OnAllResultLoaded += OnAllResultLoaded;
         backendManager.OnAllResultLoadedFailed += OnAllResultLoadedFailed;
-        //saveMenu.OnSaveButtonPressed += OnSaveButtonPressed;
-        //saveMenu.OnLoadButtonPressed += OnLoadButtonPressed;
     }
 
     protected bool CanClick() {
@@ -88,6 +86,7 @@ public abstract class BaseGame : MonoBehaviour
         return true;
     }
 
+    // 로그인에 성공하면 다음으로 필요한 Menu들 실행
     protected virtual void DisableLoginMenu() {
         loginObject.SetActive(false);
         loginMenu.enabled = false;
@@ -101,6 +100,7 @@ public abstract class BaseGame : MonoBehaviour
         if (!loginMenu.isSignup) GetAllResult();
     }
 
+    // 로그인 취소시 다음으로 필요한 menu setting
     public void ExitLogin()
     {
         if (PlayerPrefs.HasKey("x1"))
@@ -125,16 +125,18 @@ public abstract class BaseGame : MonoBehaviour
         Invoke("DisableLoginMenu", 1.0f);
     }
 
+    // 기존에 db에 저장해놨던 사용자의 노래 result 불러오기
     public void GetAllResult()
     {
         backendManager.GetAllResult(PlayerPrefs.GetString("x2").FromBase64());
     }
 
-    private void OnAllResultLoaded(List<Result> results)
+    private void OnAllResultLoaded(List<LoginResult> results)
     {
         this.results = results;
     }
 
+    // 결과 로드 실패시 3번까지 retry
     private void OnAllResultLoadedFailed()
     {
         checkAllReusltResquestTime++;

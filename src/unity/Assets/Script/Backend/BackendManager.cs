@@ -337,13 +337,17 @@ public partial class BackendManager : MonoBehaviour {
         {
             emotion = request.downloadHandler.text;
             Debug.Log(emotion);
+            Debug.Log(statusCode);
+
+            // 서버 에러문 수신시 exception처리
             if (emotion == "please try again") throw new Exception();
 
             //Debug.Log(request.downloadHandler.text);
             if (check)
             {
                 //emotion = emotion.Replace("", "\n");
-                char[] delimiterChars = { ' ', ',', '[', ']', '\'', '\'', '\t', '\n', '\0' };
+                // json 형태 아닐때 split하기
+                char[] delimiterChars = { ' ', ',', '[', ']', '\'', '\'', '\t', '\n', '\0'};
                 splitEmotion = emotion.Split(delimiterChars);
             }
             else
@@ -354,17 +358,16 @@ public partial class BackendManager : MonoBehaviour {
 
                 //Debug.Log(finalJsonStr);
 
+                // json형태 파일 파싱
                 if (emotion.StartsWith("["))
                 {
-                    //Debug.Log("array");
                     responseObj = JArray.Parse(emotion);
-                    //Debug.Log("array : " + emotion);
+                    Debug.Log("array : " + responseObj);
                 }
                 else
                 {
-                    //Debug.Log("object");
                     responseObj = JObject.Parse(emotion);
-                    //Debug.Log("object : " + emotion);
+                    Debug.Log("object : " + responseObj);
                 }
             }
         }
@@ -395,6 +398,7 @@ public partial class BackendManager : MonoBehaviour {
                     }
                     else
                     {
+                        Debug.Log(emotion);
                         Debug.Log("Could not parse the response");
                         Debug.Log("Exception=" + ex.ToString());
                         onResponse(ResponseType.ParseError, null, null, callee);

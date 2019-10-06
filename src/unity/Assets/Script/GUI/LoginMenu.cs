@@ -42,6 +42,7 @@ public class LoginMenu : BaseMenu {
     public bool isSignup;
     private SignupMenu signupMenu;
 
+    // 로그인 창 메뉴 setting
     public GameObject loginMenu;
     public GameObject loginObject;
     public GameObject signupObject;
@@ -56,12 +57,15 @@ public class LoginMenu : BaseMenu {
     private void Start() {
         //windowRect = new Rect(Screen.width / 2 - 150, Screen.height / 2 - 75, 300, 150);
         //windowRect = new Rect(Screen.width / 2 - 430, Screen.height / 2 - 500, 500, 300);
+
+        // login을 위한 setting
         loginMenu.SetActive(true);
         loginObject.SetActive(true);
         checkTry = 0;
         backendManager.OnLoggedIn += OnLoggedIn;
         backendManager.OnLoginFailed += OnLoginFailed;
-        
+
+        // 회원가입을 위한 setting
         signupMenu = gameObject.GetComponent<SignupMenu>();
         signupObject.SetActive(false);
         signupMenu.enabled = false;
@@ -70,6 +74,7 @@ public class LoginMenu : BaseMenu {
 
         isSignup = false;
 
+        //로그인 정보를 기억하고 있으면 자동으로 로그인 정보를 채우기
         if (PlayerPrefs.HasKey("x1")) {
             username = PlayerPrefs.GetString("x2").FromBase64();
             password = PlayerPrefs.GetString("x1").FromBase64();
@@ -87,12 +92,14 @@ public class LoginMenu : BaseMenu {
         isSignup = true;
         loginObject.SetActive(true);
     }
-    
+
+    //로그인 정보 저장하기
     private void SaveCredentials() {
         PlayerPrefs.SetString("x2", username.ToBase64());
         PlayerPrefs.SetString("x1", password.ToBase64());
     }
 
+    //로그인 정보 삭제
     private void RemoveCredentials() {
         if (PlayerPrefs.HasKey("x1")) {
             PlayerPrefs.DeleteAll();
@@ -131,7 +138,7 @@ public class LoginMenu : BaseMenu {
         }
     }
 
-
+    // 서버에 로그인 요청
     public void DoLogin() {
         if(usernameInput.text == "")
         {
@@ -160,6 +167,7 @@ public class LoginMenu : BaseMenu {
         signupMenu.enabled = true;
     }
 
+    //status에 로그인 시도중임을 표시하기 위함
     private void Update() {
         if(!loggingIn) {
             return;

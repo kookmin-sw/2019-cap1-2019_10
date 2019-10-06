@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+// 로그인시 전에 분석을 통해 나왔던 전체 노래 결과들을 display해주는 기능
 public class LoginInformation : MonoBehaviour
 {
     public bool clicked = false;
@@ -35,6 +36,7 @@ public class LoginInformation : MonoBehaviour
         }
     }
 
+    // 노래 결과 화면창 toggle
     public void onClicked()
     {
         if (noticeToggle.isOn == true)
@@ -56,6 +58,7 @@ public class LoginInformation : MonoBehaviour
         }
     }
 
+    // 전체 노래결과 띄워줄 때 사용자 id도 함께 display
     public void DisplayAllResult(List<Result> results)
     {
         username = PlayerPrefs.GetString("x2").FromBase64();
