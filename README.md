@@ -124,8 +124,7 @@ python manage.py runserver 0:8000
 
 ## 실행 화면
     
-<img src="./image/id.png" width="240"> <img src="./image/notice.png" width="240"> <img src="./image/menu.PNG" width="240">
-<img src="./image/start.png" width="240"> <img src="./image/audio.PNG" width="240"> <img src="./image/result.PNG" width="240">
+<img src="./image/sheep_first.PNG" width="240"> <img src="./image/sheep_info.PNG" width="240"> <img src="./image/sheep_photo.PNG" width="240"> <img src="./image/sheep_audio.PNG" width="240"> <img src="./image/sheep_result.PNG" width="240">
 
 ## Reference
 [얼굴 인식](https://github.com/omar178/Emotion-recognition)    
