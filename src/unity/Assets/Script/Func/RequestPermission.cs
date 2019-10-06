@@ -28,5 +28,26 @@ public class RequestPermission : MonoBehaviour
         {
             Permission.RequestUserPermission(Permission.Camera);
         }
+
+
+        if (Permission.HasUserAuthorizedPermission(Permission.ExternalStorageWrite))
+        {
+            Debug.Log("permission ok");
+        }
+        else
+        {
+            Permission.RequestUserPermission(Permission.ExternalStorageWrite);
+        }
+
+
+        if (Permission.HasUserAuthorizedPermission(Permission.ExternalStorageRead))
+        {
+            Debug.Log("permission ok");
+        }
+        else
+        {
+            Permission.RequestUserPermission(Permission.ExternalStorageRead);
+        }
+
     }
 }

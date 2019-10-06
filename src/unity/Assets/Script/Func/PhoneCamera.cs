@@ -9,7 +9,8 @@ using UnityEngine.UI;
 public class PhoneCamera : BaseMenu
 {
     private bool camAvailable;
-    private WebCamTexture frontCam;
+    public WebCamTexture frontCam;
+    public Texture2D snap;
 
     Vector3 localScale = new Vector3(1f, 1f, 1f);
     Vector3 localOrient = new Vector3(0, 0, 0);
@@ -33,7 +34,7 @@ public class PhoneCamera : BaseMenu
         WebCamDevice[] devices = WebCamTexture.devices;
 
         // 사용할 수 있는 카메라를 못찾음
-        if(devices.Length == 0)
+        if (devices.Length == 0)
         {
             Debug.Log("No camera detected");
             camAvailable = false;
@@ -41,15 +42,15 @@ public class PhoneCamera : BaseMenu
         }
 
         // 사용할 수 있는 카메라 중에 전면 카메라를 사용하고 싶다
-        for(int i = 0; i < devices.Length; i++)
+        for (int i = 0; i < devices.Length; i++)
         {
-            if(devices[i].isFrontFacing)
+            if (devices[i].isFrontFacing)
             {
                 frontCam = new WebCamTexture(devices[i].name, Screen.width, Screen.height);
             }
         }
 
-        if(frontCam == null)
+        if (frontCam == null)
         {
             Debug.Log("Unable to find front camera");
             return;
@@ -71,11 +72,16 @@ public class PhoneCamera : BaseMenu
     // 사진찍기
     private void TakeSnapshot()
     {
-        Texture2D snap = new Texture2D(frontCam.width, frontCam.height);
+        snap = new Texture2D(frontCam.width, frontCam.height);
         snap.SetPixels(frontCam.GetPixels());
         //Texture2D snap = background.texture as Texture2D;
         snap.Apply();
-        snap = RotateImage(snap, 90);
+
+        if (Application.platform == RuntimePlatform.Android)
+        {
+            snap = RotateImage(snap, 90);
+        }
+
         //잘 찍히는지 사진으로 저장해보는 코드
         //_SavePath = pathForDocumentsFile("MyMoodMusic");
         //Debug.Log(_SavePath);
@@ -86,10 +92,9 @@ public class PhoneCamera : BaseMenu
 
         imageData = snap.EncodeToPNG();
 
+        backendManager.PostPhoto(imageData, PlayerPrefs.GetString("x2").FromBase64());
+
         UnityEngine.Object.Destroy(snap);
-
-        backendManager.PostPhoto(imageData);
-
         imageData = null;
     }
 
@@ -109,27 +114,27 @@ public class PhoneCamera : BaseMenu
 
 
     // 저장경로 찾기
-    //public string pathForDocumentsFile(string filename)
-    //{
-    //    if (Application.platform == RuntimePlatform.IPhonePlayer)
-    //    {
-    //        string path = Application.dataPath.Substring(0, Application.dataPath.Length - 5);
-    //        path = path.Substring(0, path.LastIndexOf('/'));
-    //        return Path.Combine(Path.Combine(path, "Documents"), filename);
-    //    }
-    //    else if (Application.platform == RuntimePlatform.Android)
-    //    {
-    //        string path = Application.persistentDataPath;
-    //        path = path.Substring(0, path.LastIndexOf('/'));
-    //        return Path.Combine(path, filename);
-    //    }
-    //    else
-    //    {
-    //        string path = Application.dataPath;
-    //        path = path.Substring(0, path.LastIndexOf('/'));
-    //        return Path.Combine(path, filename);
-    //    }
-    //}
+    public string pathForDocumentsFile(string filename)
+    {
+        if (Application.platform == RuntimePlatform.IPhonePlayer)
+        {
+            string path = Application.dataPath.Substring(0, Application.dataPath.Length - 5);
+            path = path.Substring(0, path.LastIndexOf('/'));
+            return Path.Combine(Path.Combine(path, "Documents"), filename);
+        }
+        else if (Application.platform == RuntimePlatform.Android)
+        {
+            string path = Application.persistentDataPath;
+            path = path.Substring(0, path.LastIndexOf('/'));
+            return Path.Combine(path, filename);
+        }
+        else
+        {
+            string path = Application.dataPath;
+            path = path.Substring(0, path.LastIndexOf('/'));
+            return Path.Combine(path, filename);
+        }
+    }
 
     private void Update()
     {

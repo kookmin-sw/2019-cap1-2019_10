@@ -7,6 +7,7 @@ public class ClickCountDetector : MonoBehaviour, IPointerClickHandler
 {
     public GameObject DialogueImage;
     public GameObject start;
+    public GameObject LoginToggle;
 
     public void OnPointerClick(PointerEventData eventData)
     {
@@ -23,6 +24,8 @@ public class ClickCountDetector : MonoBehaviour, IPointerClickHandler
     }
 
     public int tapCount = 0;
+
+    // 더블클릭 인식하기
     public void OnTap()
     {
         if (tapCount >= 2) return;
@@ -30,6 +33,7 @@ public class ClickCountDetector : MonoBehaviour, IPointerClickHandler
         tapCount++;
     }
 
+    // 더블클릭시 다음으로 진행하기
     void TapCheck()
     {
         switch (tapCount)
@@ -38,6 +42,7 @@ public class ClickCountDetector : MonoBehaviour, IPointerClickHandler
                 start.SetActive(false);
                 //깨어나기
                 Debug.Log("깨어나기");
+                LoginToggle.SetActive(true);
                 DialogueImage.SetActive(true);
                 Dialogue.instance.DialogueStart();
                 break;

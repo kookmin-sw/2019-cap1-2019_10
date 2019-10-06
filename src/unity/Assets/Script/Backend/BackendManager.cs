@@ -119,7 +119,8 @@ public partial class BackendManager : MonoBehaviour {
     /// <param name="wwwForm">A WWWForm to send with the request</param>
     /// <param name="onResponse">A callback which will be called when we retrieve the response</param>
     /// <param name="authToken">An optional authToken which, when set will be put in the Authorization header</param>
-    public void Send(RequestType type, string command, WWWForm wwwForm, RequestResponseDelegate onResponse = null, string authToken = "") {
+    public void Send(RequestType type, string command, WWWForm wwwForm, RequestResponseDelegate onResponse = null, string authToken = "")
+    {
         WWW request;
 #if UNITY_5_PLUS
         Dictionary<string, string> headers;
@@ -129,19 +130,23 @@ public partial class BackendManager : MonoBehaviour {
         byte[] postData;
         string url = BackendUrl + command;
 
-        if (Secure) {
+        if (Secure)
+        {
             url = url.Replace("http", "https");
         }
 
-        if (wwwForm == null) {
+        if (wwwForm == null)
+        {
             wwwForm = new WWWForm();
             postData = new byte[] { 1 };
-        } else {
+        }
+        else
+        {
             postData = wwwForm.data;
         }
 
         headers = wwwForm.headers;
-        
+
         //make sure we get a json response
         headers.Add("Accept", "application/json");
 
@@ -149,7 +154,8 @@ public partial class BackendManager : MonoBehaviour {
         headers.Add("X-UNITY-METHOD", type.ToString().ToUpper());
 
         //also, add the authentication token, if we have one
-        if (authToken != "") {
+        if (authToken != "")
+        {
             //for more information about token authentication, see: http://www.django-rest-framework.org/api-guide/authentication/#tokenauthentication
             headers.Add("Authorization", "Token " + authToken);
         }
@@ -171,6 +177,14 @@ public partial class BackendManager : MonoBehaviour {
             }
             yield return new WaitForEndOfFrame();
         }
+
+        if (request.text == "{\"username\":[\"해당 사용자 이름은 이미 존재합니다.\"]}")
+        {
+            onResponse(ResponseType.ClientError, request.text, callee);
+
+            yield break;
+        }
+        //Debug.Log(request.text);
 
         //catch proper client errors(eg. can't reach the server)
         if (!String.IsNullOrEmpty(request.error))
@@ -256,32 +270,30 @@ public partial class BackendManager : MonoBehaviour {
     }
 
     // UnityWebRequest로 하는 통신
-    public void SendFile(RequestType type, string command, WWWForm wwwForm, FileRequestResponseDelegate onResponse = null, string authToken = "")
+    public void SendFile(RequestType type, string command, WWWForm wwwForm, FileRequestResponseDelegate onResponse = null, string authToken = "", bool check = false)
     {
         UnityWebRequest request;
 
         byte[] postData;
         string url = BackendUrl + command;
-        bool check;
 
         if (Secure)
         {
             url = url.Replace("http", "https");
         }
 
-        if (wwwForm == null)
-        {
-            wwwForm = new WWWForm();
-            postData = new byte[] { 1 };
-            request = UnityWebRequest.Get(url);
-            check = false;
-        }
-        else
-        {
-            postData = wwwForm.data;
-            request = UnityWebRequest.Post(url, wwwForm);
-            check = true;
-        }
+        //if (wwwForm == null)
+        //{
+        //    wwwForm = new WWWForm();
+        //    postData = new byte[] { 1 };
+        //    request = UnityWebRequest.Get(url);
+        //    check = false;
+        //}
+        //else
+        //{
+        postData = wwwForm.data;
+        request = UnityWebRequest.Post(url, wwwForm);
+        //}
 
         System.Diagnostics.StackTrace stackTrace = new System.Diagnostics.StackTrace();
         string callee = stackTrace.GetFrame(1).GetMethod().Name;
@@ -323,33 +335,40 @@ public partial class BackendManager : MonoBehaviour {
 
         try
         {
+            emotion = request.downloadHandler.text;
+            Debug.Log(emotion);
+            Debug.Log(statusCode);
+
+            // 서버 에러문 수신시 exception처리
+            if (emotion == "please try again") throw new Exception();
+
             //Debug.Log(request.downloadHandler.text);
             if (check)
             {
-                emotion = request.downloadHandler.text;
-                if (emotion == "please try again") throw new Exception();
-
-                char[] delimiterChars = { ' ', ',', '[', ']', '\'', '\'', '\t', '\n', '\0' };
+                //emotion = emotion.Replace("", "\n");
+                // json 형태 아닐때 split하기
+                char[] delimiterChars = { ' ', ',', '[', ']', '\'', '\'', '\t', '\n', '\0'};
                 splitEmotion = emotion.Split(delimiterChars);
             }
             else
             {
-                string finalJsonStr = request.downloadHandler.text.Replace("\\", "");
-                finalJsonStr = finalJsonStr.Replace("[", "");
-                finalJsonStr = finalJsonStr.Substring(1, finalJsonStr.Length - 3);
+                //string finalJsonStr = emotion.Replace("\\", "");
+                //finalJsonStr = finalJsonStr.Replace("[", "");
+                //finalJsonStr = finalJsonStr.Substring(1, finalJsonStr.Length - 3);
 
                 //Debug.Log(finalJsonStr);
 
-                if (finalJsonStr.StartsWith("["))
+                // json형태 파일 파싱
+                if (emotion.StartsWith("["))
                 {
-                    //Debug.Log("array");
-                    responseObj = JArray.Parse(finalJsonStr);
+                    responseObj = JArray.Parse(emotion);
+                    Debug.Log("array : " + emotion);
                 }
                 else
                 {
-                    //Debug.Log("object");
-                    responseObj = JObject.Parse(finalJsonStr);
+                    responseObj = JObject.Parse(emotion);
                     Debug.Log(responseObj);
+                    Debug.Log("object : " + responseObj);
                 }
             }
         }
@@ -380,6 +399,7 @@ public partial class BackendManager : MonoBehaviour {
                     }
                     else
                     {
+                        Debug.Log(emotion);
                         Debug.Log("Could not parse the response");
                         Debug.Log("Exception=" + ex.ToString());
                         onResponse(ResponseType.ParseError, null, null, callee);

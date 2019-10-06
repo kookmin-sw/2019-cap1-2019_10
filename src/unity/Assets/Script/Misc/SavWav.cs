@@ -37,9 +37,16 @@ public static class SavWav {
 		if (!filename.ToLower().EndsWith(".wav")) {
 			filename += ".wav";
 		}
+        var filepath = "";
 
-        //var filepath = Path.Combine(Application.persistentDataPath, filename);
-        var filepath = Path.Combine(Application.dataPath, filename);
+        if (Application.platform == RuntimePlatform.Android)
+        {
+            filepath = Path.Combine(Application.persistentDataPath, filename);
+        }
+        else
+        {
+            filepath = Path.Combine(Application.dataPath, filename);
+        }
 
         Debug.Log(filepath);
 

@@ -23,6 +23,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 using UnityEngine;
 
@@ -38,10 +39,15 @@ public abstract class BaseGame : MonoBehaviour
     protected AudioRecorder audioRecorder;
     protected PhoneCamera phoneCamera;
 
+    public GameObject loginObject;
     public GameObject startButton;
     public GameObject SideMenu;
     public GameObject noticeImage;
 
+    public List<Result> results;
+    public int checkAllReusltResquestTime;
+
+    // setting
     protected virtual void Awake() {
         if (loginMenu == null) {
             loginMenu = gameObject.GetOrCreateComponent<LoginMenu>();
@@ -64,12 +70,11 @@ public abstract class BaseGame : MonoBehaviour
         isStarted = false;
         startButton.SetActive(false);
 
-        //saveMenu.enabled = false;
         //audioRecorder.enabled = false;
 
         backendManager.OnLoggedIn += OnLoggedIn;
-        //saveMenu.OnSaveButtonPressed += OnSaveButtonPressed;
-        //saveMenu.OnLoadButtonPressed += OnLoadButtonPressed;
+        backendManager.OnAllResultLoaded += OnAllResultLoaded;
+        backendManager.OnAllResultLoadedFailed += OnAllResultLoadedFailed;
     }
 
     protected bool CanClick() {
@@ -81,7 +86,9 @@ public abstract class BaseGame : MonoBehaviour
         return true;
     }
 
+    // 로그인에 성공하면 다음으로 필요한 Menu들 실행
     protected virtual void DisableLoginMenu() {
+        loginObject.SetActive(false);
         loginMenu.enabled = false;
         startButton.SetActive(true);
         SideMenu.SetActive(true);
@@ -89,6 +96,25 @@ public abstract class BaseGame : MonoBehaviour
         audioRecorder.enabled = true;
         phoneCamera.enabled = true;
         isLoggedIn = true;
+
+        if (!loginMenu.isSignup) GetAllResult();
+    }
+
+    // 로그인 취소시 다음으로 필요한 menu setting
+    public void ExitLogin()
+    {
+        if (PlayerPrefs.HasKey("x1"))
+        {
+            PlayerPrefs.DeleteAll();
+        }
+        loginObject.SetActive(false);
+        loginMenu.enabled = false;
+        startButton.SetActive(true);
+        SideMenu.SetActive(true);
+        noticeImage.SetActive(true);
+        audioRecorder.enabled = true;
+        phoneCamera.enabled = true;
+        isLoggedIn = false;
     }
 
     protected virtual bool IsMouseOverMenu() {
@@ -97,5 +123,28 @@ public abstract class BaseGame : MonoBehaviour
 
     private void OnLoggedIn() {
         Invoke("DisableLoginMenu", 1.0f);
+    }
+
+    // 기존에 db에 저장해놨던 사용자의 노래 result 불러오기
+    public void GetAllResult()
+    {
+        backendManager.GetAllResult(PlayerPrefs.GetString("x2").FromBase64());
+    }
+
+    private void OnAllResultLoaded(List<Result> results)
+    {
+        this.results = results;
+    }
+
+    // 결과 로드 실패시 3번까지 retry
+    private void OnAllResultLoadedFailed()
+    {
+        checkAllReusltResquestTime++;
+        if(checkAllReusltResquestTime < 3)
+        {
+            GetAllResult();
+        }
+
+        Debug.Log("Get All Result Failed" + checkAllReusltResquestTime);
     }
 }

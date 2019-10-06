@@ -4,10 +4,13 @@ using Newtonsoft.Json;
 [Serializable]
 public class Result
 {
-    public string music_1 { get; set; }
-    public string link_1 { get; set; }
-    public string music_2 { get; set; }
-    public string link_2 { get; set; }
-    public string music_3 { get; set; }
-    public string link_3 { get; set; }
+    // json 파일 형식
+    //public string music { get; set; }
+    //public string link { get; set; }
+    //public string tag_1 { get; set; }
+    //public string tag_2 { get; set; }
+
+    public string music1 { get; set; }
+    public string music2 { get; set; }
+    public string music3 { get; set; }
 }
