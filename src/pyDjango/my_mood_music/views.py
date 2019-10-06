@@ -12,7 +12,7 @@ from .serializers import *
 from .models import *
 from rest_framework.generics import DestroyAPIView, GenericAPIView, ListAPIView, ListCreateAPIView, UpdateAPIView, \
     CreateAPIView
-
+from rest_framework.views import APIView
 
 # class EmotionList(generics.ListCreateAPIView):
 #     queryset = Emotion_Information.objects.all()
@@ -40,6 +40,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 class UserAPI(DestroyAPIView, CreateAPIView):
+    """
     queryset = User.objects.all()
     serializer_class = CreateUserSerializer
 
@@ -52,7 +53,10 @@ class UserAPI(DestroyAPIView, CreateAPIView):
 
 logger = logging.getLogger(__name__)
 
-class GetAuthToken(GenericAPIView):
+class GetAuthToken(APIView):
+    """
+    for singup
+    """
     throttle_classes = ()
     permission_classes = ()
     parser_classes = (parsers.FormParser, parsers.MultiPartParser, parsers.JSONParser,)

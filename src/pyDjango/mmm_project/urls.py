@@ -18,6 +18,7 @@ from rest_framework_swagger.views import get_swagger_view
 from django.contrib import admin
 from rest_framework import routers
 from django.urls import path, include
+from django.conf.urls import url
 import os
 import sys
 
@@ -29,7 +30,6 @@ router = routers.DefaultRouter(trailing_slash=False)
 # router.register(r'users', views.UserViewSet)
 # router.register(r'emotions', views.EmotionViewSet)
 
-
 schema_view = get_swagger_view(title='My_Mood_Music API Manual')
 # url(r'^$', schema_view),
 
@@ -40,7 +40,7 @@ urlpatterns = [
     # my_mood_music app
     # path('api/', include(router.urls)),
     path('api/', include('my_mood_music.urls')),
-    # path('api/doc', schema_view),
+    path('', schema_view),
     # path('api/get_token', views.obtain_auth_token),
 
 ]

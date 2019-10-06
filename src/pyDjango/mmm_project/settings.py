@@ -94,7 +94,9 @@ REST_FRAMEWORK = {
     #     'rest_framework.authentication.SessionAuthentication',
     #     'rest_framework.authentication.BasicAuthentication',
     # ),
-    'PAGINATE_BY': 10
+    'PAGINATE_BY': 10,
+
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema' ,
 }
 
 SWAGGER_SETTING = {
@@ -106,6 +108,7 @@ SWAGGER_SETTING = {
             "in": "header"
         },
     },
+    
 
     "LOGIN_URL": "/admin/login/",
     "LOGOUT_URL": "/admin/logout"
