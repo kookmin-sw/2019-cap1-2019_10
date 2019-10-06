@@ -10,8 +10,8 @@ from mmm_project.core import httpError
 logger = logging.getLogger('default')
 
 # parameters for loading data and images
-detection_model_path = 'C:/Users/X58/Documents/GitHub/2019-cap1-2019_10/src/pyDjango/haarcascade_frontalface_default.xml'
-emotion_model_path = 'C:/Users/X58/Documents/GitHub/2019-cap1-2019_10/src/pyDjango/_mini_XCEPTION.102-0.66.hdf5'
+detection_model_path = 'C:/Users/X58/Documents/GitHub/2019-cap1-2019_10/src/pyDjango/haarcascade_frontalface_default.xml' # replace path
+emotion_model_path = 'C:/Users/X58/Documents/GitHub/2019-cap1-2019_10/src/pyDjango/_mini_XCEPTION.102-0.66.hdf5' # replace path
 
 # hyper-parameters for bounding boxes shape
 # loading models

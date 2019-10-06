@@ -15,6 +15,8 @@ import logging
 import random
 import operator
 import json
+import os
+import tensorflow as tf
 
 from django.http.response import HttpResponse
 from django.db.models import Max
@@ -113,23 +115,20 @@ class RequestFaceAPI(APIView):
                 path = default_storage.save(
                     'image.png', ContentFile(image_file.read()))
                 logger.debug(path)
-                faces = face_recognition(request, 'C:/Users/X58/Documents/GitHub/2019-cap1-2019_10/src/pyDjango/media/{}'.format(path))  # replace path
+                faces = face_recognition(request, './media/{}'.format(path))  # replace path
                 logger.debug(faces)
+
+                os.remove('./media/{}'.format(path))
             except Exception as e:
                 logger.error(e)
                 return httpError.serverError(request, "FaceAPI Connection Error")
 
-            print('a')
             fileIO.write_file(request, 'face_api_emotion.txt', str(faces))
-            print('b')
-
 
             if not faces:
                 return httpResponse.noContent(request, 'Face is not detected')
             else:
-                print('c')
                 self.get_data_from_faces(request, faces)
-                print('d')
                 return httpResponse.ok(request, str(self.result_emotion))
 
         except Exception as e:
@@ -139,6 +138,15 @@ class RequestFaceAPI(APIView):
     def get(self, request):
         return httpResponse.ok(request, "Using Microsoft Face API")
 
+
+def load_model():
+    global loaded_model
+    json_file = open('model.json', 'r')
+    loaded_model_json = json_file.read()
+    json_file.close()
+    loaded_model = tf.keras.models.model_from_json(loaded_model_json)
+    global graph
+    graph = tf.get_default_graph()
 
 class Call(APIView):
     """
@@ -156,7 +164,9 @@ class Call(APIView):
             path = default_storage.save(
                 'file.wav', ContentFile(audio_file.read()))
             logger.debug(path)
-            label = self.labelfrommodel(request, 'C:/Users/X58/Documents/GitHub/2019-cap1-2019_10/src/pyDjango/media/{}'.format(path)) # replace path
+            label = self.labelfrommodel(request, './media/{}'.format(path))
+
+            os.remove('./media/{}'.format(path))
         except Exception as e:
             logger.error(e)
             return httpError.serverError(request, 'SEA getting label Error')
@@ -166,38 +176,44 @@ class Call(APIView):
         return httpResponse.ok(request, "Using Speech-Emotion-Model")
 
     def labelfrommodel(self, request, filename):
-        json_file = open('C:/Users/X58/Documents/GitHub/2019-cap1-2019_10/src/pyDjango/model.json', 'r') # replace path
-        loaded_model_json = json_file.read()
-        json_file.close()
-        loaded_model = model_from_json(loaded_model_json)
+        # json_file = open('model.json', 'r')
+        # loaded_model_json = json_file.read()
+        # json_file.close()
+        # loaded_model = model_from_json(loaded_model_json)
+        load_model()
     
         try:
             # load weights into new model
             # if not .wav file, throw Exception
-            loaded_model.load_weights("C:/Users/X58/Documents/GitHub/2019-cap1-2019_10/src/pyDjango/Emotion_Voice_Detection_Model.h5") # replace path
+            loaded_model.load_weights("Emotion_Voice_Detection_Model.h5")
         except Exception as e:
             logger.error(e)
             return httpError.serverError(request, "SEA Model Error")
 
-        X, sample_rate = librosa.load(filename, res_type='kaiser_fast', duration=2.5,
-                                      sr=22050 * 2, offset=0.5)
-        sample_rate = np.array(sample_rate)
-        mfccs = np.mean(librosa.feature.mfcc(
-            y=X, sr=sample_rate, n_mfcc=13), axis=0)
+        with graph.as_default():
+            try: 
+                X, sample_rate = librosa.load(filename, res_type='kaiser_fast', duration=2.5,
+                                            sr=22050 * 2, offset=0.5)
+                sample_rate = np.array(sample_rate)
+                mfccs = np.mean(librosa.feature.mfcc(
+                    y=X, sr=sample_rate, n_mfcc=13), axis=0)
 
-        featurelive = mfccs
-        livedf2 = featurelive
-        livedf2 = pd.DataFrame(data=livedf2)
-        livedf2 = livedf2.stack().to_frame().T
-        twodim = np.expand_dims(livedf2, axis=2)
-        livepreds = loaded_model.predict(twodim, batch_size=32, verbose=1)
-        livepreds1 = livepreds.argmax(axis=1)
-        liveabc = livepreds1.astype(int).flatten()
+                featurelive = mfccs
+                livedf2 = featurelive
+                livedf2 = pd.DataFrame(data=livedf2)
+                livedf2 = livedf2.stack().to_frame().T
+                twodim = np.expand_dims(livedf2, axis=2)
+                livepreds = loaded_model.predict(twodim, batch_size=32, verbose=1)
+                livepreds1 = livepreds.argmax(axis=1)
+                liveabc = livepreds1.astype(int).flatten()
 
-        fileIO.write_file(request, 'speech_api_emotion.txt',
-                          self.label[int(liveabc)])
+                fileIO.write_file(request, 'speech_api_emotion.txt',
+                                self.label[int(liveabc)])
 
-        return self.label[int(liveabc)]
+                return self.label[int(liveabc)]
+            except Exception as e:
+                logger.error(e)
+                return httpError.serverError(request, "Tensor graph Error")
 
 
 class RecommendationMusic(APIView):
@@ -214,21 +230,24 @@ class RecommendationMusic(APIView):
         self.age = random.randint(0, 150)
         self.user_id = ''
 
-        # self.face = '{"faceId": "c8a2f7ff-316b-4440-a051-f1bdebe7bebf", "faceRectangle": {"top": 0, "left": 35, "width": 245, "height": 199}, "faceAttributes": {"age": 25.0, "emotion": {"anger": 0.0, "contempt": 0.099, "disgust": 0.073, "fear": 0.0, "happiness": 0.0, "neutral": 0.012, "sadness": 0.816, "surprise": 0.0}}}'
-        # self.speech = 'angry'
-
     def post(self, request):
         """
-        recommand_music 함수를 호출해 추천받은 노래를 Response 해주는 함수
+        recommand_music 함수를 호출해 추천받은 노래를 Response 해주는 함수\
+        face api를 변경하여 age값은 추출하지 않으므로 랜덤으로 돌린다.
         """
         try:
             self.user_id = request.POST.get('result','')
-            self.age = fileIO.read_file(request, 'face_api_age.txt')
+            # self.age = fileIO.read_file(request, 'face_api_age.txt')
             self.music_list = self.recommand_music(request, int(float(self.age)))
 
             logger.debug(self.music_list)
             
-            return httpResponse.ok(request, model_to_dict(self.music_list[0]))
+            result = {}
+            result["music1"] = model_to_dict(self.music_list[0])
+            result["music2"] = model_to_dict(self.music_list[1])
+            result["music3"] = model_to_dict(self.music_list[2])
+
+            return httpResponse.ok(request, result)
 
         except Exception as e:
             logging.error(e)
@@ -283,61 +302,60 @@ class RecommendationMusic(APIView):
 
                 music = table.objects.filter(id=pk).first()
                 logger.debug('music.music : {}'.format(music.music))  # 노래제목-가수
-                logger.debug('music.link : {}'.format(
-                    music.link))  # Youtube 링크
+                logger.debug('music.link : {}'.format(music.link))  # Youtube 링크
 
                 if music:
                     music_list.append(music.music)
                     link_list.append(music.link)
-                    tag_list.append((music.tag1, music.tag2))
+                    # tag_list.append((music.tag1, music.tag2))
                     count += 1
 
             self.create_Analysis_Result(music_list)
 
             Music['music'] = music_list
             Music['link'] = link_list
-            Music['tag'] = tag_list
+            # Music['tag'] = tag_list
             dictionary_list.append(Music)  # list of dictionary
-            print(dictionary_list)
+            logger.debug('dictionary_list from get_random3 {}'.format(dictionary_list))
             return dictionary_list
         except Exception as e:
-            print(e)
+            logger.error(e)
             return httpError.serverError(request, "Can't Get Randomly 3 Music")
 
-    # randomly get three music of DB (test)
-    def get_random3_test(self, table):
-        try:
-            Music = {}
-            max_id = table.objects.all().aggregate(max_id=Max("id"))['max_id']
-            dictionary_list = []
-            pk_list = []
-            count = 0
-            while True:
-                print('loop start')
-                if count == 3:
-                    break
-                print('pk before')
-                pk = random.randint(1, max_id)  # pk can equal, have to correct
-                print('pk after')
-                print(pk)
-                if pk in pk_list:
-                    continue
-                pk_list.append(pk)
-                print(pk_list)
-                music = table.objects.filter(id=pk).first()
-                print('music.music : ', music.music)
-                print('music.link : ', music.link)
-                if music:
-                    Music['music_{}'.format(len(pk_list))] = music.music
-                    Music['link_{}'.format(len(pk_list))] = music.link
-                    count += 1
+    # # randomly get three music of DB (test)
+    # def get_random3_test(self, table):
+    #     try:
+    #         Music = {}
+    #         max_id = table.objects.all().aggregate(max_id=Max("id"))['max_id']
+    #         dictionary_list = []
+    #         pk_list = []
+    #         count = 0
+    #         while True:
+    #             print('loop start')
+    #             if count == 3:
+    #                 break
+    #             print('pk before')
+    #             pk = random.randint(1, max_id)  # pk can equal, have to correct
+    #             print('pk after')
+    #             print(pk)
+    #             if pk in pk_list:
+    #                 continue
+    #             pk_list.append(pk)
+    #             print(pk_list)
+    #             music = table.objects.filter(id=pk).first()
+    #             print('music.music : ', music.music)
+    #             print('music.link : ', music.link)
+    #             if music:
+    #                 Music['music_{}'.format(len(pk_list))] = music.music
+    #                 Music['link_{}'.format(len(pk_list))] = music.link
+    #                 count += 1
 
-            dictionary_list.append(Music)  # list of dictionary
-            print(dictionary_list)
-            return dictionary_list
-        except Exception as e:
-            print(e)
-            return HttpResponse('please try again')
+    #         dictionary_list.append(Music)  # list of dictionary
+    #         print(dictionary_list)
+    #         return dictionary_list
+    #     except Exception as e:
+    #         print(e)
+    #         return HttpResponse('please try again')
 
     def recommand_music(self, request, age):
         """
@@ -348,9 +366,7 @@ class RecommendationMusic(APIView):
             music_list = []
             # 10세 미만이면 어린이 테이블로 가서 랜덤으로 3개의 동요를 뽑고 바로 종료한다.
             if age < 10:
-                print('get_random3 function before')
                 dictionary_list = self.get_random3(request, Child)
-                print('get_random3 function finish')
 
             # 어린이 나이가 아니라면, 추천 알고리즘에 의해 감정까지 고려한 노래 3개를 뽑는다.
             else:
@@ -385,18 +401,20 @@ class RecommendationMusic(APIView):
                         music = table.objects.filter(subclass_s=subclass_sad).order_by(
                             '?').first()  # Sad테이블 중 subclass_s가 subclass인 노래들 중 랜덤 선택
 
+                    elif tableN == 6:
+                        table = table_index[6]
+
                     else:  # Sad테이블 이외의 테이블에 접근해야하는 경우
                         table = table_index[tableN]
 
-                    music = table.objects.filter(age=age).order_by('?').first()  # 해당 연령 범위의 노래로 추림
+                    music = table.objects.order_by('?').first()  # 정해진 테이블에서 랜덤으로
                     music_list.append(music.music)
                     dictionary_list.append(music)
 
             self.create_Analysis_Result(music_list)
-
             return dictionary_list
         except Exception as e:
-            print(e)
+            logger.error(e)
             return httpError.serverError(request, "Can't Recommand music")
 
     # 이미지, 음성 감정 분석 결과를 이용해 접근할 테이블을 결정한다.
@@ -425,20 +443,22 @@ class RecommendationMusic(APIView):
             json_string = str(face).replace("\'", "\"")
             json_load = json.loads(json_string) 
 
-            dic = json_load['faceAttributes']['emotion']
+            # dic = json_load['faceAttributes']['emotion']
+            dic = json_load
 
-            anger = dic['anger']
-            contempt = dic['contempt']
+            anger = dic['angry']
+            # contempt = dic['contempt']
             disgust = dic['disgust']
-            fear = dic['fear']
-            happiness = dic['happiness']
+            fear = dic['scared']
+            happiness = dic['happy']
             neutral = dic['neutral']
-            sadness = dic['sadness']
-            surprise = dic['surprise']
+            sadness = dic['sad']
+            surprise = dic['surprised']
 
-            # 전처리 - 6개의 감정으로 만들기 위해, 우선 contempt와 disgust를 합친다.
-            contempt_disgust = contempt + disgust
-            dic["disgust"] = contempt_disgust
+            ### face api 변경
+            # # 전처리 - 6개의 감정으로 만들기 위해, 우선 contempt와 disgust를 합친다.
+            # contempt_disgust = contempt + disgust
+            # dic["disgust"] = contempt_disgust
 
             # 중립이 0.8 이상이면 3개의 랜덤 테이블을 선택한다. (0에서 5까지 중 랜덤 정수)
             if neutral > 0.8:
@@ -454,14 +474,14 @@ class RecommendationMusic(APIView):
                         dic[emotion] = 0.0
                         print('smoothing dictionary : ', dic)
                 
-                anger = dic['anger']
-                contempt = dic['contempt']
+                anger = dic['angry']
+                # contempt = dic['contempt']
                 disgust = dic['disgust']
-                fear = dic['fear']
-                happiness = dic['happiness']
+                fear = dic['scared']
+                happiness = dic['happy']
                 neutral = dic['neutral']
-                sadness = dic['sadness']
-                surprise = dic['surprise']
+                sadness = dic['sad']
+                surprise = dic['surprised']
 
             # 전처리 - 거짓말인 경우, 거짓말 테이블 선택
             if self.tone_res == "sadness" and happiness > 0:
