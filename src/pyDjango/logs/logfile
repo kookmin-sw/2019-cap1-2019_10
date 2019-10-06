@@ -1,0 +1,128 @@
+2019-10-03 15:26:47,105 [   ERROR] 'str' object has no attribute 'read'
+2019-10-03 16:14:43,834 [   ERROR] empty separator
+2019-10-03 16:27:13,044 [   ERROR] empty separator
+2019-10-03 16:27:38,624 [   ERROR] empty separator
+2019-10-03 18:27:11,132 [   ERROR] name 'tpye' is not defined
+2019-10-03 18:27:54,766 [   ERROR] name 'tpye' is not defined
+2019-10-03 18:37:05,331 [   ERROR] 'RecommendationMusic' object has no attribute 'user_id'
+2019-10-03 19:04:36,703 [   ERROR] 'RecommendationMusic' object has no attribute 'user_id'
+2019-10-03 19:08:50,619 [   ERROR] 'RecommendationMusic' object has no attribute 'user_id'
+2019-10-03 19:11:38,878 [   ERROR] 'RecommendationMusic' object has no attribute 'user_id'
+2019-10-03 19:15:06,984 [   ERROR] 'RecommendationMusic' object has no attribute 'user_id'
+2019-10-03 21:11:54,091 [   ERROR] name 'Emotion' is not defined
+2019-10-03 21:15:23,547 [   ERROR] name 'Emotion' is not defined
+2019-10-03 21:16:12,922 [   ERROR] requestEmotion() missing 1 required positional argument: 'image'
+2019-10-03 21:16:50,787 [   ERROR] 'str' object has no attribute 'shape'
+2019-10-03 21:18:15,279 [   ERROR] 'str' object has no attribute 'shape'
+2019-10-03 21:18:55,521 [   ERROR] 'str' object has no attribute 'shape'
+2019-10-03 21:19:29,791 [   ERROR] 'InMemoryUploadedFile' object has no attribute 'shape'
+2019-10-03 21:20:26,993 [   ERROR] Expected Ptr<cv::UMat> for argument '%s'
+2019-10-03 21:21:45,134 [   ERROR] float() argument must be a string or a number, not 'InMemoryUploadedFile'
+2019-10-03 21:22:59,701 [   ERROR] <built-in function imread> returned NULL without setting an error
+2019-10-03 21:24:20,479 [   ERROR] name 'image' is not defined
+2019-10-03 21:24:47,680 [   ERROR] UMat() missing required argument 'ranges' (pos 2)
+2019-10-03 21:25:52,158 [   ERROR] UMat() missing required argument 'ranges' (pos 2)
+2019-10-03 21:26:55,172 [   ERROR] UMat() missing required argument 'ranges' (pos 2)
+2019-10-03 21:27:58,930 [   ERROR] UMat() missing required argument 'ranges' (pos 2)
+2019-10-03 21:29:11,083 [   ERROR] imshow() missing required argument 'mat' (pos 2)
+2019-10-03 21:31:41,896 [   ERROR] 'bytes' object has no attribute 'shape'
+2019-10-03 21:32:30,947 [   ERROR] 'bytes' object has no attribute 'shape'
+2019-10-03 21:32:49,293 [   ERROR] Expected Ptr<cv::UMat> for argument '%s'
+2019-10-03 21:35:09,986 [   ERROR] Expected Ptr<cv::UMat> for argument '%s'
+2019-10-03 21:35:58,375 [   ERROR] Expected Ptr<cv::UMat> for argument '%s'
+2019-10-05 11:20:44,705 [   ERROR] 'NoneType' object has no attribute 'shape'
+2019-10-05 11:22:38,773 [   ERROR] OpenCV(4.1.1) C:\projects\opencv-python\opencv\modules\imgproc\src\color.cpp:182: error: (-215:Assertion failed) !_src.empty() in function 'cv::cvtColor'
+
+2019-10-05 11:23:20,648 [   ERROR] 'NoneType' object has no attribute 'shape'
+2019-10-05 11:26:42,901 [   ERROR] 'NoneType' object has no attribute 'shape'
+2019-10-05 11:27:25,011 [   ERROR] 'NoneType' object has no attribute 'shape'
+2019-10-05 11:32:34,351 [   ERROR] 'NoneType' object has no attribute 'shape'
+2019-10-05 11:32:34,371 [   ERROR] local variable 'gray' referenced before assignment
+2019-10-05 11:43:31,583 [   ERROR] 'NoneType' object has no attribute 'shape'
+2019-10-05 11:43:31,589 [   ERROR] local variable 'gray' referenced before assignment
+2019-10-05 11:43:54,759 [   ERROR] [Errno 2] No such file or directory: 'model.json'
+2019-10-05 11:44:51,288 [   ERROR] [Errno 2] No such file or directory: 'model.json'
+2019-10-05 11:47:09,520 [   ERROR] Unable to open file (unable to open file: name = 'Emotion_Voice_Detection_Model.h5', errno = 2, error message = 'No such file or directory', flags = 0, o_flags = 0)
+2019-10-05 11:48:45,977 [   ERROR] [Errno 2] No such file or directory: './media/file_2CadJ26.wav'
+2019-10-05 11:51:09,599 [   ERROR] [Errno 2] No such file or directory: 'model.json'
+2019-10-05 11:54:29,507 [   ERROR] 0
+2019-10-05 12:02:46,103 [   ERROR] 0
+2019-10-05 12:04:40,942 [   ERROR] 0
+2019-10-05 12:06:07,226 [   ERROR] Object of type float32 is not JSON serializable
+2019-10-05 12:10:13,652 [   ERROR] Object of type float32 is not JSON serializable
+2019-10-05 12:11:09,633 [   ERROR] Object of type float32 is not JSON serializable
+2019-10-05 12:13:22,106 [   ERROR] write() argument must be str, not dict
+2019-10-06 13:50:59,399 [   ERROR] 'NoneType' object has no attribute 'shape'
+2019-10-06 13:50:59,419 [   ERROR] local variable 'gray' referenced before assignment
+2019-10-06 13:56:39,706 [   ERROR] 'faceAttributes'
+2019-10-06 13:56:59,883 [   ERROR] Cannot interpret feed_dict key as Tensor: Tensor Tensor("Placeholder_82:0", shape=(5, 1, 128), dtype=float32) is not an element of this graph.
+2019-10-06 13:57:29,589 [   ERROR] Cannot interpret feed_dict key as Tensor: Tensor Tensor("Placeholder:0", shape=(5, 1, 128), dtype=float32) is not an element of this graph.
+2019-10-06 14:01:29,865 [   ERROR] Cannot interpret feed_dict key as Tensor: Tensor Tensor("Placeholder:0", shape=(5, 1, 128), dtype=float32) is not an element of this graph.
+2019-10-06 14:10:40,816 [   ERROR] name 'os' is not defined
+2019-10-06 14:11:49,662 [   ERROR] 'faceAttributes'
+2019-10-06 14:16:00,390 [   ERROR] 'anger'
+2019-10-06 14:18:36,861 [   ERROR] 'anger'
+2019-10-06 14:23:27,739 [   ERROR] list index out of range
+2019-10-06 14:23:27,742 [   ERROR] name 'request' is not defined
+2019-10-06 14:28:20,460 [   ERROR] 'anger'
+2019-10-06 14:28:20,463 [   ERROR] name 'request' is not defined
+2019-10-06 14:31:59,149 [   ERROR] Cannot resolve keyword 'age' into field. Choices are: id, link, music
+2019-10-06 15:09:17,658 [   ERROR] 'NoneType' object has no attribute 'shape'
+2019-10-06 15:09:17,662 [   ERROR] local variable 'gray' referenced before assignment
+2019-10-06 15:30:28,330 [   ERROR] 'Response' object has no attribute 'splitlines'
+2019-10-06 15:30:41,230 [   ERROR] 'NoneType' object has no attribute 'shape'
+2019-10-06 15:30:41,235 [   ERROR] local variable 'gray' referenced before assignment
+2019-10-06 15:30:44,970 [   ERROR] [Errno 2] No such file or directory: 'model.json'
+2019-10-06 17:34:07,256 [   ERROR] list index out of range
+2019-10-06 17:34:07,258 [   ERROR] name 'request' is not defined
+2019-10-06 17:38:18,501 [   ERROR] list index out of range
+2019-10-06 17:38:18,503 [   ERROR] name 'request' is not defined
+2019-10-06 17:43:43,811 [   ERROR] create_Analysis_Result() missing 1 required positional argument: 'music_list'
+2019-10-06 17:45:47,095 [   ERROR] list index out of range
+2019-10-06 17:48:08,460 [   ERROR] list index out of range
+2019-10-06 17:49:56,501 [   ERROR] list index out of range
+2019-10-06 17:50:07,648 [   ERROR] list index out of range
+2019-10-06 17:50:10,227 [   ERROR] list index out of range
+2019-10-06 17:54:15,496 [   ERROR] list index out of range
+2019-10-06 17:58:40,553 [   ERROR] list index out of range
+2019-10-06 19:38:32,263 [   ERROR] name 'Http404' is not defined
+2019-10-06 19:39:25,149 [   ERROR] get() returned more than one Analysis_Result -- it returned 52!
+2019-10-06 19:39:25,164 [   ERROR] Got AttributeError when attempting to get a value for field `music_r1` on serializer `Analysis_ResultSerializer`.
+The serializer field might be named incorrectly and not match any attribute or key on the `Response` instance.
+Original exception text was: 'Response' object has no attribute 'music_r1'.
+2019-10-06 19:43:10,803 [   ERROR] get() returned more than one Analysis_Result -- it returned 52!
+2019-10-06 19:43:10,820 [   ERROR] Got AttributeError when attempting to get a value for field `music_r1` on serializer `Analysis_ResultSerializer`.
+The serializer field might be named incorrectly and not match any attribute or key on the `Response` instance.
+Original exception text was: 'Response' object has no attribute 'music_r1'.
+2019-10-06 19:43:53,021 [   ERROR] Got AttributeError when attempting to get a value for field `music_r1` on serializer `Analysis_ResultSerializer`.
+The serializer field might be named incorrectly and not match any attribute or key on the `QuerySet` instance.
+Original exception text was: 'QuerySet' object has no attribute 'music_r1'.
+2019-10-06 19:44:32,016 [   ERROR] Got AttributeError when attempting to get a value for field `music_r1` on serializer `Analysis_ResultSerializer`.
+The serializer field might be named incorrectly and not match any attribute or key on the `QuerySet` instance.
+Original exception text was: 'QuerySet' object has no attribute 'music_r1'.
+2019-10-06 19:46:40,595 [   ERROR] get() returned more than one Analysis_Result -- it returned 24!
+2019-10-06 19:46:40,617 [   ERROR] Got AttributeError when attempting to get a value for field `music_r1` on serializer `Analysis_ResultSerializer`.
+The serializer field might be named incorrectly and not match any attribute or key on the `Response` instance.
+Original exception text was: 'Response' object has no attribute 'music_r1'.
+2019-10-06 19:47:33,475 [   ERROR] get() returned more than one Analysis_Result -- it returned 24!
+2019-10-06 19:47:33,496 [   ERROR] Got AttributeError when attempting to get a value for field `music_r1` on serializer `Analysis_ResultSerializer`.
+The serializer field might be named incorrectly and not match any attribute or key on the `Response` instance.
+Original exception text was: 'Response' object has no attribute 'music_r1'.
+2019-10-06 19:48:12,242 [   ERROR] get() returned more than one Analysis_Result -- it returned 24!
+2019-10-06 19:48:12,260 [   ERROR] Got AttributeError when attempting to get a value for field `music_r1` on serializer `Analysis_ResultSerializer`.
+The serializer field might be named incorrectly and not match any attribute or key on the `Response` instance.
+Original exception text was: 'Response' object has no attribute 'music_r1'.
+2019-10-06 19:48:52,349 [   ERROR] get() returned more than one Analysis_Result -- it returned 24!
+2019-10-06 19:48:52,371 [   ERROR] Got AttributeError when attempting to get a value for field `music_r1` on serializer `Analysis_ResultSerializer`.
+The serializer field might be named incorrectly and not match any attribute or key on the `Response` instance.
+Original exception text was: 'Response' object has no attribute 'music_r1'.
+2019-10-06 19:49:50,879 [   ERROR] Got AttributeError when attempting to get a value for field `music_r1` on serializer `Analysis_ResultSerializer`.
+The serializer field might be named incorrectly and not match any attribute or key on the `QuerySet` instance.
+Original exception text was: 'QuerySet' object has no attribute 'music_r1'.
+2019-10-06 19:50:51,573 [   ERROR] Got AttributeError when attempting to get a value for field `music_r1` on serializer `Analysis_ResultSerializer`.
+The serializer field might be named incorrectly and not match any attribute or key on the `QuerySet` instance.
+Original exception text was: 'QuerySet' object has no attribute 'music_r1'.
+2019-10-06 20:04:28,455 [   ERROR] get() returned more than one Analysis_Result -- it returned 24!
+2019-10-06 20:04:28,475 [   ERROR] The response content must be rendered before it can be iterated over.
+2019-10-06 20:04:54,654 [   ERROR] Cannot resolve keyword 'many' into field. Choices are: id, music_r1, music_r2, music_r3, user_id
+2019-10-06 20:04:54,671 [   ERROR] The response content must be rendered before it can be iterated over.
