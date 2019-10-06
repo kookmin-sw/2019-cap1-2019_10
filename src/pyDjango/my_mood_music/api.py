@@ -238,7 +238,7 @@ class RecommendationMusic(APIView):
         face api를 변경하여 age값은 추출하지 않으므로 랜덤으로 돌린다.
         """
         try:
-            self.user_id = request.POST.get('result','')
+            self.user_id = request.POST.get('recommand','')
             # self.age = fileIO.read_file(request, 'face_api_age.txt')
             # self.music_list = self.recommand_music(request, int(float(self.age)))
             self.music_list = self.recommand_music(request, 24)
@@ -628,7 +628,7 @@ class RecommendationMusic(APIView):
             return httpError.serverError(request, "Can't Get Table Name")
 
 
-class TestJson(APIView):
+class ResultResponse(APIView):
     """
     Serializer를 이용한 Json 데이터 Response
     """
