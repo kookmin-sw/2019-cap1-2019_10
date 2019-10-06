@@ -6,22 +6,21 @@
     
 The project aims to develop a app that analyzes the user's feelings through images (user's facial) and voice data (user's voice) and recommends appropriate music with a brief description of the analysis results.
 
-<br/>
-
-
 ### 사용 환경
 Windows10 x64기반, MS visual code Editor, python 3.8 version, Unity2018 3.11 version
   
-    
+<br/>
+
 
 ## 실행 방법
 
 
 #### 파이썬 모듈 설치 (tensorflow, keras, librosa 등)
-python3.5(64bit) 이상의 버전에서 pip을 사용하여 Django 프로젝트를 수행할 가상환경을 세팅해놓아야 한다.    
+python3.5(64bit) 이상의 버전에서 pip을 사용하여 Django 프로젝트를 수행할 가상환경을 세팅해놓아야 한다.
 
 가상화면 만들기
 ``` 
+cd src/pyDjango
 python -m venv myenv
 ```
 
@@ -33,7 +32,7 @@ myenv\Script\activate
 패키지 다운로드
 `2019-cap1-2019/src/pyDjango/` 로 들어가서 `requirements.txt` 를 다운받아 명령어를 사용하여 세팅을 완료한다.    
 ```
-pip3.6 install -r requirements.txt 
+pip install -r requirements.txt 
 ```
  
 
@@ -59,10 +58,9 @@ https://github.com/MITESHPUTHRANNEU/Speech-Emotion-Analyzer 에서 `Emtion_Voice
 
 
 #### Unity Setting
-```
 unity 폴더에 있는 폴더들을 다운받아 unity에 새 project를 생성하고 해당 파일들을 붙여넣고 실행을 시킨다.     
 scene에 있는 start를 더블클릭 해서 실행한다.    
-```
+
 
 
 
@@ -130,9 +128,10 @@ python manage.py runserver 0:8000
 <img src="./image/start.png" width="240"> <img src="./image/audio.PNG" width="240"> <img src="./image/result.PNG" width="240">
 
 ## Reference
-[얼굴 인식](https://github.com/omar178/Emotion-recognition)
-[음성 인식](https://github.com/MITESHPUTHRANNEU/Speech-Emotion-Analyzer) 
-[어플 개발 참고](https://github.com/eamonwoortman/django-unity3d-example)
+[얼굴 인식](https://github.com/omar178/Emotion-recognition)    
+[음성 인식](https://github.com/MITESHPUTHRANNEU/Speech-Emotion-Analyzer)     
+[어플 개발 참고](https://github.com/eamonwoortman/django-unity3d-example)    
+[3D 모델](https://www.turbosquid.com/3d-models/3d-statuette-sheep-barrel-model-1335035)    
 
 
 ## License
