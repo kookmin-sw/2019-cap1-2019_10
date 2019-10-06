@@ -541,7 +541,7 @@ class RecommendationMusic(APIView):
 
                 print(rank_emotion)
 
-                if rank_emotion[0] == "anger":
+                if rank_emotion[0] == "angry":
                     table1 = 41  # 4:슬픔테이블 41:슬픔(1)음악(잔잔)
                     table2 = 0  # 0:화남테이블
 
@@ -550,7 +550,7 @@ class RecommendationMusic(APIView):
                     if table3 == 4:  # 2순위가 SADNESS라면, 41인 슬픔(1)음악(잔잔)을 선택한다.
                         table3 = 41
 
-                elif rank_emotion[0] == "fear":
+                elif rank_emotion[0] == "scared":
                     table1 = 2  # 2:공포테이블
                     table2 = 41  # 슬픔(1)음악(잔잔)
 
@@ -559,7 +559,7 @@ class RecommendationMusic(APIView):
                     if table3 == 4:
                         table3 = 41
 
-                elif rank_emotion[0] == "happiness":
+                elif rank_emotion[0] == "happy":
                     if happiness >= 0.8:
                         table1 = 3  # 3:행복테이블
                         table2 = 3
@@ -586,12 +586,12 @@ class RecommendationMusic(APIView):
                     if table3 == 4:
                         table3 = 41
 
-                elif rank_emotion[0] == "sadness":
+                elif rank_emotion[0] == "sad":
                     table1 = 42  # 슬픔(2)음악(너무슬퍼서 울고싶은)
                     table2 = 41  # 슬픔(1)음악(잔잔)
                     table3 = 43  # 슬픔(3)음악(기분전환)
 
-                elif rank_emotion[0] == "surprise":
+                elif rank_emotion[0] == "surprised":
                     if surprise >= 0.8:
                         table1 = 5  # 5:놀람테이블
                         table2 = 5
