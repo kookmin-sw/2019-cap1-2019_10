@@ -1,0 +1,8 @@
+{
+    "python.pythonPath": "C:\\Users\\X58\\Documents\\GitHub\\2019-cap1-2019_10\\src\\pyDjango\\myenvq\\Scripts\\python.exe", 
+    "python.linting.pylintArgs": [
+        "--load-plugins=pylint_django"
+    ],
+    "python.linting.enabled": true,
+    "python.linting.pylintEnabled": true,
+}
