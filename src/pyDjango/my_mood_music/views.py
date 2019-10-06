@@ -41,6 +41,8 @@ class UserViewSet(viewsets.ModelViewSet):
 
 class UserAPI(DestroyAPIView, CreateAPIView):
     """
+    for login
+    """
     queryset = User.objects.all()
     serializer_class = CreateUserSerializer
 
