@@ -130,13 +130,13 @@ python manage.py runserver 0:8000
 <img src="./image/start.png" width="240"> <img src="./image/audio.PNG" width="240"> <img src="./image/result.PNG" width="240">
 
 ## Reference
-[얼굴 인식](https://azure.microsoft.com/ko-kr/services/cognitive-services/face/)
+[얼굴 인식](https://github.com/omar178/Emotion-recognition)
 [음성 인식](https://github.com/MITESHPUTHRANNEU/Speech-Emotion-Analyzer) 
 [어플 개발 참고](https://github.com/eamonwoortman/django-unity3d-example)
 
 
 ## License
-
+GPL-2.0
 
 ## 소개 영상
 
