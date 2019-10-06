@@ -133,6 +133,8 @@ p.save()
 python manage.py runserver 0:8000
 ```
 
+(참고) 현재 swagger 가 적용되지 않아 http://127.0.0.1:8000 으로 접속하면 Page not found (404) 가 뜨므로
+http://127.0.0.1:8000/api/ 를 기본url로 생각하길 바란다.
 
 
 
@@ -150,9 +152,6 @@ python manage.py runserver 0:8000
 ## License
 GPL-2.0
 
-## 소개 영상
-
-[![video](./image/video.png)](https://youtu.be/4S6KBMRbfgc)
 
 
 ## 팀 소개
