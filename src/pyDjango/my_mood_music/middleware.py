@@ -39,34 +39,42 @@ class Unity3DMiddleware(object):
         response 로 들어온 data 형식에 맞추어
         response_format 에 넣어준 후 response 반환
         """
-        path = request.path_info.lstrip('/')
-        valid_urls = (url.match(path) for url in self.API_URLS)
 
-        if request.method in self.METHOD and any(valid_urls):
-            response_format = {
-                'success': is_success(response.status_code),
-                'result': {},
-            }
+        if 'application/json' in request.META.get('HTTP_ACCEPT'):
 
-            if hasattr(response, 'data') and \
-                    getattr(response, 'data') is not None:
-                data = response.data
-                try:
-                    response_format['message'] = data.pop('message')
-                except (KeyError, TypeError):
-                    response_format.update({
-                        'result': data
-                    })
-                finally:
-                    if is_client_error(response.status_code):
-                        response_format['result'] = None
-                        response_format['message'] = data
-                    else:
-                        response_format['result'] = data
+            response["REAL_STATUS"] = '%s %s' % (response.status_code, getattr(response, 'status_text', ''))
 
-                    response.data = response_format
-                    response.content = response.render().rendered_content
-            else:
-                response.data = response_format
+            response.status_code = 200
 
         return response
+        # path = request.path_info.lstrip('/')
+        # valid_urls = (url.match(path) for url in self.API_URLS)
+
+        # if request.method in self.METHOD and any(valid_urls):
+        #     response_format = {
+        #         'success': is_success(response.status_code),
+        #         'result': {},
+        #     }
+
+        #     if hasattr(response, 'data') and \
+        #             getattr(response, 'data') is not None:
+        #         data = response.data
+        #         try:
+        #             response_format['message'] = data.pop('message')
+        #         except (KeyError, TypeError):
+        #             response_format.update({
+        #                 'result': data
+        #             })
+        #         finally:
+        #             if is_client_error(response.status_code):
+        #                 response_format['result'] = None
+        #                 response_format['message'] = data
+        #             else:
+        #                 response_format['result'] = data
+
+        #             response.data = response_format
+        #             response.content = response.render().rendered_content
+        #     else:
+        #         response.data = response_format
+
+        # return response
