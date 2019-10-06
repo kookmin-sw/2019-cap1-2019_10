@@ -32,8 +32,12 @@ myenv\Script\activate
 패키지 다운로드
 `2019-cap1-2019/src/pyDjango/` 로 들어가서 `requirements.txt` 를 다운받아 명령어를 사용하여 세팅을 완료한다.    
 ```
-pip install -r requirements.txt 
+pip install -r requirements.txt
+pip install imutils
+pip install opencv-python
 ```
+
+
  
 
 #### Django를 이용해 프로젝트를 만드는 방법
@@ -43,6 +47,10 @@ https://tutorial.djangogirls.org/ko/django_start_project/
 
 또한, Visual Code에서 Django를 처음 시작할 때 튜토리얼을 보고 싶다면 다음 링크를 참고한다.
 https://code.visualstudio.com/docs/python/tutorial-django
+
+(참고) 만든 가상환경의 python.exe 경로를 환경변수에 추가하고, Visual code에서 CTRL+SHIFT+P를 누른 후 select interpreter를 추가한다.
+
+
 
 
 #### 얼굴 인식 감정 분석 모델 다운
@@ -75,7 +83,13 @@ http://ec2-54-180-152-15.ap-northeast-2.compute.amazonaws.com:8000/api/ 기본�
 로컬에서 돌려볼 시에 Unity에서의 파일 전송 코드의 url을 "localhost:port # "을 기본으로 바꾸어야 한다.
 Unity의 Menu의 Backend Manager의 Use Production의 체크를 해제하면 된다.
 
-    
+
+로컬서버에서 db migrate를 수행한다.
+```
+python manage.py makemigrations
+python manage.py migrate
+```
+
 그리고 createsuperuser 명령어를 통하여 admin 사이트에 로그인 할 수 있는 계정을 만들어야 한다.  계정설정 후 (127.0.0.1:8000/admin) 로 이동하여 로그인하면 DB 테이블을 볼 수 있다.
 ```
 python manage.py createsuperuser  
