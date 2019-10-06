@@ -166,6 +166,7 @@ class Call(APIView):
             logger.debug(path)
             label = self.labelfrommodel(request, './media/{}'.format(path))
 
+            logger.debug(label)
             os.remove('./media/{}'.format(path))
         except Exception as e:
             logger.error(e)
@@ -223,8 +224,8 @@ class RecommendationMusic(APIView):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.table_idx = ["anger", "disgust", "fear",
-                          "happiness", "sadness", "surprise"]
+        self.table_idx = ["angry", "disgust", "scared",
+                          "happy", "sad", "surprised"]
         self.tone_res = ''
         self.music_list = []  # 리스트 안의 dictionary 형태로 들어온다. (music, url)
         self.age = random.randint(0, 150)
