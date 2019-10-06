@@ -22,6 +22,7 @@ from django.db import connection
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from django.conf.urls import *
+from django.forms.models import model_to_dict
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -34,6 +35,7 @@ from keras.models import model_from_json
 
 from .serializers import *
 from .models import *
+from .real_time_video import *
 
 from mmm_project.core import httpResponse, httpError
 from mmm_project.core import fileIO
@@ -48,63 +50,86 @@ class RequestFaceAPI(APIView):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.result_age = 0.0
+        # self.result_age = 0.0
         self.result_emotion = []
         self.user_id = ''
 
     # api로부터 받은 결과로부터 데이터 추출
     def get_data_from_faces(self, request, faces):
-        json_string = str(faces).replace("\'", "\"")
+        try:
+            json_string = str(faces).replace("\'", "\"")
 
-        dict_data = json.loads(json_string)  # Unicode decode Error
-        emotions = dict_data['faceAttributes']['emotion']
-        sorted_emotions = sorted(
-            emotions.items(), key=operator.itemgetter(1), reverse=True)
+            dict_data = json.loads(json_string)
+            # emotions = dict_data['faceAttributes']['emotion']
+            emotions = dict_data
+            logger.debug(emotions)
+            sorted_emotions = sorted(
+                emotions.items(), key=operator.itemgetter(1), reverse=True)
 
-        # 결과값이 0.0 이상인 tuple 만 list 에 저장
-        result_emotion = [emotion for emotion,
-                          value in sorted_emotions if value > 0]
-        self.result_emotion = result_emotion
+            # 결과값이 0.0 이상인 tuple 만 list 에 저장
+            result_emotion = [emotion for emotion,
+                            value in sorted_emotions if value > 0]
+            self.result_emotion = result_emotion
+            logger.debug(self.result_emotion)
 
-        # 추천 알고리즘에 적용할 age 추출
-        result_age = dict_data['faceAttributes']['age']
-        # self.result_age = result_age
+            # 추천 알고리즘에 적용할 age 추출
+            ### result_age = dict_data['faceAttributes']['age']
+            # self.result_age = result_age
 
-        # if (!result_emotion || !result_age):
-        #     return httpError
+            # if (!result_emotion || !result_age):
+            #     return httpError
 
-        fileIO.write_file(request, 'face_api_age.txt', result_age)
+            #fileIO.write_file(request, 'face_api_age.txt', result_age)
+        except Exception as e:
+            logger.error(e)
+            return httpError.serverError(reqeust, "Can't Get Data From Faces")
 
     def post(self, request):
         """
         어플에서 이미지를 받았을 때
         """
         try:
-            KEY = 'ecd8a803ef3c4a57bbd01b909e90e151'  # API_KEY
-            CF.Key.set(KEY)
+            """
+            Microsoft Face API에서 https://github.com/omar178/Emotion-recognition 로 face api 변경
+            """
+        #     KEY = 'ecd8a803ef3c4a57bbd01b909e90e151'  # API_KEY
+        #     CF.Key.set(KEY)
 
-            BASE_URL = 'https://koreacentral.api.cognitive.microsoft.com/face/v1.0/detect?returnFaceId=true&returnFaceLandmarks=false&returnFaceAttributes=age,emotion&recognitionModel=recognition_01&returnRecognitionModel=false '  # Replace with your regional Base URL
-            CF.BaseUrl.set(BASE_URL)
+        #     BASE_URL = 'https://koreacentral.api.cognitive.microsoft.com/face/v1.0/detect?returnFaceId=true&returnFaceLandmarks=false&returnFaceAttributes=age,emotion&recognitionModel=recognition_01&returnRecognitionModel=false '  # Replace with your regional Base URL
+        #     CF.BaseUrl.set(BASE_URL)
 
-            data_test = request.FILES.get('photo', '')
+        #     data_test = request.FILES.get('photo', '')
 
-            print('data test is : ', data_test)
-            print('type of data_test is : ', type(data_test))
-            print('length of data_test is : ', len(data_test))
+        #     try:
+        #         faces = CF.face.detect(data_test)
+        #         logger.debug(faces)
+        #     except Exception as e:
+        #         logger.error(e)
+        #         return httpError.serverError(request, "FaceAPI Connection Error")
+            
+            image_file = request.FILES.get('photo', '')
 
             try:
-                faces = CF.face.detect(data_test)
+                path = default_storage.save(
+                    'image.png', ContentFile(image_file.read()))
+                logger.debug(path)
+                faces = face_recognition(request, 'C:/Users/X58/Documents/GitHub/2019-cap1-2019_10/src/pyDjango/media/{}'.format(path))  # replace path
                 logger.debug(faces)
             except Exception as e:
                 logger.error(e)
                 return httpError.serverError(request, "FaceAPI Connection Error")
 
-            fileIO.write_file(request, 'face_api_emotion.txt', faces[0])
+            print('a')
+            fileIO.write_file(request, 'face_api_emotion.txt', str(faces))
+            print('b')
+
 
             if not faces:
                 return httpResponse.noContent(request, 'Face is not detected')
             else:
-                self.get_data_from_faces(request, faces[0])
+                print('c')
+                self.get_data_from_faces(request, faces)
+                print('d')
                 return httpResponse.ok(request, str(self.result_emotion))
 
         except Exception as e:
@@ -131,7 +156,7 @@ class Call(APIView):
             path = default_storage.save(
                 'file.wav', ContentFile(audio_file.read()))
             logger.debug(path)
-            label = self.labelfrommodel(request, './media/{}'.format(path))
+            label = self.labelfrommodel(request, 'C:/Users/X58/Documents/GitHub/2019-cap1-2019_10/src/pyDjango/media/{}'.format(path)) # replace path
         except Exception as e:
             logger.error(e)
             return httpError.serverError(request, 'SEA getting label Error')
@@ -141,7 +166,7 @@ class Call(APIView):
         return httpResponse.ok(request, "Using Speech-Emotion-Model")
 
     def labelfrommodel(self, request, filename):
-        json_file = open('model.json', 'r')
+        json_file = open('C:/Users/X58/Documents/GitHub/2019-cap1-2019_10/src/pyDjango/model.json', 'r') # replace path
         loaded_model_json = json_file.read()
         json_file.close()
         loaded_model = model_from_json(loaded_model_json)
@@ -149,7 +174,7 @@ class Call(APIView):
         try:
             # load weights into new model
             # if not .wav file, throw Exception
-            loaded_model.load_weights("Emotion_Voice_Detection_Model.h5")
+            loaded_model.load_weights("C:/Users/X58/Documents/GitHub/2019-cap1-2019_10/src/pyDjango/Emotion_Voice_Detection_Model.h5") # replace path
         except Exception as e:
             logger.error(e)
             return httpError.serverError(request, "SEA Model Error")
@@ -173,7 +198,7 @@ class Call(APIView):
                           self.label[int(liveabc)])
 
         return self.label[int(liveabc)]
-from rest_framework.response import Response
+
 
 class RecommendationMusic(APIView):
     """
@@ -202,11 +227,8 @@ class RecommendationMusic(APIView):
             self.music_list = self.recommand_music(request, int(float(self.age)))
 
             logger.debug(self.music_list)
-            print(type(self.music_list[0]))
-
-            # result = json.dumps(self.music_list, ensure_ascii=False)
-            # logger.debug(result)
-            return httpResponse.ok(request, self.music_list[0])
+            
+            return httpResponse.ok(request, model_to_dict(self.music_list[0]))
 
         except Exception as e:
             logging.error(e)

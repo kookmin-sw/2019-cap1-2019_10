@@ -46,7 +46,6 @@ class Unity3DMiddleware(object):
             response_format = {
                 'success': is_success(response.status_code),
                 'result': {},
-                'message': None
             }
 
             if hasattr(response, 'data') and \

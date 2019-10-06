@@ -11,14 +11,14 @@ def read_file(request, filename):
         f.close()
         return result
     except OSError as err:
-        serverError(request, "OS error: {0}".format(err))
+        return serverError(request, "OS error: {0}".format(err))
 
 
 def write_file(request, filename, data):
     try:
         f = open(filename, 'w')
-        json_val = json.dumps(data)
-        f.write(json_val)
+        # json_val = json.dumps(data)
+        f.write(data)
         f.close()
     except OSError as err:
-        serverError(request, "OS error: {0}".format(err))
+        return serverError(request, "OS error: {0}".format(err))
