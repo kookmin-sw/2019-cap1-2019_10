@@ -351,6 +351,8 @@ MonoBehaviour:
   resetButton: {fileID: 1805432462}
   loadingImage: {fileID: 1284664438}
   resultImage: {fileID: 1721410862}
+  checkReusltResquestTime: 0
+  checkStartTime: 0
   debug: {fileID: 1303657288}
   photoCheck: 0
   recodeCheck: 0

@@ -40,6 +40,7 @@ public class Dialogue : BaseMenu
     }
 
     // Start is called before the first frame update
+    // 초기화
     void Start()
     {
         locked = true;
@@ -69,6 +70,7 @@ public class Dialogue : BaseMenu
     // Update is called once per frame
     void Update()
     {
+        // 다른 기능 수행중일땐 lock이 걸려있어서 다음으로 넘어가지 못하게
         if (clicked && !locked)
         {
             clicked = false;
@@ -100,6 +102,8 @@ public class Dialogue : BaseMenu
         Clicktxt.enabled = true;
     }
 
+    // 어플 흐름
+    // 해당 state에 맞는 기능 수행
     private IEnumerator Printing()
     {
         txt.text = content[cnt];
@@ -145,6 +149,8 @@ public class Dialogue : BaseMenu
         Clicktxt.enabled = true;
     }
 
+    // 얼굴 인식 요청
+    // 결과를 수신할 때까지 대기
     private IEnumerator TakePicture()
     {
         TakePhoto();
@@ -155,6 +161,7 @@ public class Dialogue : BaseMenu
         BaymaxGame.instance.photoCheck = false;
     }
 
+    // 음성 인식 요청
     private IEnumerator TakeRecorde()
     {
         OnRecorde();
@@ -164,6 +171,7 @@ public class Dialogue : BaseMenu
         BaymaxGame.instance.recodeCheck = false;
     }
 
+    // 결과 요청
     private IEnumerator TakeResult()
     {
         GetResult();
@@ -174,6 +182,12 @@ public class Dialogue : BaseMenu
         yield return new WaitForSeconds(1f);
         LoadingImg.SetActive(false);
         ShowResult();
+    }
+
+    public void ResultError()
+    {
+        LoadingImg.SetActive(false);
+        txt.text = "서버 상태가 안좋아서 더이상 진행할 수 없어.. 다음에 다시 해줘";
     }
 
     public void OnExit()

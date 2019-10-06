@@ -362,12 +362,11 @@ public partial class BackendManager : MonoBehaviour {
                 if (emotion.StartsWith("["))
                 {
                     responseObj = JArray.Parse(emotion);
-                    Debug.Log("array : " + emotion);
+                    Debug.Log("array : " + responseObj);
                 }
                 else
                 {
                     responseObj = JObject.Parse(emotion);
-                    Debug.Log(responseObj);
                     Debug.Log("object : " + responseObj);
                 }
             }

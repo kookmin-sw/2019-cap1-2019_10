@@ -32,6 +32,7 @@ public class ResultMenu : BaseMenu
         backendManager.OnPostPhotoSuccess += SettingTag;
     }
 
+    // 얼굴 인식 높은 3순위로 태그 뿌리기
     public void SettingTag(string[] photos)
     {
         Debug.Log("set tag");
@@ -53,124 +54,124 @@ public class ResultMenu : BaseMenu
         switch (photo[0])
         {
             case "happy":
-                Tag1.text = happy[UnityEngine.Random.Range(0, 9)];
-                Tag2.text = happy[UnityEngine.Random.Range(0, 9)];
-                Tag3.text = happy[UnityEngine.Random.Range(0, 9)];
-                Tag4.text = happy[UnityEngine.Random.Range(0, 9)];
+                Tag1.text = happy[UnityEngine.Random.Range(0, 8)];
+                Tag2.text = happy[UnityEngine.Random.Range(0, 8)];
+                Tag3.text = happy[UnityEngine.Random.Range(0, 8)];
+                Tag4.text = happy[UnityEngine.Random.Range(0, 8)];
                 break;
             case "sad":
-                Tag1.text = sad[UnityEngine.Random.Range(0, 9)];
-                Tag2.text = sad[UnityEngine.Random.Range(0, 9)];
-                Tag3.text = sad[UnityEngine.Random.Range(0, 9)];
-                Tag4.text = sad[UnityEngine.Random.Range(0, 9)];
+                Tag1.text = sad[UnityEngine.Random.Range(0, 8)];
+                Tag2.text = sad[UnityEngine.Random.Range(0, 8)];
+                Tag3.text = sad[UnityEngine.Random.Range(0, 8)];
+                Tag4.text = sad[UnityEngine.Random.Range(0, 8)];
                 break;
             case "neutral":
-                Tag1.text = neutral[UnityEngine.Random.Range(0, 9)];
-                Tag2.text = neutral[UnityEngine.Random.Range(0, 9)];
-                Tag3.text = neutral[UnityEngine.Random.Range(0, 9)];
-                Tag4.text = neutral[UnityEngine.Random.Range(0, 9)];
+                Tag1.text = neutral[UnityEngine.Random.Range(0, 8)];
+                Tag2.text = neutral[UnityEngine.Random.Range(0, 8)];
+                Tag3.text = neutral[UnityEngine.Random.Range(0, 8)];
+                Tag4.text = neutral[UnityEngine.Random.Range(0, 8)];
                 break;
             case "surprised":
-                Tag1.text = surprised[UnityEngine.Random.Range(0, 9)];
-                Tag2.text = surprised[UnityEngine.Random.Range(0, 9)];
-                Tag3.text = surprised[UnityEngine.Random.Range(0, 9)];
-                Tag4.text = surprised[UnityEngine.Random.Range(0, 9)];
+                Tag1.text = surprised[UnityEngine.Random.Range(0, 8)];
+                Tag2.text = surprised[UnityEngine.Random.Range(0, 8)];
+                Tag3.text = surprised[UnityEngine.Random.Range(0, 8)];
+                Tag4.text = surprised[UnityEngine.Random.Range(0, 8)];
                 break;
             case "scared":
-                Tag1.text = scared[UnityEngine.Random.Range(0, 9)];
-                Tag2.text = scared[UnityEngine.Random.Range(0, 9)];
-                Tag3.text = scared[UnityEngine.Random.Range(0, 9)];
-                Tag4.text = scared[UnityEngine.Random.Range(0, 9)];
+                Tag1.text = scared[UnityEngine.Random.Range(0, 8)];
+                Tag2.text = scared[UnityEngine.Random.Range(0, 8)];
+                Tag3.text = scared[UnityEngine.Random.Range(0, 8)];
+                Tag4.text = scared[UnityEngine.Random.Range(0, 8)];
                 break;
             case "disgust":
-                Tag1.text = disgust[UnityEngine.Random.Range(0, 9)];
-                Tag2.text = disgust[UnityEngine.Random.Range(0, 9)];
-                Tag3.text = disgust[UnityEngine.Random.Range(0, 9)];
-                Tag4.text = disgust[UnityEngine.Random.Range(0, 9)];
+                Tag1.text = disgust[UnityEngine.Random.Range(0, 8)];
+                Tag2.text = disgust[UnityEngine.Random.Range(0, 8)];
+                Tag3.text = disgust[UnityEngine.Random.Range(0, 8)];
+                Tag4.text = disgust[UnityEngine.Random.Range(0, 8)];
                 break;
             case "angry":
-                Tag1.text = angry[UnityEngine.Random.Range(0, 9)];
-                Tag2.text = angry[UnityEngine.Random.Range(0, 9)];
-                Tag3.text = angry[UnityEngine.Random.Range(0, 9)];
-                Tag4.text = angry[UnityEngine.Random.Range(0, 9)];
+                Tag1.text = angry[UnityEngine.Random.Range(0, 8)];
+                Tag2.text = angry[UnityEngine.Random.Range(0, 8)];
+                Tag3.text = angry[UnityEngine.Random.Range(0, 8)];
+                Tag4.text = angry[UnityEngine.Random.Range(0, 8)];
                 break;
             case "Lie":
-                Tag1.text = Lie[UnityEngine.Random.Range(0, 9)];
-                Tag2.text = Lie[UnityEngine.Random.Range(0, 9)];
-                Tag3.text = Lie[UnityEngine.Random.Range(0, 9)];
-                Tag4.text = Lie[UnityEngine.Random.Range(0, 9)];
+                Tag1.text = Lie[UnityEngine.Random.Range(0, 8)];
+                Tag2.text = Lie[UnityEngine.Random.Range(0, 8)];
+                Tag3.text = Lie[UnityEngine.Random.Range(0, 8)];
+                Tag4.text = Lie[UnityEngine.Random.Range(0, 8)];
                 break;
         }
 
         switch (photo[1])
         {
             case "happy":
-                Tag5.text = happy[UnityEngine.Random.Range(0, 9)];
-                Tag6.text = happy[UnityEngine.Random.Range(0, 9)];
+                Tag5.text = happy[UnityEngine.Random.Range(0, 8)];
+                Tag6.text = happy[UnityEngine.Random.Range(0, 8)];
                 break;
             case "sad":
-                Tag5.text = sad[UnityEngine.Random.Range(0, 9)];
-                Tag6.text = sad[UnityEngine.Random.Range(0, 9)];
+                Tag5.text = sad[UnityEngine.Random.Range(0, 8)];
+                Tag6.text = sad[UnityEngine.Random.Range(0, 8)];
                 break;
             case "neutral":
-                Tag5.text = neutral[UnityEngine.Random.Range(0, 9)];
-                Tag6.text = neutral[UnityEngine.Random.Range(0, 9)];
+                Tag5.text = neutral[UnityEngine.Random.Range(0, 8)];
+                Tag6.text = neutral[UnityEngine.Random.Range(0, 8)];
                 break;
             case "surprised":
-                Tag5.text = surprised[UnityEngine.Random.Range(0, 9)];
-                Tag6.text = surprised[UnityEngine.Random.Range(0, 9)];
+                Tag5.text = surprised[UnityEngine.Random.Range(0, 8)];
+                Tag6.text = surprised[UnityEngine.Random.Range(0, 8)];
                 break;
             case "scared":
-                Tag5.text = scared[UnityEngine.Random.Range(0, 9)];
-                Tag6.text = scared[UnityEngine.Random.Range(0, 9)];
+                Tag5.text = scared[UnityEngine.Random.Range(0, 8)];
+                Tag6.text = scared[UnityEngine.Random.Range(0, 8)];
                 break;
             case "disgust":
-                Tag5.text = disgust[UnityEngine.Random.Range(0, 9)];
-                Tag6.text = disgust[UnityEngine.Random.Range(0, 9)];
+                Tag5.text = disgust[UnityEngine.Random.Range(0, 8)];
+                Tag6.text = disgust[UnityEngine.Random.Range(0, 8)];
                 break;
             case "angry":
-                Tag5.text = angry[UnityEngine.Random.Range(0, 9)];
-                Tag6.text = angry[UnityEngine.Random.Range(0, 9)];
+                Tag5.text = angry[UnityEngine.Random.Range(0, 8)];
+                Tag6.text = angry[UnityEngine.Random.Range(0, 8)];
                 break;
             case "Lie":
-                Tag5.text = Lie[UnityEngine.Random.Range(0, 9)];
-                Tag6.text = Lie[UnityEngine.Random.Range(0, 9)];
+                Tag5.text = Lie[UnityEngine.Random.Range(0, 8)];
+                Tag6.text = Lie[UnityEngine.Random.Range(0, 8)];
                 break;
         }
 
         switch (photo[2])
         {
             case "happy":
-                Tag7.text = happy[UnityEngine.Random.Range(0, 9)];
-                Tag8.text = happy[UnityEngine.Random.Range(0, 9)];
+                Tag7.text = happy[UnityEngine.Random.Range(0, 8)];
+                Tag8.text = happy[UnityEngine.Random.Range(0, 8)];
                 break;
             case "sad":
-                Tag7.text = sad[UnityEngine.Random.Range(0, 9)];
-                Tag8.text = sad[UnityEngine.Random.Range(0, 9)];
+                Tag7.text = sad[UnityEngine.Random.Range(0, 8)];
+                Tag8.text = sad[UnityEngine.Random.Range(0, 8)];
                 break;
             case "neutral":
-                Tag7.text = neutral[UnityEngine.Random.Range(0, 9)];
-                Tag8.text = neutral[UnityEngine.Random.Range(0, 9)];
+                Tag7.text = neutral[UnityEngine.Random.Range(0, 8)];
+                Tag8.text = neutral[UnityEngine.Random.Range(0, 8)];
                 break;
             case "surprised":
-                Tag7.text = surprised[UnityEngine.Random.Range(0, 9)];
-                Tag8.text = surprised[UnityEngine.Random.Range(0, 9)];
+                Tag7.text = surprised[UnityEngine.Random.Range(0, 8)];
+                Tag8.text = surprised[UnityEngine.Random.Range(0, 8)];
                 break;
             case "scared":
-                Tag7.text = scared[UnityEngine.Random.Range(0, 9)];
-                Tag8.text = scared[UnityEngine.Random.Range(0, 9)];
+                Tag7.text = scared[UnityEngine.Random.Range(0, 8)];
+                Tag8.text = scared[UnityEngine.Random.Range(0, 8)];
                 break;
             case "disgust":
-                Tag7.text = disgust[UnityEngine.Random.Range(0, 9)];
-                Tag8.text = disgust[UnityEngine.Random.Range(0, 9)];
+                Tag7.text = disgust[UnityEngine.Random.Range(0, 8)];
+                Tag8.text = disgust[UnityEngine.Random.Range(0, 8)];
                 break;
             case "angry":
-                Tag7.text = angry[UnityEngine.Random.Range(0, 9)];
-                Tag8.text = angry[UnityEngine.Random.Range(0, 9)];
+                Tag7.text = angry[UnityEngine.Random.Range(0, 8)];
+                Tag8.text = angry[UnityEngine.Random.Range(0, 8)];
                 break;
             case "Lie":
-                Tag7.text = Lie[UnityEngine.Random.Range(0, 9)];
-                Tag8.text = Lie[UnityEngine.Random.Range(0, 9)];
+                Tag7.text = Lie[UnityEngine.Random.Range(0, 8)];
+                Tag8.text = Lie[UnityEngine.Random.Range(0, 8)];
                 break;
         }
     }
@@ -182,23 +183,22 @@ public class ResultMenu : BaseMenu
 
     private void OnResultLoaded(List<Result> results)
     {
-        Debug.Log("result menu");
-        //Debug.Log(results[0].music + " "  + results[0].link + " " + results[0].tag_1 + " " + results[0].tag_2);
+        //Debug.Log(results[0].music + " " + results[0].link + " " + results[0].tag_1 + " " + results[0].tag_2);
         //results = newResults.ToList();
 
-        //foreach (Result result in results)
-        //{
-        //    Debug.Log(result);
-        //}
+        foreach (Result result in results)
+        {
+            Debug.Log(result);
+        }
         this.results = results;
 
-        //MusicButton1.text = results[0].music;
-        //MusicButton2.text = results[1].music;
-        //MusicButton3.text = results[2].music;
+        MusicButton1.text = results[0].music;
+        MusicButton2.text = results[1].music;
+        MusicButton3.text = results[2].music;
 
-        //findThumbnail(results[0].link, image1);
-        //findThumbnail(results[1].link, image2);
-        //findThumbnail(results[2].link, image3);
+        findThumbnail(results[0].link, image1);
+        findThumbnail(results[1].link, image2);
+        findThumbnail(results[2].link, image3);
 
 
         //for (int i = 0; i < 8; i++)
@@ -257,18 +257,18 @@ public class ResultMenu : BaseMenu
         }
     }
 
-    //public void OnClickMusicButton1()
-    //{
-    //    Application.OpenURL(results[0].link);
-    //}
-    //public void OnClickMusicButton2()
-    //{
-    //    Application.OpenURL(results[1].link);
-    //}
-    //public void OnClickMusicButton3()
-    //{
-    //    Application.OpenURL(results[2].link);
-    //}
+    public void OnClickMusicButton1()
+    {
+        Application.OpenURL(results[0].link);
+    }
+    public void OnClickMusicButton2()
+    {
+        Application.OpenURL(results[1].link);
+    }
+    public void OnClickMusicButton3()
+    {
+        Application.OpenURL(results[2].link);
+    }
 
     public void findThumbnail(string url, RawImage rawImage)
     {
