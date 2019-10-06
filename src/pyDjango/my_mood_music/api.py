@@ -129,7 +129,7 @@ class RequestFaceAPI(APIView):
                 return httpResponse.noContent(request, 'Face is not detected')
             else:
                 self.get_data_from_faces(request, faces)
-                return httpResponse.ok(request, str(self.result_emotion))
+                return httpResponse.ok(request, str(self.result_emotion).replace('\"',''))
 
         except Exception as e:
             logger.error(e)
@@ -241,19 +241,35 @@ class RecommendationMusic(APIView):
             self.music_list = self.recommand_music(request, int(float(self.age)))
 
             logger.debug(self.music_list)
-            
-            result = {}
-            result["music1"] = model_to_dict(self.music_list[0])
-            result["music2"] = model_to_dict(self.music_list[1])
-            result["music3"] = model_to_dict(self.music_list[2])
 
-            return httpResponse.ok(request, result)
+            if(self.age <10):
+                result = {}
+                result["music1"] = {
+                    "music": self.music_list[0]["music"][0],
+                    "link": self.music_list[0]["link"][0]
+                }
+                result["music2"] = {
+                    "music": self.music_list[0]["music"][1],
+                    "link": self.music_list[0]["link"][1]
+                }
+                result["music3"] = {
+                    "music": self.music_list[0]["music"][2],
+                    "link": self.music_list[0]["link"][2]
+                }
+                return httpResponse.ok(request, result)
+
+            else :
+                result = {}
+                result["music1"] = model_to_dict(self.music_list[0])
+                result["music2"] = model_to_dict(self.music_list[1])
+                result["music3"] = model_to_dict(self.music_list[2])
+                return httpResponse.ok(request, result)
 
         except Exception as e:
             logging.error(e)
             return httpError.serverError(request, 'Recommandation Error')
 
-    def create_Analysis_Result(self, music_list):
+    def create_Analysis_Result(self, request,  music_list):
         """
         어플에서 받은 id값과 데이터베이스에서 받은 값(music list)을 INSERT 한다.
         """
@@ -310,7 +326,7 @@ class RecommendationMusic(APIView):
                     # tag_list.append((music.tag1, music.tag2))
                     count += 1
 
-            self.create_Analysis_Result(music_list)
+            self.create_Analysis_Result(request, music_list)
 
             Music['music'] = music_list
             Music['link'] = link_list
@@ -323,7 +339,7 @@ class RecommendationMusic(APIView):
             return httpError.serverError(request, "Can't Get Randomly 3 Music")
 
     # # randomly get three music of DB (test)
-    # def get_random3_test(self, table):
+    # def get_random3_test(self, request, table):
     #     try:
     #         Music = {}
     #         max_id = table.objects.all().aggregate(max_id=Max("id"))['max_id']
@@ -351,11 +367,10 @@ class RecommendationMusic(APIView):
     #                 count += 1
 
     #         dictionary_list.append(Music)  # list of dictionary
-    #         print(dictionary_list)
     #         return dictionary_list
     #     except Exception as e:
-    #         print(e)
-    #         return HttpResponse('please try again')
+    #         logger.error(e)
+    #         return httpError.serverError(request, "Can't Get Random3 Test")
 
     def recommand_music(self, request, age):
         """
@@ -388,7 +403,7 @@ class RecommendationMusic(APIView):
                 tone = self.speech.splitlines()[0].replace("\"","")
 
                 # 추천알고리즘에서 리턴하는 테이블에 대한 정보 (노래 3개->3개의 요소)
-                t_info = list(self.get_table_name(self.face, tone))
+                t_info = list(self.get_table_name(request, self.face, tone))
                 print('t_info is : ', t_info)
 
                 if t_info=="tone_res err":
@@ -411,14 +426,14 @@ class RecommendationMusic(APIView):
                     music_list.append(music.music)
                     dictionary_list.append(music)
 
-            self.create_Analysis_Result(music_list)
+                self.create_Analysis_Result(request, music_list)
             return dictionary_list
         except Exception as e:
             logger.error(e)
             return httpError.serverError(request, "Can't Recommand music")
 
     # 이미지, 음성 감정 분석 결과를 이용해 접근할 테이블을 결정한다.
-    def get_table_name(self, face, tone):
+    def get_table_name(self, request, face, tone):
         try:
             # 테이블 인덱스를 리스트에 저장한다.
             table1 = 100
@@ -472,7 +487,7 @@ class RecommendationMusic(APIView):
                 for emotion, rate in dic.items():
                     if rate < 0.05:
                         dic[emotion] = 0.0
-                        print('smoothing dictionary : ', dic)
+                        # print('smoothing dictionary : ', dic)
                 
                 anger = dic['angry']
                 # contempt = dic['contempt']
@@ -501,7 +516,7 @@ class RecommendationMusic(APIView):
             # 전처리 (1) 중립에 의한 랜덤 테이블 (2) 거짓말테이블 -> 둘 다 해당하지 않으면 1,2,3순위 감정에 따른 알고리즘 처리 적용
             else:
                 del dic['neutral']
-                del dic["contempt"]
+                # del dic["contempt"]
 
                 emotion_res = sorted(dic.items(), key=operator.itemgetter(
                     1), reverse=True)  # value 기준 내림차순 정렬
