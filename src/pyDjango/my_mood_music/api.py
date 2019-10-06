@@ -230,6 +230,7 @@ class RecommendationMusic(APIView):
         self.music_list = []  # 리스트 안의 dictionary 형태로 들어온다. (music, url)
         self.age = random.randint(0, 150)
         self.user_id = ''
+        self.recommand_table = []
 
     def post(self, request):
         """
@@ -239,31 +240,41 @@ class RecommendationMusic(APIView):
         try:
             self.user_id = request.POST.get('result','')
             # self.age = fileIO.read_file(request, 'face_api_age.txt')
-            self.music_list = self.recommand_music(request, int(float(self.age)))
+            # self.music_list = self.recommand_music(request, int(float(self.age)))
+            self.music_list = self.recommand_music(request, 24)
 
             logger.debug(self.music_list)
 
             if(self.age <10):
-                result = {}
-                result["music1"] = {
+                obj1= dict({
                     "music": self.music_list[0]["music"][0],
-                    "link": self.music_list[0]["link"][0]
-                }
-                result["music2"] = {
+                    "link": self.music_list[0]["link"][0],
+                })
+                obj2 = dict({
                     "music": self.music_list[0]["music"][1],
-                    "link": self.music_list[0]["link"][1]
-                }
-                result["music3"] = {
+                    "link": self.music_list[0]["link"][1],
+                })
+                obj3 = dict({
                     "music": self.music_list[0]["music"][2],
-                    "link": self.music_list[0]["link"][2]
-                }
+                    "link": self.music_list[0]["link"][2],
+                })
+                result = []
+                result.append(obj1)
+                result.append(obj2)
+                result.append(obj3)
+                print(result)
+                
+                # response_data = ChildSerializer(self.music_list, many=True)
                 return httpResponse.ok(request, result)
 
             else :
-                result = {}
-                result["music1"] = model_to_dict(self.music_list[0])
-                result["music2"] = model_to_dict(self.music_list[1])
-                result["music3"] = model_to_dict(self.music_list[2])
+                result = []
+                result.append(model_to_dict(self.music_list[0]))
+                result.append(model_to_dict(self.music_list[1]))
+                result.append(model_to_dict(self.music_list[2]))
+
+                # response_data = AngerSerializer(self.music_list, many=True)
+                # result = json.dumps(self.music_list, ensure_ascii=False)
                 return httpResponse.ok(request, result)
 
         except Exception as e:
@@ -405,6 +416,7 @@ class RecommendationMusic(APIView):
 
                 # 추천알고리즘에서 리턴하는 테이블에 대한 정보 (노래 3개->3개의 요소)
                 t_info = list(self.get_table_name(request, self.face, tone))
+                self.recommand_table = t_info
                 print('t_info is : ', t_info)
 
                 if t_info=="tone_res err":
@@ -614,3 +626,32 @@ class RecommendationMusic(APIView):
         except Exception as e:
             logger.error(e)
             return httpError.serverError(request, "Can't Get Table Name")
+
+
+class TestJson(APIView):
+    """
+    Serializer를 이용한 Json 데이터 Response
+    """
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.user_id = ''
+
+    def get_object(self, request, user_id):
+        try:
+            return Analysis_Result.objects.filter(user_id=user_id)
+        except Exception as e:
+            logger.error(e)
+            return httpError.notFoundError(request, "Not Found" )
+
+    def post(self, request, format=None):
+        try:
+            self.user_id = request.POST.get('result','')
+            analysis_result = self.get_object(request, self.user_id)
+            print('result' ,analysis_result)
+            serializer = Analysis_ResultSerializer(analysis_result, many = True)
+            print('data',serializer.data)
+            return httpResponse.ok(request, serializer.data)
+
+        except Exception as e:
+            logger.error(e)
+            return httpError.serverError(request, 'please try again')
