@@ -49,5 +49,7 @@ public class RequestPermission : MonoBehaviour
             Permission.RequestUserPermission(Permission.ExternalStorageRead);
         }
 
+
+        
     }
 }
