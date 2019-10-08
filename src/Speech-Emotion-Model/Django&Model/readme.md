@@ -1,6 +1,6 @@
-°¡»óÈ¯°æ¿¡¼­!!
+ê°€ìƒí™˜ê²½ì—ì„œ!!
 </br>
-python ¹öÀüÀÌ 3.5(64bit)ÀÌ»óÀÓÀ» È®ÀÎÇÏ°í,
+python ë²„ì „ì´ 3.5(64bit)ì´ìƒìž„ì„ í™•ì¸í•˜ê³ ,
 </br>
 pip install tensorflow
 </br>
@@ -8,4 +8,4 @@ pip install keras
 </br>
 pip install librosa
 </br>
-.h5¿Í jsonÆÄÀÏÀ» ´Ù¿î¹Þ¾Æ ½ÇÇàÇÏ´Â Æú´õ¾È¿¡ µÐ´Ù.
+.h5ì™€ jsoníŒŒì¼ì„ ë‹¤ìš´ë°›ì•„ ì‹¤í–‰í•˜ëŠ” í´ë”ì•ˆì— ë‘”ë‹¤.
