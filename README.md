@@ -70,16 +70,11 @@ unity 폴더에 있는 폴더들을 다운받아 unity에 새 project를 생성�
 scene에 있는 start를 더블클릭 해서 실행한다.    
 
 
-
-
-## AWS EC2에 연결해놓은 서버로 연결
-http://ec2-54-180-152-15.ap-northeast-2.compute.amazonaws.com:8000/api/ 기본연결
-
     
     
 ## 로컬 서버로 연결
 
-현재 학교에서 지원해주는 AWS를 사용중이지만, 2019년 내 기간이 지나면 쓰지 못하기 때문에 로컬에서 돌려볼 것을 권장한다.
+현재 학교에서 지원해주는 AWS를 사용중이지만(http://ec2-54-180-152-15.ap-northeast-2.compute.amazonaws.com:8000/api/), 2019년 내 기간이 지나면 쓰지 못하기 때문에 로컬에서 돌려볼 것을 권장한다.
 로컬에서 돌려볼 시에 Unity에서의 파일 전송 코드의 url을 "localhost:port # "을 기본으로 바꾸어야 한다.
 Unity의 Menu의 Backend Manager의 Use Production의 체크를 해제하면 된다.
 
@@ -128,7 +123,13 @@ p.save()
 
 마지막으로, 로컬 서버를 실행시키는 방법은 다음과 같다. 
 `manage.py` 파일이 있는 `2019-cap1-2019_10/src/pyDjango/` 폴더로 이동해야 한다.
+
+만약 autoreload 기능을 사용하고 싶다면 다음 명령어를 입력하고 하나의 터미널을 더 생성한다.(생략가능)
+```
+python manage.py livereload
+```
  
+
 ```
 python manage.py runserver 0:8000
 ```
