@@ -90,4 +90,4 @@ class ChildSerializer(serializers.ModelSerializer):
 class Analysis_ResultSerializer(serializers.ModelSerializer):
     class Meta:
         model = Analysis_Result
-        fields = ('music_r1', 'music_r2', 'music_r3',)
+        fields = ('music', 'link', 'tag_1', 'tag_2')

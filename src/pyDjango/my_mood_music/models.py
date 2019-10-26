@@ -8,15 +8,13 @@ from django.utils.encoding import python_2_unicode_compatible
 class Analysis_Result(models.Model):
     id = models.AutoField(primary_key=True)
     user_id = models.CharField(max_length=300, null=True)
-    music_1 = models.CharField(max_length=500)
-    music_2 = models.CharField(max_length=500)
-    music_3 = models.CharField(max_length=500)
-    link_1 = models.URLField()
-    link_2 = models.URLField()
-    link_3 = models.URLField()
+    music = models.CharField(max_length=500)
+    link = models.URLField()
+    tag_1 = models.CharField(max_length=500, null=True)
+    tag_2 = models.CharField(max_length=500, null=True)
 
     def __str__(self):
-        return '{} {} {} {} {} {} {} {}'.format(self.id, self.user_id, self.music_1, self.music_2, self.music_3, self.link_1, self.link_2, self.link_3)
+        return '{} {} {} {} {} {}'.format(self.id, self.user_id, self.music, self.link, self.tag_1, self.tag_2)
 
 
 class Happiness(models.Model):

@@ -126,3 +126,16 @@ Original exception text was: 'QuerySet' object has no attribute 'music_r1'.
 2019-10-06 20:04:28,475 [   ERROR] The response content must be rendered before it can be iterated over.
 2019-10-06 20:04:54,654 [   ERROR] Cannot resolve keyword 'many' into field. Choices are: id, music_r1, music_r2, music_r3, user_id
 2019-10-06 20:04:54,671 [   ERROR] The response content must be rendered before it can be iterated over.
+2019-10-26 15:04:23,539 [   ERROR] create_Analysis_Result() takes 3 positional arguments but 4 were given
+2019-10-26 15:05:34,208 [   ERROR] create_Analysis_Result() takes 3 positional arguments but 4 were given
+2019-10-26 18:47:13,615 [   ERROR] Analysis_Result() got an unexpected keyword argument 'music_1'
+2019-10-26 18:47:13,681 [   ERROR] Analysis_Result() got an unexpected keyword argument 'music_1'
+2019-10-26 18:47:13,685 [   ERROR] Analysis_Result() got an unexpected keyword argument 'music_1'
+2019-10-26 18:53:32,256 [   ERROR] 'Lie' object has no attribute 'tag1'
+2019-10-26 18:55:24,142 [   ERROR] 'Lie' object has no attribute 'tag1'
+2019-10-26 18:56:44,946 [   ERROR] Analysis_Result() got an unexpected keyword argument 'tag1'
+2019-10-26 18:56:44,972 [   ERROR] Analysis_Result() got an unexpected keyword argument 'tag1'
+2019-10-26 18:56:44,978 [   ERROR] Analysis_Result() got an unexpected keyword argument 'tag1'
+2019-10-26 19:03:01,972 [   ERROR] table my_mood_music_analysis_result has no column named music
+2019-10-26 19:03:01,997 [   ERROR] table my_mood_music_analysis_result has no column named music
+2019-10-26 19:03:02,010 [   ERROR] table my_mood_music_analysis_result has no column named music

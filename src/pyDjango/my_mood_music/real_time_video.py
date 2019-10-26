@@ -20,14 +20,18 @@ emotion_classifier = load_model(emotion_model_path, compile=False)
 EMOTIONS = ["angry" ,"disgust","scared", "happy", "sad", "surprised",
  "neutral"]
 
-def load_model():
-    global emotion_classifier
-    emotion_classifier = tf.keras.models.load_model(emotion_model_path)
-    global graph
-    graph = tf.get_default_graph()
+def load_model(request):
+    try:
+        global emotion_classifier
+        emotion_classifier = tf.keras.models.load_model(emotion_model_path)
+        global graph
+        graph = tf.get_default_graph()
+    except Exception as e:
+        logger(e)
+        httpError.serverError(request, "Can't Load Model")
 
 def face_recognition(request,image):
-    load_model()
+    load_model(request)
     # clear_session()
     frame = cv2.imread(image, cv2.IMREAD_COLOR)
     #reading the frame
