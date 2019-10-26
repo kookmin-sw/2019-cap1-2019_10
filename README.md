@@ -65,6 +65,11 @@ https://github.com/MITESHPUTHRANNEU/Speech-Emotion-Analyzer 에서 `Emtion_Voice
 
 
 
+#### 경로 변경
+`src/pyDjango/my_mood_music/real_time_video.py` 의 `detection_model_path`와 `emotion_model_path`의 경로를 본인이 다운받은 얼굴 인식 감정 분석 모델 관련 파일들의 경로로 변경한다.
+
+
+
 #### Unity Setting
 unity 폴더에 있는 폴더들을 다운받아 unity에 새 project를 생성하고 해당 파일들을 붙여넣고 실행을 시킨다.     
 scene에 있는 start를 더블클릭 해서 실행한다.    
@@ -74,7 +79,7 @@ scene에 있는 start를 더블클릭 해서 실행한다.
     
 ## 로컬 서버로 연결
 
-현재 학교에서 지원해주는 AWS를 사용중이지만(http://ec2-54-180-152-15.ap-northeast-2.compute.amazonaws.com:8000/api/), 2019년 내 기간이 지나면 쓰지 못하기 때문에 로컬에서 돌려볼 것을 권장한다.
+현재 학교에서 지원해주는 AWS를 사용중이지만(http://ec2-54-180-83-211.ap-northeast-2.compute.amazonaws.com:8000), 2019년 내 기간이 지나면 쓰지 못하기 때문에 로컬에서 돌려볼 것을 권장한다.
 로컬에서 돌려볼 시에 Unity에서의 파일 전송 코드의 url을 "localhost:port # "을 기본으로 바꾸어야 한다.
 Unity의 Menu의 Backend Manager의 Use Production의 체크를 해제하면 된다.
 
@@ -118,6 +123,7 @@ for row in reader :
 p = Anger(music=row['music'], age=row['age_a'],link=row['link_a'], tag_1=row['tag_a1'], tag_2=row['tag_a2'])
 p.save()
 (enter)
+(exit())
 ```
 
 
@@ -134,8 +140,6 @@ python manage.py livereload
 python manage.py runserver 0:8000
 ```
 
-(참고) 현재 swagger 가 적용되지 않아 http://127.0.0.1:8000 으로 접속하면 Page not found (404) 가 뜨므로
-http://127.0.0.1:8000/api/ 를 기본url로 생각하길 바란다.
 
 
 
