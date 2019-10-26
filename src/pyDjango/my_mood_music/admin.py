@@ -9,7 +9,7 @@ from my_mood_music.models import Analysis_Result, Happiness, Anger, Fear, Surpri
 #list_display = ('id_u','email','password', 'research')
 
 class ResultAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user_id', 'music_r1', 'music_r2', 'music_r3')
+    list_display = ('id', 'user_id', 'music_1', 'music_2', 'music_3', 'link_1', 'link_2', 'link_3')
 
 
 class HappinessAdmin(admin.ModelAdmin):

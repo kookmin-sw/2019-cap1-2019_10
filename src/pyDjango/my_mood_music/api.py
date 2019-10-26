@@ -29,7 +29,7 @@ from django.forms.models import model_to_dict
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-import cognitive_face as CF
+#import cognitive_face as CF
 import librosa
 import numpy as np
 import pandas as pd
@@ -240,8 +240,8 @@ class RecommendationMusic(APIView):
         try:
             self.user_id = request.POST.get('recommand','')
             # self.age = fileIO.read_file(request, 'face_api_age.txt')
-            # self.music_list = self.recommand_music(request, int(float(self.age)))
-            self.music_list = self.recommand_music(request, 24)
+            self.music_list = self.recommand_music(request, self.age)
+            #self.music_list = self.recommand_music(request, 24)
 
             logger.debug(self.music_list)
 
@@ -290,11 +290,12 @@ class RecommendationMusic(APIView):
                 max_id=Max("id"))['max_id']
             if max_id:
                 queryset = Analysis_Result.objects.create(id=max_id + 1, user_id=self.user_id,
-                                                          music_r1=music_list[0],
-                                                          music_r2=music_list[1], music_r3=music_list[2])
+                                                          music_1=music_list[0],music_2=music_list[1], music_3=music_list[2],
+                                                          link_1=link_list[0],link_2=link_list[1],link_3=link_list[2])
             else:
-                queryset = Analysis_Result.objects.create(id=1, user_id=self.user_id, music_r1=music_list[0],
-                                                          music_r2=music_list[1], music_r3=music_list[2])
+                queryset = Analysis_Result.objects.create(id=1, user_id=self.user_id,
+                                                          music_1=music_list[0],music_2=music_list[1], music_3=music_list[2],
+                                                          link_1=link_list[0],link_2=link_list[1],link_3=link_list[2])
             queryset.save()
 
             logger.debug(connection.queries[-1])
@@ -338,7 +339,7 @@ class RecommendationMusic(APIView):
                     # tag_list.append((music.tag1, music.tag2))
                     count += 1
 
-            self.create_Analysis_Result(request, music_list)
+            self.create_Analysis_Result(request, music_list, link_list)
 
             Music['music'] = music_list
             Music['link'] = link_list
@@ -391,6 +392,7 @@ class RecommendationMusic(APIView):
         try:
             dictionary_list = []
             music_list = []
+            link_list = []
             # 10세 미만이면 어린이 테이블로 가서 랜덤으로 3개의 동요를 뽑고 바로 종료한다.
             if age < 10:
                 dictionary_list = self.get_random3(request, Child)
@@ -436,10 +438,14 @@ class RecommendationMusic(APIView):
                         table = table_index[tableN]
 
                     music = table.objects.order_by('?').first()  # 정해진 테이블에서 랜덤으로
-                    music_list.append(music.music)
-                    dictionary_list.append(music)
+                    if music:
+                        music_list.append(music.music)
+                        link_list.append(music.link)
+                        dictionary_list.append(music)
+                    else:
+                        httpError.serverError(request, "Can't Get Table Objects")
 
-                self.create_Analysis_Result(request, music_list)
+                self.create_Analysis_Result(request, music_list, link_list)
             return dictionary_list
         except Exception as e:
             logger.error(e)
@@ -647,7 +653,6 @@ class ResultResponse(APIView):
         try:
             self.user_id = request.POST.get('result','')
             analysis_result = self.get_object(request, self.user_id)
-            print('result' ,analysis_result)
             serializer = Analysis_ResultSerializer(analysis_result, many = True)
             print('data',serializer.data)
             return httpResponse.ok(request, serializer.data)
