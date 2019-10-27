@@ -81,7 +81,7 @@ class RequestFaceAPI(APIView):
             # if (!result_emotion || !result_age):
             #     return httpError
 
-            #fileIO.write_file(request, 'face_api_age.txt', result_age)
+            # fileIO.write_file(request, 'face_api_age.txt', result_age)
         except Exception as e:
             logger.error(e)
             return httpError.serverError(reqeust, "Can't Get Data From Faces")
@@ -171,11 +171,12 @@ class Call(APIView):
             label = self.labelfrommodel(request, './media/{}'.format(path))
 
             logger.debug(label)
+            result = { label }
             os.remove('./media/{}'.format(path))
         except Exception as e:
             logger.error(e)
             return httpError.serverError(request, 'SEA getting label Error')
-        return httpResponse.created(request, label)
+        return httpResponse.created(request, result)
 
     def get(self, request):
         return httpResponse.ok(request, "Using Speech-Emotion-Model")
@@ -228,7 +229,7 @@ class RecommendationMusic(APIView):
                           "happy", "sad", "surprised"]
         self.tone_res = ''
         self.music_list = []  # 리스트 안의 dictionary 형태로 들어온다. (music, url)
-        self.age = random.randint(0, 150)
+        self.age = random.randint(0, 60)
         self.user_id = ''
         self.recommand_table = []
 
@@ -459,14 +460,14 @@ class RecommendationMusic(APIView):
                 surprise = dic['surprised']
 
             # 전처리 - 거짓말인 경우, 거짓말 테이블 선택
-            if self.tone_res == "sadness" and happiness > 0:
+            if self.tone_res == "sadness" and happiness > 0.5:
                 print("행복 얼굴로 슬픈 목소리를 내는 거짓말쟁이1")
                 table1 = 6
                 table2 = 6
                 table3 = 6
                 return table1, table2, table3
 
-            elif self.tone_res == "happiness" and sadness > 0:
+            elif self.tone_res == "happiness" and sadness > 0.5:
                 print("슬픈 얼굴로 행복 목소리를 내는 거짓말쟁이2")
                 table1 = 6
                 table2 = 6

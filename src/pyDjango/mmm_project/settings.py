@@ -62,9 +62,8 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     '203.246.113.177',
-    'ec2-54-180-152-15.ap-northeast-2.compute.amazonaws.com',
-    '54.180.152.15',
-    'ip-172-31-26-248.ap-northeast-2.compute.internal',
+    'ec2-54-180-83-211.ap-northeast-2.compute.amazonaws.com',
+    '54.180.83.211',
 ]
 
 
