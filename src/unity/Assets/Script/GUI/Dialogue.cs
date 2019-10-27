@@ -146,7 +146,14 @@ public class Dialogue : BaseMenu
         //++cnt;
         txt.text = content[cnt];
         locked = false;
-        Clicktxt.enabled = true;
+        if(state == State.Reset)
+        {
+            Clicktxt.enabled = false;
+        }
+        else
+        {
+            Clicktxt.enabled = true;
+        }
     }
 
     // 얼굴 인식 요청
@@ -181,13 +188,14 @@ public class Dialogue : BaseMenu
         debug.text = "result end";
         yield return new WaitForSeconds(1f);
         LoadingImg.SetActive(false);
+        Clicktxt.enabled = false;
         ShowResult();
     }
 
     public void ResultError()
     {
         LoadingImg.SetActive(false);
-        txt.text = "서버 상태가 안좋아서 더이상 진행할 수 없어.. 다음에 다시 해줘";
+        txt.text = "서버 상태가 안좋아서 더이상 진행할 수 없어.. 미안해\n" + "다음에 다시 해줘";
     }
 
     public void OnExit()
@@ -218,6 +226,7 @@ public class Dialogue : BaseMenu
         state = 0;
         cnt = 0;
 
+        Clicktxt.enabled = true;
         txt.text = content[cnt];
     }
 
@@ -243,13 +252,14 @@ public class Dialogue : BaseMenu
         if (retry < 3)
         {
             txt.text = "잘 안보여서.. 잠시만 기다려봐";
-            Debug.Log("다시");
+            ++retry;
+            Debug.Log("다시" + retry);
             TakePhoto();
-            retry++;
         }
         else
         {
-            txt.text = "서버 상태가 안좋아서 더이상 진행할 수 없어.. 미안해";
+            ResultError();
+            //txt.text = "서버 상태가 안좋아서 더이상 진행할 수 없어.. 미안해";
         }
     }
 
@@ -265,12 +275,15 @@ public class Dialogue : BaseMenu
     {
         if (retry < 3)
         {
+            LoadingImg.SetActive(false);
+            ++retry;
+            Debug.Log("retry : " + retry);
             txt.text = "다시 들려줄 수 있어?";
-            retry++;
         }
         else
         {
-            txt.text = "서버 상태가 안좋아서 더이상 진행할 수 없어, 미안해..";
+            ResultError();
+            //txt.text = "서버 상태가 안좋아서 더이상 진행할 수 없어, 미안해..";
         }
     }
 }

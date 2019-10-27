@@ -20,7 +20,7 @@ public class PhoneCamera : BaseMenu
     public float StayTime = 3f;
 
     //디버깅용
-    private Texture defaultBackground;
+    public Texture defaultBackground;
     private string _SavePath = ".\\MyMoodMusic\\";
     private string path = "";
     int _CaptureCounter = 0;
@@ -46,7 +46,8 @@ public class PhoneCamera : BaseMenu
         {
             if (devices[i].isFrontFacing)
             {
-                frontCam = new WebCamTexture(devices[i].name, Screen.width, Screen.height);
+                frontCam = new WebCamTexture(devices[i].name);
+                i = devices.Length;
             }
         }
 
@@ -57,10 +58,11 @@ public class PhoneCamera : BaseMenu
         }
 
         // 카메라 사용
-        //frontCam.Play();
+        frontCam.Play();
+        Debug.Log(frontCam.deviceName);
 
         // 이건 그냥 디버깅용으로 안보이니까 카메라 잘 떴는지 확인할려고 UI 텍스쳐로 띄워줌 카메라
-        //background.texture = frontCam;
+        background.texture = frontCam;
 
         Debug.Log("find front camera");
         //baseRotation = transform.rotation;
@@ -83,14 +85,16 @@ public class PhoneCamera : BaseMenu
         }
 
         //잘 찍히는지 사진으로 저장해보는 코드
-        //_SavePath = pathForDocumentsFile("MyMoodMusic");
-        //Debug.Log(_SavePath);
-        //System.IO.File.WriteAllBytes(_SavePath + _CaptureCounter.ToString() + ".png", snap.EncodeToPNG());
-        //path = _SavePath + _CaptureCounter.ToString() + ".png";
-        //++_CaptureCounter;
-        //Debug.Log(_CaptureCounter);
+        _SavePath = pathForDocumentsFile("MyMoodMusic");
+        Debug.Log(_SavePath);
+        System.IO.File.WriteAllBytes(_SavePath + _CaptureCounter.ToString() + ".png", snap.EncodeToPNG());
+        path = _SavePath + _CaptureCounter.ToString() + ".png";
+        ++_CaptureCounter;
+        Debug.Log(_CaptureCounter);
 
         imageData = snap.EncodeToPNG();
+        Debug.Log(imageData.Length);
+        Debug.Log(imageData);
 
         backendManager.PostPhoto(imageData, PlayerPrefs.GetString("x2").FromBase64());
 
@@ -136,30 +140,76 @@ public class PhoneCamera : BaseMenu
         }
     }
 
+    // 스크린샷 찍고 갤러리에 갱신
+    void ScreenshotAndGallery()
+    {
+        // 스크린샷
+        Texture2D ss = new Texture2D(Screen.width, Screen.height, TextureFormat.RGB24, false);
+        ss.ReadPixels(new Rect(0, 0, Screen.width, Screen.height), 0, 0);
+        ss.Apply();
+
+        // 갤러리갱신
+        if (Application.platform == RuntimePlatform.Android)
+        {
+            ss = RotateImage(ss, 90);
+        }
+
+        //잘 찍히는지 사진으로 저장해보는 코드
+        _SavePath = pathForDocumentsFile("MyMoodMusic_test");
+        Debug.Log(_SavePath);
+        System.IO.File.WriteAllBytes(_SavePath + _CaptureCounter.ToString() + ".jpg", ss.EncodeToJPG());
+        path = _SavePath + _CaptureCounter.ToString() + ".jpg";
+        ++_CaptureCounter;
+        Debug.Log(_CaptureCounter);
+
+
+        // To avoid memory leaks.
+        // 복사 완료됐기 때문에 원본 메모리 삭제
+        Destroy(ss);
+
+    }
+
+    // 찍은 사진을 불러온다.
+    Texture2D GetScreenshotImage(string filePath)
+    {
+        Texture2D texture = null;
+        byte[] fileBytes;
+        if (File.Exists(filePath))
+        {
+            fileBytes = File.ReadAllBytes(filePath);
+            texture = new Texture2D(2, 2, TextureFormat.RGB24, false);
+            texture.LoadImage(fileBytes);
+        }
+        return texture;
+    }
+
     private void Update()
     {
-        //if (!camAvailable)
-        //    return;
+        if (!camAvailable)
+            return;
 
         //카메라 스케일이랑 각도를 내가 핸드폰을 돌릴때마다 맞춰서 나올 수 있도록 조정
-        //float ratio = (float)frontCam.width / (float)frontCam.height;
-        //fit.aspectRatio = ratio;
+        float ratio = (float)frontCam.width / (float)frontCam.height;
+        fit.aspectRatio = ratio;
 
-        //transform.rotation = baseRotation * Quaternion.AngleAxis(frontCam.videoRotationAngle, Vector3.up);
+        transform.rotation = baseRotation * Quaternion.AngleAxis(frontCam.videoRotationAngle, Vector3.up);
 
-        //int rotAngle = -frontCam.videoRotationAngle;
-        //while (rotAngle < 0){ rotAngle += 360;
-        //while (rotAngle > 360) rotAngle -= 360;
+        int rotAngle = -frontCam.videoRotationAngle;
+        while (rotAngle < 0)
+        {
+            rotAngle += 360;
+            while (rotAngle > 360) rotAngle -= 360;
 
-        //float scaleY = frontCam.videoVerticallyMirrored ? -1f : 1f;
-        //background.rectTransform.localScale = new Vector3(1f, scaleY, 1f);
-        //localScale.Set(1f, scaleY, 1f);
-        //background.rectTransform.localScale = localScale;
+            float scaleY = frontCam.videoVerticallyMirrored ? -1f : 1f;
+            background.rectTransform.localScale = new Vector3(1f, scaleY, 1f);
+            localScale.Set(1f, scaleY, 1f);
+            background.rectTransform.localScale = localScale;
 
-        //int orient = -frontCam.videoRotationAngle;
-        //background.rectTransform.localEulerAngles = new Vector3(0, 0, orient);
-        //localOrient.Set(0, 0, orient);
-        //background.rectTransform.localEulerAngles = localOrient;
+            int orient = -frontCam.videoRotationAngle;
+            background.rectTransform.localEulerAngles = new Vector3(0, 0, orient);
+            localOrient.Set(0, 0, orient);
+            background.rectTransform.localEulerAngles = localOrient;
+        }
     }
 
 

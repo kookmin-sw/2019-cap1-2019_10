@@ -25,7 +25,7 @@ public class LoginInformation : MonoBehaviour
         
         clicked = false;
         username = PlayerPrefs.GetString("x2").FromBase64();
-        Debug.Log(username);
+        //Debug.Log(username);
         if (username == "")
         {
             idText.text = "Not login";
@@ -49,7 +49,8 @@ public class LoginInformation : MonoBehaviour
 
         if (loginToggle.isOn == true)
         {
-            panelRectTransform.SetAsLastSibling();
+            //panelRectTransform.SetAsLastSibling();
+            panelRectTransform.SetAsFirstSibling();
             loginInformation.SetActive(true);
         }
         else if (loginToggle.isOn == false)
