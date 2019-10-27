@@ -10,6 +10,8 @@
       </intent-filter>
       <meta-data android:name="unityplayer.UnityActivity" android:value="true" />
     </activity>
+    <!--최초 실행시 스킵 삭제-->
+    <meta-data android:name="unityplayer.SkipPermissionsDialog" android:value="true" />
     <meta-data android:name="unity.build-id" android:value="dad12cd4-370e-46ad-8027-c47cc4f070d3" />
     <meta-data android:name="unity.splash-mode" android:value="0" />
     <meta-data android:name="unity.splash-enable" android:value="True" />
@@ -25,12 +27,12 @@
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
   <uses-permission android:name="android.permission.CAMERA" />
-  <uses-feature android:name="android.hardware.camera" android:required="false" />
+<!--   <uses-feature android:name="android.hardware.camera" android:required="false" />
   <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
-  <uses-feature android:name="android.hardware.camera.front" android:required="false" />
+  <uses-feature android:name="android.hardware.camera.front" android:required="false" /> -->
   <uses-permission android:name="android.permission.RECORD_AUDIO" />
-  <uses-feature android:name="android.hardware.microphone" android:required="false" />
+<!--   <uses-feature android:name="android.hardware.microphone" android:required="false" />
   <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
   <uses-feature android:name="android.hardware.touchscreen.multitouch" android:required="false" />
-  <uses-feature android:name="android.hardware.touchscreen.multitouch.distinct" android:required="false" />
+  <uses-feature android:name="android.hardware.touchscreen.multitouch.distinct" android:required="false" /> -->
 </manifest>
