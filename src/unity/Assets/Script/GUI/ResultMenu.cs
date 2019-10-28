@@ -14,6 +14,7 @@ public class ResultMenu : BaseMenu
 
     // 3가지 노래 추천 결과
     public Text MusicButton1, MusicButton2, MusicButton3;
+    public Text MusicButtonTag1, MusicButtonTag2, MusicButtonTag3;
     // 태그 출력화면
     public Text Tag1, Tag2, Tag3, Tag4, Tag5, Tag6, Tag7, Tag8;
     // 썸네일 이미지
@@ -54,124 +55,124 @@ public class ResultMenu : BaseMenu
         switch (photo[0])
         {
             case "happy":
-                Tag1.text = happy[UnityEngine.Random.Range(0, 8)];
-                Tag2.text = happy[UnityEngine.Random.Range(0, 8)];
-                Tag3.text = happy[UnityEngine.Random.Range(0, 8)];
-                Tag4.text = happy[UnityEngine.Random.Range(0, 8)];
+                Tag1.text = happy[UnityEngine.Random.Range(0, 16)];
+                Tag2.text = happy[UnityEngine.Random.Range(0, 16)];
+                Tag3.text = happy[UnityEngine.Random.Range(0, 16)];
+                Tag4.text = happy[UnityEngine.Random.Range(0, 16)];
                 break;
             case "sad":
-                Tag1.text = sad[UnityEngine.Random.Range(0, 8)];
-                Tag2.text = sad[UnityEngine.Random.Range(0, 8)];
-                Tag3.text = sad[UnityEngine.Random.Range(0, 8)];
-                Tag4.text = sad[UnityEngine.Random.Range(0, 8)];
+                Tag1.text = sad[UnityEngine.Random.Range(0, 16)];
+                Tag2.text = sad[UnityEngine.Random.Range(0, 16)];
+                Tag3.text = sad[UnityEngine.Random.Range(0, 16)];
+                Tag4.text = sad[UnityEngine.Random.Range(0, 16)];
                 break;
             case "neutral":
-                Tag1.text = neutral[UnityEngine.Random.Range(0, 8)];
-                Tag2.text = neutral[UnityEngine.Random.Range(0, 8)];
-                Tag3.text = neutral[UnityEngine.Random.Range(0, 8)];
-                Tag4.text = neutral[UnityEngine.Random.Range(0, 8)];
+                Tag1.text = neutral[UnityEngine.Random.Range(0, 16)];
+                Tag2.text = neutral[UnityEngine.Random.Range(0, 16)];
+                Tag3.text = neutral[UnityEngine.Random.Range(0, 16)];
+                Tag4.text = neutral[UnityEngine.Random.Range(0, 16)];
                 break;
             case "surprised":
-                Tag1.text = surprised[UnityEngine.Random.Range(0, 8)];
-                Tag2.text = surprised[UnityEngine.Random.Range(0, 8)];
-                Tag3.text = surprised[UnityEngine.Random.Range(0, 8)];
-                Tag4.text = surprised[UnityEngine.Random.Range(0, 8)];
+                Tag1.text = surprised[UnityEngine.Random.Range(0, 16)];
+                Tag2.text = surprised[UnityEngine.Random.Range(0, 16)];
+                Tag3.text = surprised[UnityEngine.Random.Range(0, 16)];
+                Tag4.text = surprised[UnityEngine.Random.Range(0, 16)];
                 break;
             case "scared":
-                Tag1.text = scared[UnityEngine.Random.Range(0, 8)];
-                Tag2.text = scared[UnityEngine.Random.Range(0, 8)];
-                Tag3.text = scared[UnityEngine.Random.Range(0, 8)];
-                Tag4.text = scared[UnityEngine.Random.Range(0, 8)];
+                Tag1.text = scared[UnityEngine.Random.Range(0, 16)];
+                Tag2.text = scared[UnityEngine.Random.Range(0, 16)];
+                Tag3.text = scared[UnityEngine.Random.Range(0, 16)];
+                Tag4.text = scared[UnityEngine.Random.Range(0, 16)];
                 break;
             case "disgust":
-                Tag1.text = disgust[UnityEngine.Random.Range(0, 8)];
-                Tag2.text = disgust[UnityEngine.Random.Range(0, 8)];
-                Tag3.text = disgust[UnityEngine.Random.Range(0, 8)];
-                Tag4.text = disgust[UnityEngine.Random.Range(0, 8)];
+                Tag1.text = disgust[UnityEngine.Random.Range(0, 16)];
+                Tag2.text = disgust[UnityEngine.Random.Range(0, 16)];
+                Tag3.text = disgust[UnityEngine.Random.Range(0, 16)];
+                Tag4.text = disgust[UnityEngine.Random.Range(0, 16)];
                 break;
             case "angry":
-                Tag1.text = angry[UnityEngine.Random.Range(0, 8)];
-                Tag2.text = angry[UnityEngine.Random.Range(0, 8)];
-                Tag3.text = angry[UnityEngine.Random.Range(0, 8)];
-                Tag4.text = angry[UnityEngine.Random.Range(0, 8)];
+                Tag1.text = angry[UnityEngine.Random.Range(0, 16)];
+                Tag2.text = angry[UnityEngine.Random.Range(0, 16)];
+                Tag3.text = angry[UnityEngine.Random.Range(0, 16)];
+                Tag4.text = angry[UnityEngine.Random.Range(0, 16)];
                 break;
             case "Lie":
-                Tag1.text = Lie[UnityEngine.Random.Range(0, 8)];
-                Tag2.text = Lie[UnityEngine.Random.Range(0, 8)];
-                Tag3.text = Lie[UnityEngine.Random.Range(0, 8)];
-                Tag4.text = Lie[UnityEngine.Random.Range(0, 8)];
+                Tag1.text = Lie[UnityEngine.Random.Range(0, 16)];
+                Tag2.text = Lie[UnityEngine.Random.Range(0, 16)];
+                Tag3.text = Lie[UnityEngine.Random.Range(0, 16)];
+                Tag4.text = Lie[UnityEngine.Random.Range(0, 16)];
                 break;
         }
 
         switch (photo[1])
         {
             case "happy":
-                Tag5.text = happy[UnityEngine.Random.Range(0, 8)];
-                Tag6.text = happy[UnityEngine.Random.Range(0, 8)];
+                Tag5.text = happy[UnityEngine.Random.Range(0, 16)];
+                Tag6.text = happy[UnityEngine.Random.Range(0, 16)];
                 break;
             case "sad":
-                Tag5.text = sad[UnityEngine.Random.Range(0, 8)];
-                Tag6.text = sad[UnityEngine.Random.Range(0, 8)];
+                Tag5.text = sad[UnityEngine.Random.Range(0, 16)];
+                Tag6.text = sad[UnityEngine.Random.Range(0, 16)];
                 break;
             case "neutral":
-                Tag5.text = neutral[UnityEngine.Random.Range(0, 8)];
-                Tag6.text = neutral[UnityEngine.Random.Range(0, 8)];
+                Tag5.text = neutral[UnityEngine.Random.Range(0, 16)];
+                Tag6.text = neutral[UnityEngine.Random.Range(0, 16)];
                 break;
             case "surprised":
-                Tag5.text = surprised[UnityEngine.Random.Range(0, 8)];
-                Tag6.text = surprised[UnityEngine.Random.Range(0, 8)];
+                Tag5.text = surprised[UnityEngine.Random.Range(0, 16)];
+                Tag6.text = surprised[UnityEngine.Random.Range(0, 16)];
                 break;
             case "scared":
-                Tag5.text = scared[UnityEngine.Random.Range(0, 8)];
-                Tag6.text = scared[UnityEngine.Random.Range(0, 8)];
+                Tag5.text = scared[UnityEngine.Random.Range(0, 16)];
+                Tag6.text = scared[UnityEngine.Random.Range(0, 16)];
                 break;
             case "disgust":
-                Tag5.text = disgust[UnityEngine.Random.Range(0, 8)];
-                Tag6.text = disgust[UnityEngine.Random.Range(0, 8)];
+                Tag5.text = disgust[UnityEngine.Random.Range(0, 16)];
+                Tag6.text = disgust[UnityEngine.Random.Range(0, 16)];
                 break;
             case "angry":
-                Tag5.text = angry[UnityEngine.Random.Range(0, 8)];
-                Tag6.text = angry[UnityEngine.Random.Range(0, 8)];
+                Tag5.text = angry[UnityEngine.Random.Range(0, 16)];
+                Tag6.text = angry[UnityEngine.Random.Range(0, 16)];
                 break;
             case "Lie":
-                Tag5.text = Lie[UnityEngine.Random.Range(0, 8)];
-                Tag6.text = Lie[UnityEngine.Random.Range(0, 8)];
+                Tag5.text = Lie[UnityEngine.Random.Range(0, 16)];
+                Tag6.text = Lie[UnityEngine.Random.Range(0, 16)];
                 break;
         }
 
         switch (photo[2])
         {
             case "happy":
-                Tag7.text = happy[UnityEngine.Random.Range(0, 8)];
-                Tag8.text = happy[UnityEngine.Random.Range(0, 8)];
+                Tag7.text = happy[UnityEngine.Random.Range(0, 16)];
+                Tag8.text = happy[UnityEngine.Random.Range(0, 16)];
                 break;
             case "sad":
-                Tag7.text = sad[UnityEngine.Random.Range(0, 8)];
-                Tag8.text = sad[UnityEngine.Random.Range(0, 8)];
+                Tag7.text = sad[UnityEngine.Random.Range(0, 16)];
+                Tag8.text = sad[UnityEngine.Random.Range(0, 16)];
                 break;
             case "neutral":
-                Tag7.text = neutral[UnityEngine.Random.Range(0, 8)];
-                Tag8.text = neutral[UnityEngine.Random.Range(0, 8)];
+                Tag7.text = neutral[UnityEngine.Random.Range(0, 16)];
+                Tag8.text = neutral[UnityEngine.Random.Range(0, 16)];
                 break;
             case "surprised":
-                Tag7.text = surprised[UnityEngine.Random.Range(0, 8)];
-                Tag8.text = surprised[UnityEngine.Random.Range(0, 8)];
+                Tag7.text = surprised[UnityEngine.Random.Range(0, 16)];
+                Tag8.text = surprised[UnityEngine.Random.Range(0, 16)];
                 break;
             case "scared":
-                Tag7.text = scared[UnityEngine.Random.Range(0, 8)];
-                Tag8.text = scared[UnityEngine.Random.Range(0, 8)];
+                Tag7.text = scared[UnityEngine.Random.Range(0, 16)];
+                Tag8.text = scared[UnityEngine.Random.Range(0, 16)];
                 break;
             case "disgust":
-                Tag7.text = disgust[UnityEngine.Random.Range(0, 8)];
-                Tag8.text = disgust[UnityEngine.Random.Range(0, 8)];
+                Tag7.text = disgust[UnityEngine.Random.Range(0, 16)];
+                Tag8.text = disgust[UnityEngine.Random.Range(0, 16)];
                 break;
             case "angry":
-                Tag7.text = angry[UnityEngine.Random.Range(0, 8)];
-                Tag8.text = angry[UnityEngine.Random.Range(0, 8)];
+                Tag7.text = angry[UnityEngine.Random.Range(0, 16)];
+                Tag8.text = angry[UnityEngine.Random.Range(0, 16)];
                 break;
             case "Lie":
-                Tag7.text = Lie[UnityEngine.Random.Range(0, 8)];
-                Tag8.text = Lie[UnityEngine.Random.Range(0, 8)];
+                Tag7.text = Lie[UnityEngine.Random.Range(0, 16)];
+                Tag8.text = Lie[UnityEngine.Random.Range(0, 16)];
                 break;
         }
     }
@@ -195,6 +196,10 @@ public class ResultMenu : BaseMenu
         MusicButton1.text = results[0].music;
         MusicButton2.text = results[1].music;
         MusicButton3.text = results[2].music;
+
+        MusicButtonTag1.text = "#" + results[0].tag_1 + ",  #" + results[0].tag_2;
+        MusicButtonTag2.text = "#" + results[1].tag_1 + ",  #" + results[1].tag_2;
+        MusicButtonTag3.text = "#" + results[2].tag_1 + ",  #" + results[2].tag_2;
 
         findThumbnail(results[0].link, image1);
         findThumbnail(results[1].link, image2);
@@ -304,12 +309,12 @@ public class ResultMenu : BaseMenu
 
     }
     
-    private string[] happy = { "#기쁨", "#신남", "#흥폭팔", "#댄스댄스", "#환희", "#희열", "#스마일", "#행복" };
-    private string[] sad = {"#슬픔", "#눈물뚝뚝", "#쓸쓸함", "#우울", "#서러움", "#애통", "#애처로움", "#힘듦" };
-    private string[] neutral = { "#평범", "#무난", "#온화", "#내츄럴", "#평온", "#난 아무 생각이 없다", "#중립", "#편안"};
-    private string[] surprised = {"#깜짝", "#놀람", "#화들짝", "#멘붕", "#당황", "#깜놀", "#봉변", "#혼비백산" };
-    private string[] scared = { "#무서움", "#공포", "#겁", "#두려움", "#불안", "#섬뜩함", "#아찔함", "#살벌" };
-    private string[] disgust = {"#역겨움", "#불쾌", "#우웩", "#진짜싫음", "#메스꺼움", "#역함", "#넌더리남", "#혐오"};
-    private string[] angry = {"#화남", "#폭발", "#짜증", "#스트레스", "#분노", "#역정", "#심통", "#울화"};
-    private string[] Lie = { "#거짓말", "#뻥", "#다시해보세요", "#거짓말쟁이", "#거짓", "#한번더", "#다시", "#아니야" };
+    private string[] happy = { "#기쁨", "#신남", "#흥폭팔", "#댄스댄스", "#환희", "#희열", "#스마일", "#행복", "#해피", "#화창", "#밝음", "#업 템포", "#좋음", "#행복함", "#기뻐", "#둠칫둠칫" };
+    private string[] sad = {"#슬픔", "#눈물뚝뚝", "#쓸쓸함", "#우울", "#서러움", "#애통", "#애처로움", "#힘듦", "#비", "#씁쓸", "#우중충", "#먹구름", "#다운", "#무기력", "#폭풍우", "#BLUE" };
+    private string[] neutral = { "#평범", "#무난", "#온화", "#내츄럴", "#평온", "#아무 생각이 없다", "#중립", "#편안", "#뒹굴", "#똑같은 날", "#오늘도", "#일상", "#데일리", "#늘", "#보통", "#항상" };
+    private string[] surprised = {"#깜짝", "#놀람", "#화들짝", "#멘붕", "#당황", "#깜놀", "#봉변", "#혼비백산", "#헉", "#엌", "#뚀잉", "#세상에나", "#질겁", "#황당", "#경악", "#ㅇ0ㅇ!" };
+    private string[] scared = { "#무서움", "#공포", "#겁", "#두려움", "#불안", "#섬뜩함", "#아찔함", "#살벌", "#근심", "#걱정", "#고뇌", "#그림자", "#심려", "#시름", "#우수", "#사념" };
+    private string[] disgust = {"#역겨움", "#불쾌", "#우웩", "#진짜싫음", "#메스꺼움", "#역함", "#넌더리남", "#혐오", "#진절머리", "#싫증", "#진저리", "#몸서리", "#짜증", "#신물", "#엨", "#ㅡㅡ" };
+    private string[] angry = {"#화남", "#폭발", "#짜증", "#스트레스", "#분노", "#역정", "#심통", "#울화", "#화통", "#울분", "#열받네", "#으와앍", "#다 사라졌으면", "#아 진짜", "#저리가", "#그만해" };
+    private string[] Lie = { "#거짓말", "#뻥", "#다시해보세요", "#거짓말쟁이", "#거짓", "#한번더", "#다시", "#아니야", "#오잉", "#뭐징", "#츄라이", "#retry", "#다름", "#억지", "#일부러", "#고의" };
 }
