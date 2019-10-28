@@ -29,29 +29,7 @@ public class PhoneCamera : BaseMenu
     public AspectRatioFitter fit;
     public Quaternion baseRotation;
 
-    //private void Start()
-    //{
-    //    FindWebCams();
-    //}
-
-    IEnumerator Start()
-    {
-//#if UNITY_ANDROID
-        yield return new WaitUntil(() => Permission.HasUserAuthorizedPermission(Permission.Camera));
-        if (Permission.HasUserAuthorizedPermission(Permission.Camera))
-        {
-            Debug.Log("Permission.Camera found");
-        }
-        else
-        {
-            Debug.Log("Permission.Camera not found");
-        }
-//#endif
-
-        FindWebCams();
-    }
-
-    private void FindWebCams()
+    private void Start()
     {
         //defaultBackground = background.texture;
         WebCamDevice[] devices = WebCamTexture.devices;
@@ -91,7 +69,7 @@ public class PhoneCamera : BaseMenu
         //baseRotation = transform.rotation;
         camAvailable = true;
 
-        //StartCoroutine("TakePicture");      
+        //StartCoroutine("TakePicture");        
     }
 
     // 사진찍기

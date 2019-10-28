@@ -23,25 +23,9 @@ public class AudioRecorder : BaseMenu
     public GameObject RecorderError;
 
     //Get the audiosource here to save resources
-    IEnumerator Start()
+    private void Start()
     {
-        yield return new WaitUntil(() => Permission.HasUserAuthorizedPermission(Permission.Microphone));
-        if (Permission.HasUserAuthorizedPermission(Permission.Microphone))
-        {
-            Debug.Log("Microphone found");
-        }
-        else
-        {
-            Debug.Log("Microphone not found");
-        }
-        //if (Application.HasUserAuthorization(UserAuthorization.Microphone))
-        //{
-        //    Debug.Log("Microphone found");
-        //}
-        //else
-        //{
-        //    Debug.Log("Microphone not found");
-        //}
+
     }
 
     // 클릭을 하면 녹음 시작, 다시 한 번 클릭을 하면 그때까지의 음성 녹음하기

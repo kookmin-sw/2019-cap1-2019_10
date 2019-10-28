@@ -21,7 +21,7 @@ public class InternetCheck : MonoBehaviour
                 internetPossiblyAvailable = true;
                 break;
             case NetworkReachability.ReachableViaCarrierDataNetwork:
-                internetPossiblyAvailable = true;
+                internetPossiblyAvailable = allowCarrierDataNetwork;
                 break;
             default:
                 internetPossiblyAvailable = false;
