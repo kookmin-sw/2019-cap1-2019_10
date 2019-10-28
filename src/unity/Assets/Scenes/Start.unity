@@ -3203,6 +3203,7 @@ MonoBehaviour:
   Loading: {fileID: 1284664438}
   debug: {fileID: 1303657288}
   RecorderError: {fileID: 568859691}
+  recorderToggle: {fileID: 456821564}
 --- !u!114 &1617825671
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3246,6 +3247,7 @@ MonoBehaviour:
   cnt: 0
   locked: 0
   clicked: 0
+  isRecorded: 0
   retry: 0
 --- !u!114 &1617825673
 MonoBehaviour:

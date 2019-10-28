@@ -21,6 +21,8 @@ public class AudioRecorder : BaseMenu
     public GameObject Loading;
     public Text debug;
     public GameObject RecorderError;
+    public GameObject recorderToggle;
+
 
     //Get the audiosource here to save resources
     IEnumerator Start()
@@ -103,6 +105,7 @@ public class AudioRecorder : BaseMenu
 
                 // 서버로 음성 데이터 전송
                 backendManager.PostAudio(audioData, PlayerPrefs.GetString("x2").FromBase64());
+                recorderToggle.GetComponent<Toggle>().interactable = false;
                 Loading.SetActive(true);
 
                 // 음성 데이터 삭제

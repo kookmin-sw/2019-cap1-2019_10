@@ -26,6 +26,7 @@ public class Dialogue : BaseMenu
     State state;
     public bool locked = true;
     public bool clicked = false;
+    public bool isRecorded = false;
     public int retry = 0;
 
     //public Button.ButtonClickedEvent OnItemClick;
@@ -45,6 +46,7 @@ public class Dialogue : BaseMenu
     {
         locked = true;
         clicked = false;
+        isRecorded = false;
         cnt = 0;
         retry = 0;
         state = State.First;
@@ -226,6 +228,7 @@ public class Dialogue : BaseMenu
         state = 0;
         cnt = 0;
 
+        isRecorded = false;
         Clicktxt.enabled = true;
         txt.text = content[cnt];
     }
@@ -285,5 +288,10 @@ public class Dialogue : BaseMenu
             ResultError();
             //txt.text = "서버 상태가 안좋아서 더이상 진행할 수 없어, 미안해..";
         }
+    }
+
+    public void OnPostRecorder()
+    {
+        isRecorded = true;
     }
 }

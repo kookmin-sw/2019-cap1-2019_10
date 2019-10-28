@@ -70,6 +70,9 @@ public class BaymaxGame : BaseGame
         backendManager.OnResultLoaded += OnResultLoaded;
         backendManager.OnResultLoadedFailed += OnResultLoadedFailed;
 
+        backendManager.OnPostAudioSuccess += OnPostAudioSuccess;
+        backendManager.OnPostAudioFailed += OnPostAudioFailed;
+
         // Setup a delegate for when we close the highscore screen. This will reset the game and set it up for a new round of play
         //highscoreMenu.OnClose += ResetGame;
 
@@ -143,12 +146,22 @@ public class BaymaxGame : BaseGame
         phoneCamera.OnCamera();
     }
 
-
     // 녹음 토글 on
     public void OnRecorde()
     {
         recorderToggle.SetActive(true);
     }
+
+    public void OnPostAudioSuccess(string[] emotions)
+    {
+        recorderToggle.GetComponent<Toggle>().interactable = true;
+    }
+
+    public void OnPostAudioFailed()
+    {
+        recorderToggle.GetComponent<Toggle>().interactable = true;
+    }
+
 
     // 녹음 토글 버튼 off
     public void OffRecorde()
