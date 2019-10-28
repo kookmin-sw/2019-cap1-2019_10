@@ -80,11 +80,17 @@ public class BaymaxGame : BaseGame
         dialogue.ShowResult += ShowResult;
         dialogue.HideResult += HideResult;
         dialogue.Reset += OnReset;
+
     }
 
     private void Update()
     {
-
+#if UNITY_ANDROID
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
+#endif
     }
 
     private void OnPostScoreSuccess()

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.Android;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 
@@ -84,13 +85,13 @@ public class PhoneCamera : BaseMenu
             snap = RotateImage(snap, 90);
         }
 
-        //잘 찍히는지 사진으로 저장해보는 코드
-        _SavePath = pathForDocumentsFile("MyMoodMusic");
-        Debug.Log(_SavePath);
-        System.IO.File.WriteAllBytes(_SavePath + _CaptureCounter.ToString() + ".png", snap.EncodeToPNG());
-        path = _SavePath + _CaptureCounter.ToString() + ".png";
-        ++_CaptureCounter;
-        Debug.Log(_CaptureCounter);
+        ////잘 찍히는지 사진으로 저장해보는 코드
+        //_SavePath = pathForDocumentsFile("MyMoodMusic");
+        //Debug.Log(_SavePath);
+        //System.IO.File.WriteAllBytes(_SavePath + _CaptureCounter.ToString() + ".png", snap.EncodeToPNG());
+        //path = _SavePath + _CaptureCounter.ToString() + ".png";
+        //++_CaptureCounter;
+        //Debug.Log(_CaptureCounter);
 
         imageData = snap.EncodeToPNG();
         Debug.Log(imageData.Length);
