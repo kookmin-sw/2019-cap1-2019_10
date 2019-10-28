@@ -3104,7 +3104,6 @@ GameObject:
   - component: {fileID: 1617825677}
   - component: {fileID: 1617825674}
   - component: {fileID: 1617825676}
-  - component: {fileID: 1617825675}
   m_Layer: 0
   m_Name: Menu
   m_TagString: Untagged
@@ -3301,18 +3300,6 @@ MonoBehaviour:
   passwordInput: {fileID: 317260722}
   repeatInput: {fileID: 2076806940}
   statusText: {fileID: 843816936}
---- !u!114 &1617825675
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1617825665}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b0f72743d2b5611468baa4ad13446407, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1617825676
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3428,7 +3415,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1617825675}
+      - m_Target: {fileID: 0}
         m_MethodName: OnClicked
         m_Mode: 1
         m_Arguments:

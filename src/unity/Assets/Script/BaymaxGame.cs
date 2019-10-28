@@ -38,6 +38,16 @@ public class BaymaxGame : BaseGame
     public bool recodeCheck = false;
     public bool resultCheck = false;
 
+    // Toast를 띄우기 위한
+    string toastString;
+    string input;
+    AndroidJavaObject currentActivity;
+    AndroidJavaClass UnityPlayer;
+    AndroidJavaObject context;
+    AndroidJavaObject toast;
+    public bool isPressed = false;
+    public float pressedTime = 0.0f;
+
     protected override void Awake()
     {
         base.Awake();
@@ -84,6 +94,14 @@ public class BaymaxGame : BaseGame
         dialogue.HideResult += HideResult;
         dialogue.Reset += OnReset;
 
+
+        isPressed = false;
+        if (Application.platform == RuntimePlatform.Android)
+        {
+            UnityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
+            currentActivity = UnityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
+            context = currentActivity.Call<AndroidJavaObject>("getApplicationContext");
+        }
     }
 
     private void Update()
@@ -91,9 +109,46 @@ public class BaymaxGame : BaseGame
 #if UNITY_ANDROID
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            Application.Quit();
+            Debug.Log("time : " + Time.time + ", pressed : " + pressedTime);
+
+            if(Time.time - pressedTime > 2.0f)
+            {
+                pressedTime = Time.time;
+                showToastOnUiThread("\'뒤로\' 버튼을 한 번 더 누르면 종료됩니다.");
+                return;
+            }
+            if(Time.time - pressedTime <= 2.0f)
+            {
+                Application.Quit();
+                CancelToast();
+            }
         }
 #endif
+    }
+
+    public void CancelToast()
+    {
+        currentActivity.Call("runOnUiThread",
+            new AndroidJavaRunnable(() =>
+            {
+                if (toast != null) toast.Call("cancel");
+            }));
+    }
+
+    public void showToastOnUiThread(string toastString)
+    {
+        this.toastString = toastString;
+        currentActivity.Call("runOnUiThread", new AndroidJavaRunnable(showToast));
+    }
+
+    public void showToast()
+    {
+        Debug.Log(this + ": Running on UI thread");
+
+        AndroidJavaClass Toast = new AndroidJavaClass("android.widget.Toast");
+        AndroidJavaObject javaString = new AndroidJavaObject("java.lang.String", toastString);
+        toast = Toast.CallStatic<AndroidJavaObject>("makeText", context, javaString, Toast.GetStatic<int>("LENGTH_SHORT"));
+        toast.Call("show");
     }
 
     private void OnPostScoreSuccess()
