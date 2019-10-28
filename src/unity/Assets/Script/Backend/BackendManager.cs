@@ -187,7 +187,7 @@ public partial class BackendManager : MonoBehaviour {
 
             yield break;
         }
-        Debug.Log(request.text);
+        //Debug.Log(request.text);
 
         //catch proper client errors(eg. can't reach the server)
         if (!String.IsNullOrEmpty(request.error))

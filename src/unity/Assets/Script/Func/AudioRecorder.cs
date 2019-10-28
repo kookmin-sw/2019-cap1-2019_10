@@ -5,7 +5,6 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.Networking;
 using System.IO;
-using UnityEngine.Android;
 
 // 오디오 녹음 및 저장
 public class AudioRecorder : BaseMenu
@@ -25,7 +24,7 @@ public class AudioRecorder : BaseMenu
     //Get the audiosource here to save resources
     private void Start()
     {
-
+        //audioSource = GetComponent<AudioSource>();
     }
 
     // 클릭을 하면 녹음 시작, 다시 한 번 클릭을 하면 그때까지의 음성 녹음하기
@@ -92,6 +91,7 @@ public class AudioRecorder : BaseMenu
                 // 음성 데이터 삭제
                 audioData = null;
                 File.Delete(filepath);
+                audioSource = null;
                 audioSource.clip = null;
             }
         }

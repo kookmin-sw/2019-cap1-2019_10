@@ -8,34 +8,27 @@ public class RequestPermission : MonoBehaviour
     //permission 요청하기
     private void Awake()
     {
-        while (true)
+        if (Permission.HasUserAuthorizedPermission(Permission.Microphone))
         {
-            if (Permission.HasUserAuthorizedPermission(Permission.Microphone))
-            {
-                // The user authorized use of the microphone.
-                Debug.Log("microphone permission ok");
-                break;
-            }
-            else
-            {
-                // We do not have permission to use the microphone.
-                // Ask for permission or proceed without the functionality enabled.
-                Permission.RequestUserPermission(Permission.Microphone);
-            }
+            // The user authorized use of the microphone.
+            Debug.Log("microphone permission ok");
+        }
+        else
+        {
+            // We do not have permission to use the microphone.
+            // Ask for permission or proceed without the functionality enabled.
+            Permission.RequestUserPermission(Permission.Microphone);
         }
 
-        while (true)
+        if (Permission.HasUserAuthorizedPermission(Permission.Camera))
         {
-            if (Permission.HasUserAuthorizedPermission(Permission.Camera))
-            {
-                Debug.Log("camera permission ok");
-                break;
-            }
-            else
-            {
-                Permission.RequestUserPermission(Permission.Camera);
-            }
+            Debug.Log("camera permission ok");
         }
+        else
+        {
+            Permission.RequestUserPermission(Permission.Camera);
+        }
+
 
         if (Permission.HasUserAuthorizedPermission(Permission.ExternalStorageWrite))
         {
@@ -56,49 +49,7 @@ public class RequestPermission : MonoBehaviour
             Permission.RequestUserPermission(Permission.ExternalStorageRead);
         }
 
-    }
 
-    private void Start()
-    {
-        //if (Permission.HasUserAuthorizedPermission(Permission.Microphone))
-        //{
-        //    // The user authorized use of the microphone.
-        //    Debug.Log("microphone permission ok");
-        //}
-        //else
-        //{
-        //    // We do not have permission to use the microphone.
-        //    // Ask for permission or proceed without the functionality enabled.
-        //    Permission.RequestUserPermission(Permission.Microphone);
-        //}
-
-        //if (Permission.HasUserAuthorizedPermission(Permission.Camera))
-        //{
-        //    Debug.Log("camera permission ok");
-        //}
-        //else
-        //{
-        //    Permission.RequestUserPermission(Permission.Camera);
-        //}
-
-
-        //if (Permission.HasUserAuthorizedPermission(Permission.ExternalStorageWrite))
-        //{
-        //    Debug.Log("permission ok");
-        //}
-        //else
-        //{
-        //    Permission.RequestUserPermission(Permission.ExternalStorageWrite);
-        //}
-
-
-        //if (Permission.HasUserAuthorizedPermission(Permission.ExternalStorageRead))
-        //{
-        //    Debug.Log("permission ok");
-        //}
-        //else
-        //{
-        //    Permission.RequestUserPermission(Permission.ExternalStorageRead);
-        //}
+        
     }
 }
