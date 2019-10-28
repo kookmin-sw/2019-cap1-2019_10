@@ -211,11 +211,13 @@ public partial class BackendManager : MonoBehaviour {
 
         try
         {
+            if (request.text == "Face is not detected") throw new Exception();
+
             if (request.text.StartsWith("["))
             {
                 responseObj = JArray.Parse(request.text);
             }
-            else if(request.text.StartsWith("\"[") | request.text.StartsWith("\""))
+            else if(request.text.StartsWith("\"["))
             {
                 responseObj = request.text;
             }
