@@ -158,7 +158,6 @@ public class LoginMenu : BaseMenu {
         }
         loggingIn = true;
         backendManager.Login(username, password);
-        checkStartTime = Time.time;
     }
 
     public void DoSignup()
@@ -176,26 +175,21 @@ public class LoginMenu : BaseMenu {
 
         if (Time.time > nextStatusChange) {
             nextStatusChange = Time.time + 0.5f;
-            
+            checkStartTime = Time.time;
             //status = "Logging in";
+            statusText.text = "Logging in";
+            for (int i = 0; i < dotNumber; i++) {
+                //status += ".";
+                statusText.text += ".";
+            }
+            if (++dotNumber > 3) {
+                dotNumber = 1;
+            }
 
-            if((float)Time.time - checkStartTime > 20.0f)
+            if((float)Time.time - checkStartTime > 5.0f)
             {
                 loggingIn = false;
-                statusText.text = "Please try again later";
-            }
-            else
-            {
-                statusText.text = "Logging in";
-                for (int i = 0; i < dotNumber; i++)
-                {
-                    //status += ".";
-                    statusText.text += ".";
-                }
-                if (++dotNumber > 3)
-                {
-                    dotNumber = 1;
-                }
+                statusText.text = "try again please";
             }
         }
     }

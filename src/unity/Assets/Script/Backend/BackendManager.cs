@@ -111,7 +111,6 @@ public partial class BackendManager : MonoBehaviour {
     public string ProductionUrl = "http://203.246.113.177:8000/";
     public string DevelopmentUrl = "http://localhost:8000/api/";
 
-
     //---- Private Methods ----//
 
     /// <summary>Performs a request to the backend.</summary>
@@ -144,7 +143,6 @@ public partial class BackendManager : MonoBehaviour {
         else
         {
             postData = wwwForm.data;
-            //Debug.Log(postData.Length);
         }
 
         headers = wwwForm.headers;
@@ -179,7 +177,6 @@ public partial class BackendManager : MonoBehaviour {
             }
             yield return new WaitForEndOfFrame();
         }
-        //Debug.Log(request.error);
 
         if (request.text == "{\"username\":[\"해당 사용자 이름은 이미 존재합니다.\"]}")
         {
@@ -215,10 +212,6 @@ public partial class BackendManager : MonoBehaviour {
             {
                 responseObj = JArray.Parse(request.text);
             }
-            else if(request.text.StartsWith("\"[") | request.text.StartsWith("\""))
-            {
-                responseObj = request.text;
-            }
             else
             {
                 responseObj = JObject.Parse(request.text);
@@ -226,7 +219,6 @@ public partial class BackendManager : MonoBehaviour {
         }
         catch (Exception ex)
         {
-            Debug.Log(statusCode);
             if (onResponse != null)
             {
                 if (!responseSuccessful)
@@ -300,7 +292,6 @@ public partial class BackendManager : MonoBehaviour {
         //else
         //{
         postData = wwwForm.data;
-        Debug.Log("Post");
         request = UnityWebRequest.Post(url, wwwForm);
         //}
 
@@ -311,33 +302,18 @@ public partial class BackendManager : MonoBehaviour {
 
     private IEnumerator HandleFileRequest(UnityWebRequest request, FileRequestResponseDelegate onResponse, string callee, bool check)
     {
-        //request.SendWebRequest();
-        Debug.Log("request");
-
-        yield return request.SendWebRequest();
-        if(request.isNetworkError || request.isHttpError)
-        {
-            Debug.Log(request.error);
-            //Debug.Log(request.ToString());
-        }
-        else
-        {
-            Debug.Log("된다구..");
-        }
-
-        //StartCoroutine(RequestToken(request));
+        request.SendWebRequest();
 
         //Wait till request is done
-        //while (true)
-        //{
-        //    if (request.isDone)
-        //    {
-        //        break;
-        //    }
-        //    yield return new WaitForEndOfFrame();
-        //}
+        while (true)
+        {
+            if (request.isDone)
+            {
+                break;
+            }
+            yield return new WaitForEndOfFrame();
+        }
         //yield return request.SendWebRequest();
-        Debug.Log("downloadhandler\n" + request.downloadHandler.text);
 
         //catch proper client errors(eg. can't reach the server)
         if (!String.IsNullOrEmpty(request.error))
@@ -397,7 +373,6 @@ public partial class BackendManager : MonoBehaviour {
         }
         catch (Exception ex)
         {
-            Debug.Log(statusCode);
             if (onResponse != null)
             {
                 if (!responseSuccessful)
@@ -465,36 +440,5 @@ public partial class BackendManager : MonoBehaviour {
         {
             onResponse(ResponseType.Success, splitEmotion, responseObj, callee);
         }
-
-
-    }
-
-
-    public IEnumerator RequestToken(UnityWebRequest www)
-    {
-        yield return www;
-        if (www.error == null)
-        {
-            Debug.Log("downloadedBytes : " + www.downloadedBytes);
-            Debug.Log("certificateHandler : " + www.certificateHandler);
-            Debug.Log("chunkedTransfer : " + www.chunkedTransfer);
-            Debug.Log("downloadHandler : " + www.downloadHandler);
-            Debug.Log("downloadProgress : " + www.downloadProgress);
-            Debug.Log("isDone : " + www.isDone);
-            Debug.Log("isNetworkError : " + www.isNetworkError);
-            Debug.Log("method : " + www.method);
-            Debug.Log("redirectLimit : " + www.redirectLimit);
-            Debug.Log("responseCode : " + www.responseCode);
-            Debug.Log("uploadedBytes : " + www.uploadedBytes);
-            Debug.Log("useHttpContinue : " + www.useHttpContinue);
-        }
-        else
-        {
-            Debug.Log("Error" + www.error);
-        }
-        var p = www.downloadHandler.data;
-        Debug.Log("Access token: " + p);
     }
 }
-    
-

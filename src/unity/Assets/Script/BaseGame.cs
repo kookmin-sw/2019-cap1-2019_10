@@ -44,7 +44,7 @@ public abstract class BaseGame : MonoBehaviour
     public GameObject SideMenu;
     public GameObject noticeImage;
 
-    public List<Result> results;
+    public List<LoginResult> results;
     public int checkAllReusltResquestTime;
 
     // setting
@@ -131,7 +131,7 @@ public abstract class BaseGame : MonoBehaviour
         backendManager.GetAllResult(PlayerPrefs.GetString("x2").FromBase64());
     }
 
-    private void OnAllResultLoaded(List<Result> results)
+    private void OnAllResultLoaded(List<LoginResult> results)
     {
         this.results = results;
     }

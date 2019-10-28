@@ -91,8 +91,6 @@ public class AudioRecorder : BaseMenu
                 // 음성 데이터 삭제
                 audioData = null;
                 File.Delete(filepath);
-                audioSource = null;
-                audioSource.clip = null;
             }
         }
     }

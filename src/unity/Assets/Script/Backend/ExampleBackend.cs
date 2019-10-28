@@ -68,7 +68,7 @@ public partial class BackendManager {
     public ResultLoadedFailed OnResultLoadedFailed;
 
     //public delegate void AllResultLoaded(List<Result> results);
-    public delegate void AllResultLoaded(List<Result> results);
+    public delegate void AllResultLoaded(List<LoginResult> results);
     public delegate void AllResultLoadedFailed();
     public AllResultLoaded OnAllResultLoaded;
     public AllResultLoadedFailed OnAllResultLoadedFailed;
@@ -236,27 +236,20 @@ public partial class BackendManager {
         form.AddField("recommand", id);
         byte[] postData = { 1 };
         form.AddBinaryData("recommand", postData);
-        Send(RequestType.Post, "recommand", form, OnGetResultResponse, authenticationToken);
+        SendFile(RequestType.Post, "recommand", form, OnGetResultResponse, authenticationToken, false);
     }
 
-    private void OnGetResultResponse(ResponseType responseType, JToken responseJson, string callee)
+    private void OnGetResultResponse(ResponseType responseType, string[] responseData, JToken responseJson, string callee)
     {
         if (responseType == ResponseType.Success)
         {
             if (OnResultLoaded != null)
             {
                 //Result results = JsonConvert.DeserializeObject<Result>(responseJson.ToString());
-                Debug.Log(responseJson);
+                //Debug.Log(responseJson);
                 //Debug.Log(JsonConvert.DeserializeObject<List<Result>>(responseJson.ToString(), settings));
                 OnResultLoaded(JsonConvert.DeserializeObject<List<Result>>(responseJson.ToString(), settings));
                 //OnResultLoaded(JsonConvert.DeserializeObject<List<Result>>(responseJson.ToString()));
-            }
-        }
-        else if (responseType == ResponseType.ClientError)
-        {
-            if (OnResultLoadedFailed != null)
-            {
-                OnPostScoreFailed("Could not reach the server. Please try again later.");
             }
         }
         else
@@ -274,25 +267,17 @@ public partial class BackendManager {
         form.AddField("result", id);
         byte[] postData = { 1 };
         form.AddBinaryData("temp", postData);
-        Send(RequestType.Post, "result", form, OnGetAllResultResponse, authenticationToken);
+        SendFile(RequestType.Post, "result", form, OnGetAllResultResponse, authenticationToken, false);
     }
-    private void OnGetAllResultResponse(ResponseType responseType, JToken responseJson, string callee)
+    private void OnGetAllResultResponse(ResponseType responseType, string[] responseData, JToken responseJson, string callee)
     {
         if (responseType == ResponseType.Success)
         {
             if (OnAllResultLoaded != null)
             {
                 //Result results = JsonConvert.DeserializeObject<Result>(responseJson.ToString());
-                Debug.Log(responseJson);
-                OnAllResultLoaded(JsonConvert.DeserializeObject<List<Result>>(responseJson.ToString(), settings));
+                OnAllResultLoaded(JsonConvert.DeserializeObject<List<LoginResult>>(responseJson.ToString(), settings));
                 //OnResultLoaded(JsonConvert.DeserializeObject<List<Result>>(responseJson.ToString()));
-            }
-        }
-        else if (responseType == ResponseType.ClientError)
-        {
-            if (OnAllResultLoadedFailed != null)
-            {
-                OnPostScoreFailed("Could not reach the server. Please try again later.");
             }
         }
         else
@@ -306,32 +291,21 @@ public partial class BackendManager {
 
     public void PostPhoto(byte[] imageData, string id)
     {
+        //Debug.Log(imageData.Length + " " + id);
         WWWForm form = new WWWForm();
         form.AddField("photo", id);
         form.AddBinaryData("photo", imageData, "photo.png", "image/png");
-        Send(RequestType.Post, "face", form, OnPostPhotoResponse);
+        SendFile(RequestType.Post, "face", form, OnPostPhotoResponse, authenticationToken, true);
     }
 
-    private void OnPostPhotoResponse(ResponseType responseType, JToken responseJson, string callee)
+    private void OnPostPhotoResponse(ResponseType responseType, string[] responseData, JToken responseJson, string callee)
     {
         if (responseType == ResponseType.Success)
         {
             if (OnPostPhotoSuccess != null)
             {
-                //Debug.Log("success");
-                Debug.Log(responseJson);
-                string responseData = responseJson.ToString();
-                char[] delimiterChars = { ' ', ',', '[', ']', '\'', '\'', '\t', '\n', '\0' };
-                string[] photoResult = responseData.Split(delimiterChars);
-                Debug.Log(photoResult);
-                OnPostPhotoSuccess(photoResult);
-            }
-        }
-        else if (responseType == ResponseType.ClientError)
-        {
-            if (OnPostPhotoFailed != null)
-            {
-                OnPostScoreFailed("Could not reach the server. Please try again later.");
+                text.text = responseData[0];
+                OnPostPhotoSuccess(responseData);
             }
         }
         else
@@ -345,63 +319,21 @@ public partial class BackendManager {
         }
     }
 
-    //public void PostPhoto(byte[] imageData, string id)
-    //{
-    //    //Debug.Log(imageData.Length + " " + id);
-    //    WWWForm form = new WWWForm();
-    //    form.AddField("photo", id);
-    //    form.AddBinaryData("photo", imageData, "photo.png", "image/png");
-    //    SendFile(RequestType.Post, "face", form, OnPostPhotoResponse, authenticationToken, true);
-    //}
-
-    //private void OnPostPhotoResponse(ResponseType responseType, string[] responseData, JToken responseJson, string callee)
-    //{
-    //    if (responseType == ResponseType.Success)
-    //    {
-    //        if (OnPostPhotoSuccess != null)
-    //        {
-    //            text.text = responseData[0];
-    //            OnPostPhotoSuccess(responseData);
-    //        }
-    //    }
-    //    else
-    //    {
-    //        if (OnPostPhotoFailed != null)
-    //        {
-    //            text.text = "failed";
-    //            //OnScoreLoadedFailed("Could not reach the server. Please try again later.");
-    //            OnPostPhotoFailed();
-    //        }
-    //    }
-    //}
-
     public void PostAudio(byte[] audioData, string id)
     {
         WWWForm form = new WWWForm();
         form.AddField("audio", id);
         form.AddBinaryData("audio", audioData, "myfile.wav", "audio/wav");
-        Send(RequestType.Post, "speech", form, OnPostAudioResponse, authenticationToken);
+        SendFile(RequestType.Post, "speech", form, OnPostAudioResponse, authenticationToken, true);
     }
 
-    private void OnPostAudioResponse(ResponseType responseType, JToken responseJson, string callee)
+    private void OnPostAudioResponse(ResponseType responseType, string[] responseData, JToken responseJson, string callee)
     {
         if (responseType == ResponseType.Success)
         {
             if (OnPostAudioSuccess != null)
             {
-                string result = JsonConvert.DeserializeObject(responseJson.ToString(), settings).ToString();
-                Debug.Log(result);
-                List<string> test = new List<string>();
-                test.Add(result);
-                string[] test_arr = test.ToArray();
-                OnPostAudioSuccess(test_arr);
-            }
-        }
-        else if (responseType == ResponseType.ClientError)
-        {
-            if (OnPostAudioFailed != null)
-            {
-                OnPostScoreFailed("Could not reach the server. Please try again later.");
+                OnPostAudioSuccess(responseData);
             }
         }
         else
