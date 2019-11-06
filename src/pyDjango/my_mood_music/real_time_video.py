@@ -7,6 +7,8 @@ from keras.backend import clear_session
 import tensorflow as tf
 import logging
 from mmm_project.core import httpError
+import time
+
 logger = logging.getLogger('default')
 
 # parameters for loading data and images
@@ -16,23 +18,18 @@ emotion_model_path = 'C:/Users/X58/Documents/GitHub/2019-cap1-2019_10/src/pyDjan
 # hyper-parameters for bounding boxes shape
 # loading models
 face_detection = cv2.CascadeClassifier(detection_model_path)
-emotion_classifier = load_model(emotion_model_path, compile=False)
 EMOTIONS = ["angry" ,"disgust","scared", "happy", "sad", "surprised",
  "neutral"]
 
-def load_model(request):
+def face_recognition(request, image):
+    start = time.time()
     try:
-        global emotion_classifier
-        emotion_classifier = tf.keras.models.load_model(emotion_model_path)
-        global graph
+        emotion_classifier = load_model(emotion_model_path, compile=False)
         graph = tf.get_default_graph()
     except Exception as e:
-        logger(e)
+        logger.error(e)
         httpError.serverError(request, "Can't Load Model")
 
-def face_recognition(request, image):
-    load_model(request)
-    # clear_session()
     frame = cv2.imread(image, cv2.IMREAD_COLOR)
     # reading the frame
     try:
@@ -69,8 +66,12 @@ def face_recognition(request, image):
                 # construct the label text
                 text = "{}: {:.2f}%".format(emotion, prob * 100)
                 emotion_result[emotion] = prob
+
+            end = time.time() - start
+            print('time : ', end)
         except Exception as e:
             logger.error(e)
             httpError.serverError(request, "Local Variable Error")
 
+    clear_session()
     return emotion_result

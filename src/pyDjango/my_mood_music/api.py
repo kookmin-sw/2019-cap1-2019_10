@@ -64,7 +64,6 @@ class RequestFaceAPI(APIView):
             dict_data = json.loads(json_string)
             # emotions = dict_data['faceAttributes']['emotion']
             emotions = dict_data
-            logger.debug(emotions)
             sorted_emotions = sorted(
                 emotions.items(), key=operator.itemgetter(1), reverse=True)
 
@@ -94,28 +93,17 @@ class RequestFaceAPI(APIView):
             """
             Microsoft Face API에서 https://github.com/omar178/Emotion-recognition 로 face api 변경
             """
-        #     KEY = 'ecd8a803ef3c4a57bbd01b909e90e151'  # API_KEY
-        #     CF.Key.set(KEY)
-
-        #     BASE_URL = 'https://koreacentral.api.cognitive.microsoft.com/face/v1.0/detect?returnFaceId=true&returnFaceLandmarks=false&returnFaceAttributes=age,emotion&recognitionModel=recognition_01&returnRecognitionModel=false '  # Replace with your regional Base URL
-        #     CF.BaseUrl.set(BASE_URL)
-
-        #     data_test = request.FILES.get('photo', '')
-
-        #     try:
-        #         faces = CF.face.detect(data_test)
-        #         logger.debug(faces)
-        #     except Exception as e:
-        #         logger.error(e)
-        #         return httpError.serverError(request, "FaceAPI Connection Error")
-            
+            self.user_id = request.POST.get('photo','')
             image_file = request.FILES.get('photo', '')
+
+            if image_file=='':
+                return httpError.serverError(request, "Don't Get Image File")
 
             try:
                 path = default_storage.save(
                     'image.png', ContentFile(image_file.read()))
-                logger.debug(path)
                 faces = face_recognition(request, './media/{}'.format(path))  # replace path
+                
                 logger.debug(faces)
 
                 os.remove('./media/{}'.format(path))
@@ -123,10 +111,10 @@ class RequestFaceAPI(APIView):
                 logger.error(e)
                 return httpError.serverError(request, "FaceAPI Connection Error")
 
-            fileIO.write_file(request, 'face_api_emotion.txt', str(faces))
+            fileIO.write_file(request, './users/{}/face_api_emotion.txt'.format(self.user_id), str(faces))
 
             if not faces:
-                return httpResponse.noContent(request, 'Face is not detected')
+                return httpError.serverError(request, 'Face is not detected')
             else:
                 self.get_data_from_faces(request, faces)
                 return httpResponse.ok(request, str(self.result_emotion).replace('\"',''))
@@ -139,19 +127,6 @@ class RequestFaceAPI(APIView):
         return httpResponse.ok(request, "Using Microsoft Face API")
 
 
-def load_model(request):
-    try:
-        global loaded_model
-        json_file = open('model.json', 'r')
-        loaded_model_json = json_file.read()
-        json_file.close()
-        loaded_model = tf.keras.models.model_from_json(loaded_model_json)
-        global graph
-        graph = tf.get_default_graph()
-    except Exception as e:
-        logger.error(e)
-        httpError.serverError(request, "Can't Load Model")
-
 class Call(APIView):
     """
     Speech-Emotion-Analyzer 를 이용한 감정분석
@@ -161,62 +136,74 @@ class Call(APIView):
         super().__init__(**kwargs)
         self.label = ["angry", "calm", "fearful", "happy",
                       "sad", "angry", "calm", "fearful", "happy", "sad"]  # 감정 분류
+        self.user_id =''
+        self.loaded_model =''
+        self.graph =''
+
+    def load_model(self, request):
+        try:
+            json_file = open('model.json', 'r')
+            loaded_model_json = json_file.read()
+            json_file.close()
+            self.loaded_model = tf.keras.models.model_from_json(loaded_model_json)
+            self.graph = tf.get_default_graph()
+
+        except Exception as e:
+            logger.error(e)
+            httpError.serverError(request, "Can't Load Model")
 
     def post(self, request):
         try:
+            self.user_id = request.POST.get('audio', '')
             audio_file = request.FILES.get('audio', '')
             path = default_storage.save(
                 'file.wav', ContentFile(audio_file.read()))
-            logger.debug(path)
             label = self.labelfrommodel(request, './media/{}'.format(path))
-
             logger.debug(label)
             result = { label }
-            os.remove('./media/{}'.format(path))
+            os.remove('./media/{}'.format(path))           
+            return httpResponse.created(request, result)
         except Exception as e:
             logger.error(e)
             return httpError.serverError(request, 'SEA getting label Error')
-        return httpResponse.created(request, result)
 
     def get(self, request):
         return httpResponse.ok(request, "Using Speech-Emotion-Model")
 
     def labelfrommodel(self, request, filename):
-        load_model(request)
-    
+        self.load_model(request)
+
         try:
             # load weights into new model
             # if not .wav file, throw Exception
-            loaded_model.load_weights("Emotion_Voice_Detection_Model.h5")
+            self.loaded_model.load_weights("Emotion_Voice_Detection_Model.h5")
         except Exception as e:
             logger.error(e)
             return httpError.serverError(request, "SEA Model Error")
 
-        with graph.as_default():
+        with self.graph.as_default():
             try: 
                 X, sample_rate = librosa.load(filename, res_type='kaiser_fast', duration=2.5,
                                             sr=22050 * 2, offset=0.5)
                 sample_rate = np.array(sample_rate)
                 mfccs = np.mean(librosa.feature.mfcc(
                     y=X, sr=sample_rate, n_mfcc=13), axis=0)
-
                 featurelive = mfccs
                 livedf2 = featurelive
                 livedf2 = pd.DataFrame(data=livedf2)
                 livedf2 = livedf2.stack().to_frame().T
                 twodim = np.expand_dims(livedf2, axis=2)
-                livepreds = loaded_model.predict(twodim, batch_size=32, verbose=1)
+                livepreds = self.loaded_model.predict(twodim, batch_size=32, verbose=1)
                 livepreds1 = livepreds.argmax(axis=1)
                 liveabc = livepreds1.astype(int).flatten()
-
-                fileIO.write_file(request, 'speech_api_emotion.txt',
+                
+                fileIO.write_file(request, './users/{}/speech_api_emotion.txt'.format(self.user_id),
                                 self.label[int(liveabc)])
-
                 return self.label[int(liveabc)]
+
             except Exception as e:
                 logger.error(e)
                 return httpError.serverError(request, "Tensor graph Error")
-
 
 class RecommendationMusic(APIView):
     """
@@ -229,7 +216,7 @@ class RecommendationMusic(APIView):
                           "happy", "sad", "surprised"]
         self.tone_res = ''
         self.music_list = []  # 리스트 안의 dictionary 형태로 들어온다. (music, url)
-        self.age = random.randint(0, 60)
+        self.age = random.randint(11, 60)
         self.user_id = ''
         self.recommand_table = []
 
@@ -301,8 +288,6 @@ class RecommendationMusic(APIView):
                 pk_list.append(pk)
 
                 music = table.objects.filter(id=pk).first()
-                logger.debug('music.music : {}'.format(music.music))  # 노래제목-가수
-                logger.debug('music.link : {}'.format(music.link))  # Youtube 링크
 
                 if music:
                     music_list.append(music.music)
@@ -348,8 +333,8 @@ class RecommendationMusic(APIView):
                 table_index = [Anger, Disgust, Fear,
                                Happiness, Sadness, Surprise, Lie]
 
-                self.face = fileIO.read_file(request, 'face_api_emotion.txt')
-                self.speech= fileIO.read_file(request,'speech_api_emotion.txt')
+                self.face = fileIO.read_file(request, './users/{}/face_api_emotion.txt'.format(self.user_id))
+                self.speech= fileIO.read_file(request,'./users/{}/speech_api_emotion.txt'.format(self.user_id))
                 
                 tone = self.speech.splitlines()[0].replace("\"","")
 
@@ -582,7 +567,7 @@ class ResultResponse(APIView):
 
     def get_object(self, request, user_id):
         try:
-            return Analysis_Result.objects.filter(user_id=user_id)
+            return Analysis_Result.objects.filter(user_id=user_id).order_by('-id')
         except Exception as e:
             logger.error(e)
             return httpError.notFoundError(request, "Not Found" )
@@ -592,7 +577,7 @@ class ResultResponse(APIView):
             self.user_id = request.POST.get('result','')
             analysis_result = self.get_object(request, self.user_id)
             serializer = Analysis_ResultSerializer(analysis_result, many = True)
-            print('data',serializer.data)
+            logger.debug(serializer.data)
             return httpResponse.ok(request, serializer.data)
 
         except Exception as e:
