@@ -24,12 +24,12 @@ from django.db import connection
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from django.conf.urls import *
-from django.forms.models import model_to_dict
+#from django.forms.models import model_to_dict
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-import cognitive_face as CF
+#import cognitive_face as CF
 import librosa
 import numpy as np
 import pandas as pd
@@ -64,7 +64,6 @@ class RequestFaceAPI(APIView):
             dict_data = json.loads(json_string)
             # emotions = dict_data['faceAttributes']['emotion']
             emotions = dict_data
-            logger.debug(emotions)
             sorted_emotions = sorted(
                 emotions.items(), key=operator.itemgetter(1), reverse=True)
 
@@ -81,7 +80,7 @@ class RequestFaceAPI(APIView):
             # if (!result_emotion || !result_age):
             #     return httpError
 
-            #fileIO.write_file(request, 'face_api_age.txt', result_age)
+            # fileIO.write_file(request, 'face_api_age.txt', result_age)
         except Exception as e:
             logger.error(e)
             return httpError.serverError(reqeust, "Can't Get Data From Faces")
@@ -94,28 +93,17 @@ class RequestFaceAPI(APIView):
             """
             Microsoft Face API에서 https://github.com/omar178/Emotion-recognition 로 face api 변경
             """
-        #     KEY = 'ecd8a803ef3c4a57bbd01b909e90e151'  # API_KEY
-        #     CF.Key.set(KEY)
-
-        #     BASE_URL = 'https://koreacentral.api.cognitive.microsoft.com/face/v1.0/detect?returnFaceId=true&returnFaceLandmarks=false&returnFaceAttributes=age,emotion&recognitionModel=recognition_01&returnRecognitionModel=false '  # Replace with your regional Base URL
-        #     CF.BaseUrl.set(BASE_URL)
-
-        #     data_test = request.FILES.get('photo', '')
-
-        #     try:
-        #         faces = CF.face.detect(data_test)
-        #         logger.debug(faces)
-        #     except Exception as e:
-        #         logger.error(e)
-        #         return httpError.serverError(request, "FaceAPI Connection Error")
-            
+            self.user_id = request.POST.get('photo','')
             image_file = request.FILES.get('photo', '')
+
+            if image_file=='':
+                return httpError.serverError(request, "Don't Get Image File")
 
             try:
                 path = default_storage.save(
                     'image.png', ContentFile(image_file.read()))
-                logger.debug(path)
                 faces = face_recognition(request, './media/{}'.format(path))  # replace path
+                
                 logger.debug(faces)
 
                 os.remove('./media/{}'.format(path))
@@ -123,10 +111,10 @@ class RequestFaceAPI(APIView):
                 logger.error(e)
                 return httpError.serverError(request, "FaceAPI Connection Error")
 
-            fileIO.write_file(request, 'face_api_emotion.txt', str(faces))
+            fileIO.write_file(request, './users/{}/face_api_emotion.txt'.format(self.user_id), str(faces))
 
             if not faces:
-                return httpResponse.noContent(request, 'Face is not detected')
+                return httpError.serverError(request, 'Face is not detected')
             else:
                 self.get_data_from_faces(request, faces)
                 return httpResponse.ok(request, str(self.result_emotion).replace('\"',''))
@@ -139,15 +127,6 @@ class RequestFaceAPI(APIView):
         return httpResponse.ok(request, "Using Microsoft Face API")
 
 
-def load_model():
-    global loaded_model
-    json_file = open('model.json', 'r')
-    loaded_model_json = json_file.read()
-    json_file.close()
-    loaded_model = tf.keras.models.model_from_json(loaded_model_json)
-    global graph
-    graph = tf.get_default_graph()
-
 class Call(APIView):
     """
     Speech-Emotion-Analyzer 를 이용한 감정분석
@@ -157,65 +136,74 @@ class Call(APIView):
         super().__init__(**kwargs)
         self.label = ["angry", "calm", "fearful", "happy",
                       "sad", "angry", "calm", "fearful", "happy", "sad"]  # 감정 분류
+        self.user_id =''
+        self.loaded_model =''
+        self.graph =''
+
+    def load_model(self, request):
+        try:
+            json_file = open('model.json', 'r')
+            loaded_model_json = json_file.read()
+            json_file.close()
+            self.loaded_model = tf.keras.models.model_from_json(loaded_model_json)
+            self.graph = tf.get_default_graph()
+
+        except Exception as e:
+            logger.error(e)
+            httpError.serverError(request, "Can't Load Model")
 
     def post(self, request):
         try:
+            self.user_id = request.POST.get('audio', '')
             audio_file = request.FILES.get('audio', '')
             path = default_storage.save(
                 'file.wav', ContentFile(audio_file.read()))
-            logger.debug(path)
             label = self.labelfrommodel(request, './media/{}'.format(path))
-
             logger.debug(label)
-            os.remove('./media/{}'.format(path))
+            result = { label }
+            os.remove('./media/{}'.format(path))           
+            return httpResponse.created(request, result)
         except Exception as e:
             logger.error(e)
             return httpError.serverError(request, 'SEA getting label Error')
-        return httpResponse.created(request, label)
 
     def get(self, request):
         return httpResponse.ok(request, "Using Speech-Emotion-Model")
 
     def labelfrommodel(self, request, filename):
-        # json_file = open('model.json', 'r')
-        # loaded_model_json = json_file.read()
-        # json_file.close()
-        # loaded_model = model_from_json(loaded_model_json)
-        load_model()
-    
+        self.load_model(request)
+
         try:
             # load weights into new model
             # if not .wav file, throw Exception
-            loaded_model.load_weights("Emotion_Voice_Detection_Model.h5")
+            self.loaded_model.load_weights("Emotion_Voice_Detection_Model.h5")
         except Exception as e:
             logger.error(e)
             return httpError.serverError(request, "SEA Model Error")
 
-        with graph.as_default():
+        with self.graph.as_default():
             try: 
                 X, sample_rate = librosa.load(filename, res_type='kaiser_fast', duration=2.5,
                                             sr=22050 * 2, offset=0.5)
                 sample_rate = np.array(sample_rate)
                 mfccs = np.mean(librosa.feature.mfcc(
                     y=X, sr=sample_rate, n_mfcc=13), axis=0)
-
                 featurelive = mfccs
                 livedf2 = featurelive
                 livedf2 = pd.DataFrame(data=livedf2)
                 livedf2 = livedf2.stack().to_frame().T
                 twodim = np.expand_dims(livedf2, axis=2)
-                livepreds = loaded_model.predict(twodim, batch_size=32, verbose=1)
+                livepreds = self.loaded_model.predict(twodim, batch_size=32, verbose=1)
                 livepreds1 = livepreds.argmax(axis=1)
                 liveabc = livepreds1.astype(int).flatten()
-
-                fileIO.write_file(request, 'speech_api_emotion.txt',
+                
+                fileIO.write_file(request, './users/{}/speech_api_emotion.txt'.format(self.user_id),
                                 self.label[int(liveabc)])
-
                 return self.label[int(liveabc)]
+
             except Exception as e:
                 logger.error(e)
                 return httpError.serverError(request, "Tensor graph Error")
-
 
 class RecommendationMusic(APIView):
     """
@@ -228,7 +216,7 @@ class RecommendationMusic(APIView):
                           "happy", "sad", "surprised"]
         self.tone_res = ''
         self.music_list = []  # 리스트 안의 dictionary 형태로 들어온다. (music, url)
-        self.age = random.randint(0, 150)
+        self.age = random.randint(11, 60)
         self.user_id = ''
         self.recommand_table = []
 
@@ -240,48 +228,22 @@ class RecommendationMusic(APIView):
         try:
             self.user_id = request.POST.get('recommand','')
             # self.age = fileIO.read_file(request, 'face_api_age.txt')
-            # self.music_list = self.recommand_music(request, int(float(self.age)))
-            self.music_list = self.recommand_music(request, 24)
+            logger.debug('age: {}'.format(self.age))
+            self.music_list = self.recommand_music(request, self.age)
+            #self.music_list = self.recommand_music(request, 24)
 
             logger.debug(self.music_list)
 
-            if(self.age <10):
-                obj1= dict({
-                    "music": self.music_list[0]["music"][0],
-                    "link": self.music_list[0]["link"][0],
-                })
-                obj2 = dict({
-                    "music": self.music_list[0]["music"][1],
-                    "link": self.music_list[0]["link"][1],
-                })
-                obj3 = dict({
-                    "music": self.music_list[0]["music"][2],
-                    "link": self.music_list[0]["link"][2],
-                })
-                result = []
-                result.append(obj1)
-                result.append(obj2)
-                result.append(obj3)
-                print(result)
-                
-                # response_data = ChildSerializer(self.music_list, many=True)
-                return httpResponse.ok(request, result)
-
-            else :
-                result = []
-                result.append(model_to_dict(self.music_list[0]))
-                result.append(model_to_dict(self.music_list[1]))
-                result.append(model_to_dict(self.music_list[2]))
-
-                # response_data = AngerSerializer(self.music_list, many=True)
-                # result = json.dumps(self.music_list, ensure_ascii=False)
-                return httpResponse.ok(request, result)
+            query = Analysis_Result.objects.filter(user_id=self.user_id).order_by('-id')[0:3]
+            serializer = Analysis_ResultSerializer(query, many=True)
+            # result = json.dumps(self.music_list, ensure_ascii=False)
+            return httpResponse.ok(request, serializer.data)
 
         except Exception as e:
             logging.error(e)
             return httpError.serverError(request, 'Recommandation Error')
 
-    def create_Analysis_Result(self, request,  music_list):
+    def create_Analysis_Result(self, request, _music, _link, _tag_1='', _tag_2=''):
         """
         어플에서 받은 id값과 데이터베이스에서 받은 값(music list)을 INSERT 한다.
         """
@@ -289,17 +251,14 @@ class RecommendationMusic(APIView):
             max_id = Analysis_Result.objects.all().aggregate(
                 max_id=Max("id"))['max_id']
             if max_id:
-                queryset = Analysis_Result.objects.create(id=max_id + 1, user_id=self.user_id,
-                                                          music_r1=music_list[0],
-                                                          music_r2=music_list[1], music_r3=music_list[2])
+                queryset = Analysis_Result.objects.create(id=max_id + 1, user_id=self.user_id, music=_music, link=_link, tag_1=_tag_1, tag_2=_tag_2)
             else:
-                queryset = Analysis_Result.objects.create(id=1, user_id=self.user_id, music_r1=music_list[0],
-                                                          music_r2=music_list[1], music_r3=music_list[2])
+                queryset = Analysis_Result.objects.create(id=1, user_id=self.user_id, music=_music, link=_link, tag_1=_tag_1, tag_2=_tag_2)
             queryset.save()
 
-            logger.debug(connection.queries[-1])
-            # 모델 클래스의 오브젝트 갯수확인
-            logger.debug(Analysis_Result.objects.all().count())
+            # logger.debug(connection.queries[-1])
+            ## 모델 클래스의 오브젝트 갯수확인
+            # logger.debug(Analysis_Result.objects.all().count())
 
         except Exception as e:
             logger.error(e)
@@ -329,60 +288,24 @@ class RecommendationMusic(APIView):
                 pk_list.append(pk)
 
                 music = table.objects.filter(id=pk).first()
-                logger.debug('music.music : {}'.format(music.music))  # 노래제목-가수
-                logger.debug('music.link : {}'.format(music.link))  # Youtube 링크
 
                 if music:
                     music_list.append(music.music)
                     link_list.append(music.link)
-                    # tag_list.append((music.tag1, music.tag2))
+                    # tag_list.append((music.tag_1, music.tag_2))
+                    self.create_Analysis_Result(request, music.music, music.link) #  Child는 tag가 없음.
                     count += 1
-
-            self.create_Analysis_Result(request, music_list)
+                else:
+                    httpError.serverError(request, "Can't Get Table Objects")
 
             Music['music'] = music_list
             Music['link'] = link_list
             # Music['tag'] = tag_list
             dictionary_list.append(Music)  # list of dictionary
-            logger.debug('dictionary_list from get_random3 {}'.format(dictionary_list))
             return dictionary_list
         except Exception as e:
             logger.error(e)
             return httpError.serverError(request, "Can't Get Randomly 3 Music")
-
-    # # randomly get three music of DB (test)
-    # def get_random3_test(self, request, table):
-    #     try:
-    #         Music = {}
-    #         max_id = table.objects.all().aggregate(max_id=Max("id"))['max_id']
-    #         dictionary_list = []
-    #         pk_list = []
-    #         count = 0
-    #         while True:
-    #             print('loop start')
-    #             if count == 3:
-    #                 break
-    #             print('pk before')
-    #             pk = random.randint(1, max_id)  # pk can equal, have to correct
-    #             print('pk after')
-    #             print(pk)
-    #             if pk in pk_list:
-    #                 continue
-    #             pk_list.append(pk)
-    #             print(pk_list)
-    #             music = table.objects.filter(id=pk).first()
-    #             print('music.music : ', music.music)
-    #             print('music.link : ', music.link)
-    #             if music:
-    #                 Music['music_{}'.format(len(pk_list))] = music.music
-    #                 Music['link_{}'.format(len(pk_list))] = music.link
-    #                 count += 1
-
-    #         dictionary_list.append(Music)  # list of dictionary
-    #         return dictionary_list
-    #     except Exception as e:
-    #         logger.error(e)
-    #         return httpError.serverError(request, "Can't Get Random3 Test")
 
     def recommand_music(self, request, age):
         """
@@ -391,6 +314,7 @@ class RecommendationMusic(APIView):
         try:
             dictionary_list = []
             music_list = []
+            link_list = []
             # 10세 미만이면 어린이 테이블로 가서 랜덤으로 3개의 동요를 뽑고 바로 종료한다.
             if age < 10:
                 dictionary_list = self.get_random3(request, Child)
@@ -409,8 +333,8 @@ class RecommendationMusic(APIView):
                 table_index = [Anger, Disgust, Fear,
                                Happiness, Sadness, Surprise, Lie]
 
-                self.face = fileIO.read_file(request, 'face_api_emotion.txt')
-                self.speech= fileIO.read_file(request,'speech_api_emotion.txt')
+                self.face = fileIO.read_file(request, './users/{}/face_api_emotion.txt'.format(self.user_id))
+                self.speech= fileIO.read_file(request,'./users/{}/speech_api_emotion.txt'.format(self.user_id))
                 
                 tone = self.speech.splitlines()[0].replace("\"","")
 
@@ -421,25 +345,34 @@ class RecommendationMusic(APIView):
 
                 if t_info=="tone_res err":
                     return httpError.serverError(request, "Don't Match Sppech Result")
+                
+                if t_info[0]==6 and t_info[1]==6 and t_info[2]==6:
+                    dictionary_list = self.get_random3(request, Lie)
 
-                for tableN in t_info:
-                    if tableN in [41, 42, 43]:  # Sad테이블에 접근해야하는 경우
-                        table = table_index[4]  # Sad
-                        subclass_sad = tableN % 40  # subclass : 1 or 2 or 3
-                        music = table.objects.filter(subclass_s=subclass_sad).order_by(
-                            '?').first()  # Sad테이블 중 subclass_s가 subclass인 노래들 중 랜덤 선택
+                else :
+                    for tableN in t_info:
+                        if tableN in [41, 42, 43]:  # Sad테이블에 접근해야하는 경우
+                            table = table_index[4]  # Sad
+                            subclass_sad = tableN % 40  # subclass : 1 or 2 or 3
+                            music = table.objects.filter(subclass_s=subclass_sad).order_by(
+                                '?').first()  # Sad테이블 중 subclass_s가 subclass인 노래들 중 랜덤 선택
 
-                    elif tableN == 6:
-                        table = table_index[6]
+                        else:  # Sad테이블 이외의 테이블에 접근해야하는 경우
+                            table = table_index[tableN]
 
-                    else:  # Sad테이블 이외의 테이블에 접근해야하는 경우
-                        table = table_index[tableN]
+                        music = table.objects.order_by('?').first()  # 정해진 테이블에서 랜덤으로
+                        if music:
+                            music_list.append(music.music)
+                            link_list.append(music.link)
+                            # Lie 테이블일 경우 tag 가 없음
+                            if tableN==6:
+                                self.create_Analysis_Result(request, music.music, music.link)
+                            else:
+                                self.create_Analysis_Result(request, music.music, music.link, music.tag_1, music.tag_2)
+                            dictionary_list.append(music)
+                        else:
+                            httpError.serverError(request, "Can't Get Table Objects")
 
-                    music = table.objects.order_by('?').first()  # 정해진 테이블에서 랜덤으로
-                    music_list.append(music.music)
-                    dictionary_list.append(music)
-
-                self.create_Analysis_Result(request, music_list)
             return dictionary_list
         except Exception as e:
             logger.error(e)
@@ -512,14 +445,14 @@ class RecommendationMusic(APIView):
                 surprise = dic['surprised']
 
             # 전처리 - 거짓말인 경우, 거짓말 테이블 선택
-            if self.tone_res == "sadness" and happiness > 0:
+            if self.tone_res == "sadness" and happiness > 0.5:
                 print("행복 얼굴로 슬픈 목소리를 내는 거짓말쟁이1")
                 table1 = 6
                 table2 = 6
                 table3 = 6
                 return table1, table2, table3
 
-            elif self.tone_res == "happiness" and sadness > 0:
+            elif self.tone_res == "happiness" and sadness > 0.5:
                 print("슬픈 얼굴로 행복 목소리를 내는 거짓말쟁이2")
                 table1 = 6
                 table2 = 6
@@ -533,8 +466,6 @@ class RecommendationMusic(APIView):
 
                 emotion_res = sorted(dic.items(), key=operator.itemgetter(
                     1), reverse=True)  # value 기준 내림차순 정렬
-                print("정렬후")
-                print('sorted dictionary to list of tuple : ', emotion_res)
 
                 rank_emotion = []  # 인덱스 순서대로 높은 순위 감정이다. 3순위 감정까지 저장한다.
                 rank_emotion_cnt = 0
@@ -545,14 +476,12 @@ class RecommendationMusic(APIView):
                         if rank_emotion_cnt > 3:
                             break
 
-                print(rank_emotion)
                 if rank_emotion_cnt == 1:
                     rank_emotion.append(rank_emotion[0])
                     rank_emotion.append(rank_emotion[0])
                 elif rank_emotion_cnt == 2:
                     rank_emotion.append(rank_emotion[0])
 
-                print(rank_emotion)
 
                 if rank_emotion[0] == "angry":
                     table1 = 41  # 4:슬픔테이블 41:슬픔(1)음악(잔잔)
@@ -638,7 +567,7 @@ class ResultResponse(APIView):
 
     def get_object(self, request, user_id):
         try:
-            return Analysis_Result.objects.filter(user_id=user_id)
+            return Analysis_Result.objects.filter(user_id=user_id).order_by('-id')
         except Exception as e:
             logger.error(e)
             return httpError.notFoundError(request, "Not Found" )
@@ -647,11 +576,10 @@ class ResultResponse(APIView):
         try:
             self.user_id = request.POST.get('result','')
             analysis_result = self.get_object(request, self.user_id)
-            print('result' ,analysis_result)
             serializer = Analysis_ResultSerializer(analysis_result, many = True)
-            print('data',serializer.data)
+            logger.debug(serializer.data)
             return httpResponse.ok(request, serializer.data)
 
         except Exception as e:
             logger.error(e)
-            return httpError.serverError(request, 'please try again')
+            return httpError.serverError(request, "Can't Response Result")

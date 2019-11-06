@@ -7,7 +7,6 @@ beautifulsoup4==4.8.0
 certifi==2019.6.16
 cffi==1.12.3
 chardet==3.0.4
-cognitive-face==1.5.0
 colorama==0.4.1
 coreapi==2.3.3
 coreschema==0.0.4

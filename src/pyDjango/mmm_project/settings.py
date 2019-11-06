@@ -62,9 +62,8 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     '203.246.113.177',
-    'ec2-54-180-124-232.ap-northeast-2.compute.amazonaws.com',
-    '58.230.124.92',
-    'ip-172-31-26-248.ap-northeast-2.compute.internal',
+    'ec2-54-180-83-211.ap-northeast-2.compute.amazonaws.com',
+    '54.180.83.211',
 ]
 
 
@@ -94,7 +93,9 @@ REST_FRAMEWORK = {
     #     'rest_framework.authentication.SessionAuthentication',
     #     'rest_framework.authentication.BasicAuthentication',
     # ),
-    'PAGINATE_BY': 10
+    'PAGINATE_BY': 10,
+
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema' ,
 }
 
 SWAGGER_SETTING = {
@@ -106,6 +107,7 @@ SWAGGER_SETTING = {
             "in": "header"
         },
     },
+    
 
     "LOGIN_URL": "/admin/login/",
     "LOGOUT_URL": "/admin/logout"
@@ -198,4 +200,4 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 STATIC_URL = '/static/'
 
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]  # 추가
+STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)  # 추가
