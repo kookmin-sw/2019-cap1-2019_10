@@ -38,6 +38,16 @@ public class BaymaxGame : BaseGame
     public bool recodeCheck = false;
     public bool resultCheck = false;
 
+    // Toast를 띄우기 위한
+    string toastString;
+    string input;
+    AndroidJavaObject currentActivity;
+    AndroidJavaClass UnityPlayer;
+    AndroidJavaObject context;
+    AndroidJavaObject toast;
+    public bool isPressed = false;
+    public float pressedTime = 0.0f;
+
     protected override void Awake()
     {
         base.Awake();
@@ -70,6 +80,9 @@ public class BaymaxGame : BaseGame
         backendManager.OnResultLoaded += OnResultLoaded;
         backendManager.OnResultLoadedFailed += OnResultLoadedFailed;
 
+        backendManager.OnPostAudioSuccess += OnPostAudioSuccess;
+        backendManager.OnPostAudioFailed += OnPostAudioFailed;
+
         // Setup a delegate for when we close the highscore screen. This will reset the game and set it up for a new round of play
         //highscoreMenu.OnClose += ResetGame;
 
@@ -80,6 +93,62 @@ public class BaymaxGame : BaseGame
         dialogue.ShowResult += ShowResult;
         dialogue.HideResult += HideResult;
         dialogue.Reset += OnReset;
+
+
+        isPressed = false;
+        if (Application.platform == RuntimePlatform.Android)
+        {
+            UnityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
+            currentActivity = UnityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
+            context = currentActivity.Call<AndroidJavaObject>("getApplicationContext");
+        }
+    }
+
+    private void Update()
+    {
+#if UNITY_ANDROID
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Debug.Log("time : " + Time.time + ", pressed : " + pressedTime);
+
+            if(Time.time - pressedTime > 2.0f)
+            {
+                pressedTime = Time.time;
+                showToastOnUiThread("\'뒤로\' 버튼을 한 번 더 누르면 종료됩니다.");
+                return;
+            }
+            if(Time.time - pressedTime <= 2.0f)
+            {
+                Application.Quit();
+                CancelToast();
+            }
+        }
+#endif
+    }
+
+    public void CancelToast()
+    {
+        currentActivity.Call("runOnUiThread",
+            new AndroidJavaRunnable(() =>
+            {
+                if (toast != null) toast.Call("cancel");
+            }));
+    }
+
+    public void showToastOnUiThread(string toastString)
+    {
+        this.toastString = toastString;
+        currentActivity.Call("runOnUiThread", new AndroidJavaRunnable(showToast));
+    }
+
+    public void showToast()
+    {
+        Debug.Log(this + ": Running on UI thread");
+
+        AndroidJavaClass Toast = new AndroidJavaClass("android.widget.Toast");
+        AndroidJavaObject javaString = new AndroidJavaObject("java.lang.String", toastString);
+        toast = Toast.CallStatic<AndroidJavaObject>("makeText", context, javaString, Toast.GetStatic<int>("LENGTH_SHORT"));
+        toast.Call("show");
     }
 
     private void Update()
@@ -137,12 +206,22 @@ public class BaymaxGame : BaseGame
         phoneCamera.OnCamera();
     }
 
-
     // 녹음 토글 on
     public void OnRecorde()
     {
         recorderToggle.SetActive(true);
     }
+
+    public void OnPostAudioSuccess(string[] emotions)
+    {
+        recorderToggle.GetComponent<Toggle>().interactable = true;
+    }
+
+    public void OnPostAudioFailed()
+    {
+        recorderToggle.GetComponent<Toggle>().interactable = true;
+    }
+
 
     // 녹음 토글 버튼 off
     public void OffRecorde()

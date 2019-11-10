@@ -30,7 +30,8 @@ public class NoticeInformation : MonoBehaviour
 
         if (noticeToggle.isOn == true)
         {
-            panelRectTransform.SetAsLastSibling();
+            //panelRectTransform.SetAsLastSibling();
+            panelRectTransform.SetAsFirstSibling();
             noticeInformation.SetActive(true);
         }
         else if (noticeToggle.isOn == false)

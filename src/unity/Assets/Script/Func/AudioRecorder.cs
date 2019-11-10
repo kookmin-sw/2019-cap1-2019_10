@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.Networking;
 using System.IO;
+using UnityEngine.Android;
 
 // 오디오 녹음 및 저장
 public class AudioRecorder : BaseMenu
@@ -20,11 +21,29 @@ public class AudioRecorder : BaseMenu
     public GameObject Loading;
     public Text debug;
     public GameObject RecorderError;
+    public GameObject recorderToggle;
+
 
     //Get the audiosource here to save resources
-    private void Start()
+    IEnumerator Start()
     {
-        //audioSource = GetComponent<AudioSource>();
+        yield return new WaitUntil(() => Permission.HasUserAuthorizedPermission(Permission.Microphone));
+        if (Permission.HasUserAuthorizedPermission(Permission.Microphone))
+        {
+            Debug.Log("Microphone found");
+        }
+        else
+        {
+            Debug.Log("Microphone not found");
+        }
+        //if (Application.HasUserAuthorization(UserAuthorization.Microphone))
+        //{
+        //    Debug.Log("Microphone found");
+        //}
+        //else
+        //{
+        //    Debug.Log("Microphone not found");
+        //}
     }
 
     // 클릭을 하면 녹음 시작, 다시 한 번 클릭을 하면 그때까지의 음성 녹음하기
@@ -86,11 +105,13 @@ public class AudioRecorder : BaseMenu
 
                 // 서버로 음성 데이터 전송
                 backendManager.PostAudio(audioData, PlayerPrefs.GetString("x2").FromBase64());
+                recorderToggle.GetComponent<Toggle>().interactable = false;
                 Loading.SetActive(true);
 
                 // 음성 데이터 삭제
                 audioData = null;
                 File.Delete(filepath);
+                audioSource.clip = null;
             }
         }
     }

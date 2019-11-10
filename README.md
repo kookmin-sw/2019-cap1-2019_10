@@ -68,8 +68,6 @@ https://github.com/MITESHPUTHRANNEU/Speech-Emotion-Analyzer 에서 `Emtion_Voice
 #### 경로 변경
 `src/pyDjango/my_mood_music/real_time_video.py` 의 `detection_model_path`와 `emotion_model_path`의 경로를 본인이 다운받은 얼굴 인식 감정 분석 모델 관련 파일들의 경로로 변경한다.
 
-
-
 #### Unity Setting
 unity 폴더에 있는 폴더들을 다운받아 unity에 새 project를 생성하고 해당 파일들을 붙여넣고 실행을 시킨다.     
 scene에 있는 start를 더블클릭 해서 실행한다.    
