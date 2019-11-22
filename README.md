@@ -77,7 +77,7 @@ scene에 있는 start를 더블클릭 해서 실행한다.
     
 ## 로컬 서버로 연결
 
-현재 학교에서 지원해주는 AWS를 사용중이지만(http://ec2-54-180-83-211.ap-northeast-2.compute.amazonaws.com:8000), 2019년 내 기간이 지나면 쓰지 못하기 때문에 로컬에서 돌려볼 것을 권장한다.
+현재 학교에서 지원해주는 AWS를 사용중이지만, 2019년 내 기간이 지나면 쓰지 못하기 때문에 로컬에서 돌려볼 것을 권장한다.
 로컬에서 돌려볼 시에 Unity에서의 파일 전송 코드의 url을 "localhost:port # "을 기본으로 바꾸어야 한다.
 Unity의 Menu의 Backend Manager의 Use Production의 체크를 해제하면 된다.
 
