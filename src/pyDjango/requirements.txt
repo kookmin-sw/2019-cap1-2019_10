@@ -4,7 +4,7 @@ astroid==2.2.5
 audioread==2.1.8
 autopep8==1.4.4
 beautifulsoup4==4.8.0
-certifi==2019.6.16
+certifi==2022.12.7
 cffi==1.12.3
 chardet==3.0.4
 colorama==0.4.1
